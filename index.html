@@ -1,0 +1,2283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maruti Suzuki Warehouse Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #FF6600;
+            --accent-color: #0099CC;
+            --light-color: #F5F5F5;
+            --dark-color: #333333;
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --danger-color: #F44336;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f9f9f9;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            position: relative;
+        }
+
+        .logo img {
+            height: 50px;
+            transition: var(--transition);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            position: relative;
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            font-size: 16px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .nav-links a i {
+            margin-left: 5px;
+            font-size: 12px;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            width: 90vw;
+            max-width: 1200px;
+            border-radius: 5px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: none;
+            z-index: 100;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .nav-links li:hover .dropdown-menu {
+            display: grid;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) translateX(-50%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) translateX(-50%);
+            }
+        }
+
+        .dropdown-menu h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+        }
+
+        .car-model {
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .car-model:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .car-model-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .car-model p {
+            padding: 10px;
+            text-align: center;
+            font-weight: 500;
+            color: var(--dark-color);
+            background: white;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark-color);
+            background: none;
+            border: none;
+        }
+
+        /* Banner Below Navbar */
+        .nav-banner {
+            width: 100%;
+            height: 300px;
+            margin-top: 80px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .nav-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: zoomInOut 15s infinite alternate;
+        }
+
+        @keyframes zoomInOut {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.1);
+            }
+        }
+
+        .banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 51, 102, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .banner-overlay h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .banner-overlay p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .banner-btn {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .banner-btn:hover {
+            background-color: #e65c00;
+            transform: translateY(-3px);
+        }
+
+        /* Features Section */
+        .section-title {
+            text-align: center;
+            margin: 60px 0 40px;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            color: var(--primary-color);
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+            padding: 30px 20px;
+            border-top: 4px solid var(--secondary-color);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 50px;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        /* Parts Tracking Section */
+        .parts-tracking {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 60px 0;
+            margin: 60px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .parts-tracking::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1608500218807-1a5c1aeaf6d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+            opacity: 0.2;
+            z-index: 0;
+        }
+
+        .parts-tracking .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .parts-tracking h2 {
+            color: white;
+        }
+
+        .parts-tracking h2::after {
+            background-color: var(--secondary-color);
+        }
+
+        .search-box {
+            background-color: white;
+            border-radius: 50px;
+            padding: 10px 20px;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .search-box button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box button:hover {
+            background-color: #e65c00;
+        }
+
+        .tracking-results {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            color: var(--dark-color);
+        }
+
+        .part-info {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .part-image {
+            border-radius: 8px;
+            overflow: hidden;
+            height: 150px;
+        }
+
+        .part-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .part-details h3 {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .part-details p {
+            margin-bottom: 5px;
+        }
+
+        .part-details p strong {
+            color: var(--primary-color);
+        }
+
+        .location-map {
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        /* Inventory Control Section */
+        .inventory-control {
+            margin: 60px 0;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .inventory-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .inventory-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .inventory-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .inventory-body {
+            padding: 20px;
+        }
+
+        .inventory-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .inventory-item:last-child {
+            border-bottom: none;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-control button {
+            background-color: var(--light-color);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .quantity-control button:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .quantity-control span {
+            margin: 0 15px;
+            font-weight: 600;
+        }
+
+        .low-stock {
+            color: var(--danger-color);
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Analytics Dashboard */
+        .analytics {
+            background-color: var(--light-color);
+            padding: 60px 0;
+            margin: 60px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-top: 4px solid var(--accent-color);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-card p {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .chart-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            height: 400px;
+        }
+
+        /* New Features Section */
+        .new-features {
+            padding: 60px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+        }
+
+        .feature-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .feature-tab {
+            padding: 12px 25px;
+            background: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-tab.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .feature-tab:hover:not(.active) {
+            background-color: #f0f0f0;
+        }
+
+        .feature-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feature-content.active {
+            display: block;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-img {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .feature-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .feature-item:hover .feature-img img {
+            transform: scale(1.05);
+        }
+
+        .feature-details {
+            padding: 20px;
+        }
+
+        .feature-details h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        /* Warehouse Tools Content */
+        .warehouse-tools {
+            padding: 60px 0;
+            background-color: white;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .tool-card {
+            background: var(--light-color);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-top: 4px solid var(--accent-color);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .tool-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-card h3 i {
+            color: var(--secondary-color);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--secondary-color);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: white;
+            background-color: #444;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .parts-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .category-card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .category-card:hover {
+            border-color: var(--secondary-color);
+            transform: translateY(-5px);
+        }
+
+        .category-card i {
+            font-size: 40px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .category-card h3 {
+            font-size: 18px;
+            color: var(--dark-color);
+        }
+
+        .parts-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .part-item {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .part-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .part-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .part-details {
+            padding: 15px;
+        }
+
+        .part-details h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .part-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .part-meta span {
+            color: #777;
+        }
+
+        .part-price {
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-size: 18px;
+        }
+
+        .part-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .stock-alert {
+            color: var(--danger-color);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .dropdown-menu {
+                width: 90vw;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .dropdown-menu {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-banner {
+                height: 250px;
+            }
+
+            .banner-overlay h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                padding: 40px 0;
+                transition: var(--transition);
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-links li {
+                margin: 15px 0;
+            }
+
+            .dropdown-menu {
+                position: static;
+                width: 90%;
+                display: none;
+                margin-top: 10px;
+                box-shadow: none;
+                padding: 10px;
+                background-color: var(--light-color);
+                transform: none;
+            }
+
+            .nav-banner {
+                height: 200px;
+                margin-top: 70px;
+            }
+
+            .banner-overlay h1 {
+                font-size: 1.8rem;
+            }
+
+            .banner-overlay p {
+                font-size: 1rem;
+            }
+
+            .part-info {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+
+            .modal-body {
+                max-height: 60vh;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .dropdown-menu {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .feature-tab {
+                width: 80%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .nav-banner {
+                height: 180px;
+            }
+
+            .banner-overlay h1 {
+                font-size: 1.5rem;
+            }
+
+            .section-title h2 {
+                font-size: 28px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+                border-radius: 8px;
+                padding: 15px;
+            }
+
+            .search-box input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .search-box button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .logo img {
+                height: 40px;
+            }
+
+            .nav-banner {
+                height: 150px;
+            }
+
+            .banner-overlay h1 {
+                font-size: 1.3rem;
+            }
+
+            .banner-overlay p {
+                display: none;
+            }
+
+            .banner-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        .car-model-img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <img src="https://companieslogo.com/img/orig/MARUTI.NS-9974f2f4.png?t=1593961147" alt="Maruti Suzuki Logo" style="background-size: cover;">
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li>
+                        <a href="#">Cars <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-menu">
+                            <div>
+                                <h3>Hatchbacks</h3>
+                                <div class="car-model" onclick="openPartsModal('Alto')">
+                                    <img class="car-model-img" src="https://motorsactu.com/wp-content/uploads/2022/08/Alto_K10.jpg" alt="Alto">
+                                    <p>Alto</p>
+                                </div>
+                                
+                                <div class="car-model" onclick="openPartsModal('Wagon R')">
+                                    <img class="car-model-img" src="https://media.zigcdn.com/media/model/2023/Feb/front-1-4-left-1585763989_930x620.jpg" alt="Wagon R">
+                                    <p>Wagon R</p>
+                                </div>
+                                <div class="car-model" onclick="openPartsModal('Swift')">
+                                    <img class="car-model-img" src="https://www.autocar.co.uk/sites/autocar.co.uk/files/images/car-reviews/first-drives/legacy/swift_facelift_01.jpg" alt="Swift">
+                                    <p>Swift</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h3>Sedans</h3>
+                                <div class="car-model" onclick="openPartsModal('Dzire')">
+                                    <img class="car-model-img" src="https://ymimg1.b8cdn.com/uploads/car_model/8607/pictures/9010019/2018-Maruti-Suzuki-DZire-5.jpg" alt="Dzire">
+                                    <p>Dzire</p>
+                                </div>
+                                <div class="car-model" onclick="openPartsModal('Ciaz')">
+                                    <img class="car-model-img" src="http://drop.ndtv.com/albums/AUTO/marutisuzukiciaz/ciaz-gallery.jpg" alt="Ciaz">
+                                    <p>Ciaz</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h3>SUVs</h3>
+                                <div class="car-model" onclick="openPartsModal('Brezza')">
+                                    <img class="car-model-img" src="https://stat.overdrive.in/wp-content/odgallery/2018/08/46345_Maruti_Suzuki_Vitara_Breeza_036.jpg" alt="Brezza">
+                                    <p>Brezza</p>
+                                </div>
+                                <div class="car-model" onclick="openPartsModal('Ertiga')">
+                                    <img class="car-model-img" src="http://stat.overdrive.in/wp-content/odgallery/2022/04/61649_2022_Maruti_Suzuki_Ertiga.jpg" alt="Ertiga">
+                                    <p>Ertiga</p>
+                                </div>
+                                <div class="car-model" onclick="openPartsModal('XL6')">
+                                    <img class="car-model-img" src="https://www.carmag.co.za/wp-content/uploads/2023/08/XL6-edit-4-1024x614.webp" alt="XL6">
+                                    <p>XL6</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#">Warehouse Tools <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-menu" style="width: 600px; grid-template-columns: repeat(2, 1fr);">
+                            <div>
+                                <h3>Inventory Management</h3>
+                                <div class="car-model" onclick="showWarehouseTools('inventory')">
+                                    <img class="car-model-img" src="https://images.unsplash.com/photo-1603732551658-5fabbafa84eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Inventory">
+                                    <p>Stock Control</p>
+                                </div>
+                                <div class="car-model" onclick="showWarehouseTools('analytics')">
+                                    <img class="car-model-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Analytics">
+                                    <p>Productivity Analysis</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h3>Workforce Tools</h3>
+                                <div class="car-model" onclick="showWarehouseTools('tasks')">
+                                    <img class="car-model-img" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Task Management">
+                                    <p>Task Assignment</p>
+                                </div>
+                                <div class="car-model" onclick="showWarehouseTools('optimization')">
+                                    <img class="car-model-img" src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" alt="Optimization">
+                                    <p>Workforce Optimization</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li><a href="#" onclick="showLocation()">Location</a></li>
+                    <li><a href="#" onclick="showHelp()">Help</a></li>
+                </ul>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Banner Below Navbar -->
+    <div class="nav-banner">
+        <img src="https://1000logos.net/wp-content/uploads/2022/08/Maruti-Suzuki-Logo-2011.png" alt="Maruti Suzuki Warehouse">
+        <div class="banner-overlay">
+            <div>
+                <h1>Advanced Warehouse Management System</h1>
+                <p>Optimizing parts inventory and workforce efficiency for Maruti Suzuki dealerships nationwide</p>
+                <a href="#" class="banner-btn">Explore Features</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section class="container">
+        <div class="section-title">
+            <h2>Warehouse Features</h2>
+        </div>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <h3>Smart Inventory</h3>
+                <p>Real-time tracking of all parts with automated stock alerts and reorder points to prevent shortages.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>Automated Workflows</h3>
+                <p>Optimized picking routes and automated task assignment to reduce retrieval time by up to 40%.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Advanced Analytics</h3>
+                <p>Comprehensive reports on inventory turnover, workforce productivity, and operational bottlenecks.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h3>Visual Mapping</h3>
+                <p>Interactive warehouse maps showing part locations with optimized storage algorithms.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-barcode"></i>
+                </div>
+                <h3>Barcode Scanning</h3>
+                <p>Quick part identification and tracking with integrated barcode scanning technology.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <h3>Team Management</h3>
+                <p>Track employee performance, assign tasks, and optimize workforce allocation.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Parts Tracking Section -->
+    <section class="parts-tracking">
+        <div class="container">
+            <div class="section-title">
+                <h2>Parts Tracking System</h2>
+            </div>
+            <div class="search-box">
+                <input type="text" placeholder="Search by part number, name, or vehicle model..." id="partSearch">
+                <button onclick="searchPart()"><i class="fas fa-search"></i> Search</button>
+            </div>
+            <div class="tracking-results" id="trackingResults">
+                <div class="part-info">
+                    <div class="part-image">
+                        <img src="https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Engine Part">
+                    </div>
+                    <div class="part-details">
+                        <h3>K10B Engine Assembly</h3>
+                        <p><strong>Part Number:</strong> MSUZ-K10B-ENG-001</p>
+                        <p><strong>Compatible Models:</strong> Alto, Wagon R, Celerio</p>
+                        <p><strong>Current Stock:</strong> 12 units</p>
+                        <p><strong>Weight:</strong> 85 kg</p>
+                        <p><strong>Dimensions:</strong> 65cm x 55cm x 45cm</p>
+                        <p><strong>Price:</strong> ₹45,800</p>
+                        <p><strong>Location:</strong> Rack A12, Shelf 3</p>
+                        <div class="location-map" id="partLocationMap"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inventory Control Section -->
+    <section class="inventory-control container">
+        <div class="section-title">
+            <h2>Inventory Control</h2>
+        </div>
+        <div class="inventory-grid">
+            <div class="inventory-card">
+                <div class="inventory-header">
+                    <h3>Swift Parts</h3>
+                    <span>Last updated: Today</span>
+                </div>
+                <div class="inventory-body">
+                    <div class="inventory-item">
+                        <span>Engine Assembly</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span>8</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                    <div class="inventory-item">
+                        <span>Transmission</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span>5</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                    <div class="inventory-item">
+                        <span>Headlights</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span class="low-stock">3</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                    <div class="inventory-item">
+                        <span>Brake Pads</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span class="low-stock">2</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                    <div class="inventory-item">
+                        <span>Wheel Rims</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span>15</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inventory-card">
+                <div class="inventory-header">
+                    <h3>Brezza Parts</h3>
+                    <span>Last updated: Today</span>
+                </div>
+                <div class="inventory-body">
+                    <div class="inventory-item">
+                        <span>Engine Assembly</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span>6</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                    <div class="inventory-item">
+                        <span>Suspension Kit</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span>7</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                    <div class="inventory-item">
+                        <span>Tail Lights</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span class="low-stock">4</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                    <div class="inventory-item">
+                        <span>Dashboard Panel</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span>9</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                    <div class="inventory-item">
+                        <span>Fuel Pump</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span class="low-stock">1</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inventory-card">
+                <div class="inventory-header">
+                    <h3>Ertiga Parts</h3>
+                    <span>Last updated: Today</span>
+                </div>
+                <div class="inventory-body">
+                    <div class="inventory-item">
+                        <span>Engine Assembly</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span>5</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                    <div class="inventory-item">
+                        <span>AC Compressor</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span class="low-stock">3</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                    <div class="inventory-item">
+                        <span>Door Panels</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span>8</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                    <div class="inventory-item">
+                        <span>Seat Covers</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span>12</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                    <div class="inventory-item">
+                        <span>Windshield</span>
+                        <div class="quantity-control">
+                            <button onclick="decrementQuantity(this)">-</button>
+                            <span class="low-stock">2</span>
+                            <button onclick="incrementQuantity(this)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics Dashboard -->
+    <section class="analytics">
+        <div class="container">
+            <div class="section-title">
+                <h2>Warehouse Analytics</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Parts in Stock</h3>
+                    <p>1,248</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Daily Picks</h3>
+                    <p>187</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Low Stock Items</h3>
+                    <p>23</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg. Retrieval Time</h3>
+                    <p>4.2m</p>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="analyticsChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Warehouse Tools Section -->
+    <section class="warehouse-tools" id="warehouseToolsSection">
+        <div class="container">
+            <div class="section-title">
+                <h2>Warehouse Management Tools</h2>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3><i class="fas fa-boxes"></i> Inventory Management</h3>
+                    <p>Comprehensive tools for tracking all parts inventory in real-time. Features include:</p>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Automated stock level monitoring</li>
+                        <li>Reorder point alerts</li>
+                        <li>Barcode scanning integration</li>
+                        <li>Batch and serial number tracking</li>
+                    </ul>
+                </div>
+                <div class="tool-card">
+                    <h3><i class="fas fa-chart-line"></i> Productivity Analytics</h3>
+                    <p>Detailed analytics to measure and improve warehouse operations:</p>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Employee performance metrics</li>
+                        <li>Order fulfillment times</li>
+                        <li>Inventory turnover rates</li>
+                        <li>Custom report generation</li>
+                    </ul>
+                </div>
+                <div class="tool-card">
+                    <h3><i class="fas fa-tasks"></i> Task Assignment</h3>
+                    <p>Efficient workforce management tools including:</p>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Automated task distribution</li>
+                        <li>Priority-based assignment</li>
+                        <li>Real-time progress tracking</li>
+                        <li>Performance feedback system</li>
+                    </ul>
+                </div>
+                <div class="tool-card">
+                    <h3><i class="fas fa-users-cog"></i> Workforce Optimization</h3>
+                    <p>Tools to maximize workforce efficiency:</p>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Shift scheduling</li>
+                        <li>Skill-based assignment</li>
+                        <li>Training management</li>
+                        <li>Labor cost analysis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Features Section -->
+    <section class="new-features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Advanced Features</h2>
+            </div>
+            <div class="feature-tabs">
+                <button class="feature-tab active" onclick="openFeatureTab(event, 'automation')">Automation</button>
+                <button class="feature-tab" onclick="openFeatureTab(event, 'reports')">Smart Reports</button>
+                <button class="feature-tab" onclick="openFeatureTab(event, 'integration')">Integration</button>
+                <button class="feature-tab" onclick="openFeatureTab(event, 'security')">Security</button>
+            </div>
+            
+            <div id="automation" class="feature-content active">
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="feature-img">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Automated Reordering">
+                        </div>
+                        <div class="feature-details">
+                            <h3>Automated Reordering</h3>
+                            <p>System automatically generates purchase orders when stock reaches predefined thresholds, ensuring you never run out of critical parts.</p>
+                            <p>Features customizable reorder points for different part categories and suppliers.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-img">
+                            <img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80" alt="Barcode Scanning">
+                        </div>
+                        <div class="feature-details">
+                            <h3>Mobile Barcode Scanning</h3>
+                            <p>Use your smartphone or tablet to scan barcodes and update inventory in real-time from anywhere in the warehouse.</p>
+                            <p>Compatible with all standard barcode formats and supports custom labeling.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-img">
+                            <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2068&q=80" alt="Route Optimization">
+                        </div>
+                        <div class="feature-details">
+                            <h3>Smart Route Optimization</h3>
+                            <p>AI-powered picking routes that adapt based on order priorities, warehouse traffic, and employee locations.</p>
+                            <p>Reduces walking time by up to 40% compared to traditional picking methods.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="reports" class="feature-content">
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="feature-img">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2015&q=80" alt="Custom Reports">
+                        </div>
+                        <div class="feature-details">
+                            <h3>Custom Report Builder</h3>
+                            <p>Create tailored reports with drag-and-drop interface to analyze exactly what you need without IT assistance.</p>
+                            <p>Save report templates for recurring use and schedule automatic report generation.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-img">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Forecasting">
+                        </div>
+                        <div class="feature-details">
+                            <h3>Demand Forecasting</h3>
+                            <p>Predictive analytics to anticipate parts demand based on historical data, seasonal trends, and market factors.</p>
+                            <p>Helps optimize inventory levels and reduce carrying costs while maintaining high service levels.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-img">
+                            <img src="https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" alt="Performance">
+                        </div>
+                        <div class="feature-details">
+                            <h3>Performance Benchmarking</h3>
+                            <p>Compare your warehouse metrics against industry standards and best practices to identify improvement opportunities.</p>
+                            <p>Track KPIs like order accuracy, fulfillment time, and inventory turnover against benchmarks.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="integration" class="feature-content">
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="feature-img">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="ERP Integration">
+                        </div>
+                        <div class="feature-details">
+                            <h3>ERP Integration</h3>
+                            <p>Seamless connection with major ERP systems for unified business operations across finance, sales, and inventory.</p>
+                            <p>Pre-built connectors for SAP, Oracle, Microsoft Dynamics, and other leading ERP platforms.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-img">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Supplier Portal">
+                        </div>
+                        <div class="feature-details">
+                            <h3>Supplier Portal</h3>
+                            <p>Direct connection with parts suppliers for streamlined ordering, tracking, and communication.</p>
+                            <p>Suppliers can view your inventory levels (with permissions) and suggest automatic replenishment.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-img">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="API Access">
+                        </div>
+                        <div class="feature-details">
+                            <h3>API Access</h3>
+                            <p>Robust API for custom integrations with other business systems and applications.</p>
+                            <p>Documented REST API with sample code for common programming languages and platforms.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="security" class="feature-content">
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="feature-img">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Role-Based Access">
+                        </div>
+                        <div class="feature-details">
+                            <h3>Role-Based Access</h3>
+                            <p>Granular permissions to control exactly what each user can see and do in the system.</p>
+                            <p>Create custom roles with specific access to functions, data, and reports based on job responsibilities.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-img">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Audit Trail">
+                        </div>
+                        <div class="feature-details">
+                            <h3>Complete Audit Trail</h3>
+                            <p>Track every change made in the system with detailed timestamped records of who did what and when.</p>
+                            <p>Essential for compliance, troubleshooting, and security investigations.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-img">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Data Encryption">
+                        </div>
+                        <div class="feature-details">
+                            <h3>Enterprise-Grade Security</h3>
+                            <p>Military-grade encryption and regular security audits to protect your data.</p>
+                            <p>Compliance with industry security standards including ISO 27001 and SOC 2 Type II.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Maruti Suzuki</h3>
+                    <p>India's leading automobile manufacturer with the most extensive service network across the country.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Inventory</a></li>
+                        <li><a href="#">Parts Tracking</a></li>
+                        <li><a href="#">Workforce Tools</a></li>
+                        <li><a href="#">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Warehouse Locations</h3>
+                    <ul>
+                        <li><a href="#">Amravati, Maharashtra</a></li>
+                        <li><a href="#">Gurugram, Haryana</a></li>
+                        <li><a href="#">Chennai, Tamil Nadu</a></li>
+                        <li><a href="#">Bangalore, Karnataka</a></li>
+                        <li><a href="#">Kolkata, West Bengal</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Maruti Suzuki Warehouse, Amravati</li>
+                        <li><i class="fas fa-phone"></i> +91 1234567890</li>
+                        <li><i class="fas fa-envelope"></i> warehouse@marutisuzuki.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Maruti Suzuki Warehouse Management System. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Parts Modal -->
+    <div class="modal" id="partsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Alto Parts Inventory</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Select Category</h3>
+                <div class="parts-categories">
+                    <div class="category-card" onclick="showPartsList('Engine')">
+                        <i class="fas fa-cog"></i>
+                        <h3>Engine</h3>
+                    </div>
+                    <div class="category-card" onclick="showPartsList('Transmission')">
+                        <i class="fas fa-cogs"></i>
+                        <h3>Transmission</h3>
+                    </div>
+                    <div class="category-card" onclick="showPartsList('Electrical')">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Electrical</h3>
+                    </div>
+                    <div class="category-card" onclick="showPartsList('Suspension')">
+                        <i class="fas fa-car-side"></i>
+                        <h3>Suspension</h3>
+                    </div>
+                    <div class="category-card" onclick="showPartsList('Body')">
+                        <i class="fas fa-car"></i>
+                        <h3>Body</h3>
+                    </div>
+                    <div class="category-card" onclick="showPartsList('Interior')">
+                        <i class="fas fa-chair"></i>
+                        <h3>Interior</h3>
+                    </div>
+                </div>
+                <div id="partsListContainer">
+                    <!-- Content will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Warehouse Management Help Center</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Frequently Asked Questions</h3>
+                <div class="faq-item">
+                    <h4>How do I check the inventory of a specific part?</h4>
+                    <p>Navigate to the "Cars" section in the main menu, select the vehicle model, then choose the part category. You'll see all available parts with their current stock levels.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>What does the low stock alert mean?</h4>
+                    <p>When stock levels fall below 5 units for any part, the system automatically highlights it in red and displays an alert. This indicates you should reorder the part soon.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>How can I find a part's location in the warehouse?</h4>
+                    <p>Each part in the system shows its exact location (Rack and Shelf number). You can also use the search function to quickly locate parts by name or part number.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>How do I update inventory counts?</h4>
+                    <p>Use the + and - buttons next to each part's quantity to adjust stock levels. Changes are saved automatically in real-time.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Where can I view warehouse performance metrics?</h4>
+                    <p>The "Analytics" section provides detailed reports on inventory turnover, retrieval times, and workforce productivity.</p>
+                </div>
+                <h3 style="margin-top: 30px;">Contact Support</h3>
+                <p>For additional assistance, please contact our warehouse support team:</p>
+                <ul style="margin: 15px 0 15px 20px;">
+                    <li>Email: support@marutisuzuki-warehouse.com</li>
+                    <li>Phone: +91 9876543210 (Available 8AM-8PM, Mon-Sat)</li>
+                    <li>On-site Help Desk: Located near the main warehouse entrance</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Modal -->
+    <div class="modal" id="locationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Warehouse Location</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div>
+                        <h3>Amravati Warehouse</h3>
+                        <p><strong>Address:</strong> Maruti Suzuki Parts Distribution Center, Badnera Road, Amravati, Maharashtra - 444605</p>
+                        <p><strong>Contact:</strong> +91 721 1234567</p>
+                        <p><strong>Manager:</strong> Rajesh Kumar</p>
+                        <p><strong>Operating Hours:</strong> 7:00 AM - 9:00 PM (Mon-Sat)</p>
+                        <h4 style="margin-top: 20px;">Facilities</h4>
+                        <ul style="margin: 10px 0 10px 20px;">
+                            <li>15,000 sq ft storage area</li>
+                            <li>Automated retrieval system</li>
+                            <li>Barcode scanning stations</li>
+                            <li>Quality control lab</li>
+                            <li>Employee training center</li>
+                        </ul>
+                    </div>
+                    <div id="warehouseMap" style="height: 400px; border-radius: 8px; overflow: hidden;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+
+        // Header Scroll Effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+                document.querySelector('.logo img').style.height = '40px';
+            } else {
+                header.classList.remove('scrolled');
+                document.querySelector('.logo img').style.height = '50px';
+            }
+        });
+
+        // Initialize Map for Parts Tracking
+        function initPartLocationMap() {
+            const map = L.map('partLocationMap').setView([20.9374, 77.7796], 18);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            L.marker([20.9374, 77.7796]).addTo(map)
+                .bindPopup('Maruti Suzuki Warehouse<br>Rack A12, Shelf 3')
+                .openPopup();
+
+            // Add warehouse polygon
+            const warehouseBounds = [
+                [20.9372, 77.7793],
+                [20.9372, 77.7799],
+                [20.9376, 77.7799],
+                [20.9376, 77.7793]
+            ];
+            L.polygon(warehouseBounds, {color: 'blue', fillOpacity: 0.1}).addTo(map);
+        }
+
+        // Initialize Map for Location Modal
+        function initWarehouseMap() {
+            const map = L.map('warehouseMap').setView([20.9374, 77.7796], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            L.marker([20.9374, 77.7796]).addTo(map)
+                .bindPopup('<b>Maruti Suzuki Warehouse</b><br>Badnera Road, Amravati')
+                .openPopup();
+
+            // Add surrounding area markers
+            L.marker([20.9380, 77.7805]).addTo(map)
+                .bindPopup('Employee Parking');
+                
+            L.marker([20.9368, 77.7787]).addTo(map)
+                .bindPopup('Loading Dock');
+        }
+
+        // Initialize Analytics Chart
+        function initAnalyticsChart() {
+            const ctx = document.getElementById('analyticsChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [
+                        {
+                            label: 'Parts Incoming',
+                            data: [320, 290, 350, 410, 380, 400, 420, 450, 430, 460, 480, 520],
+                            backgroundColor: 'rgba(0, 102, 204, 0.7)',
+                            borderColor: 'rgba(0, 102, 204, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Parts Outgoing',
+                            data: [280, 260, 300, 350, 320, 340, 360, 390, 370, 400, 420, 450],
+                            backgroundColor: 'rgba(255, 102, 0, 0.7)',
+                            borderColor: 'rgba(255, 102, 0, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Parts'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Month'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Monthly Parts Movement (2023)',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Feature Tabs
+        function openFeatureTab(evt, featureName) {
+            const tabContents = document.getElementsByClassName("feature-content");
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+            
+            const tabButtons = document.getElementsByClassName("feature-tab");
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+            
+            document.getElementById(featureName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Modal Functions
+        function openPartsModal(carModel) {
+            document.getElementById('modalTitle').textContent = `${carModel} Parts Inventory`;
+            document.getElementById('partsModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            loadPartsList(carModel);
+        }
+
+        function loadPartsList(carModel) {
+            const partsContainer = document.getElementById('partsListContainer');
+            partsContainer.innerHTML = `
+                <h3 style="margin-top: 30px;">Engine Parts</h3>
+                <div class="parts-list">
+                    <div class="part-item">
+                        <img src="https://financialexpresswpcontent.s3.amazonaws.com/uploads/2019/01/26865mceclip2.jpg" alt="Engine Block" style="width: 100%; height: auto; object-fit: cover; border-radius: 10px;">
+                        <div class="part-details">
+                            <h4>${carModel} Engine Block</h4>
+                            <div class="part-meta">
+                                <span><strong>Part No:</strong> MSUZ-${carModel.replace(' ', '')}-001</span>
+                                <span><strong>Weight:</strong> ${carModel === 'Alto' ? '24kg' : carModel === 'Swift' ? '28kg' : '32kg'}</span>
+                            </div>
+                            <div class="part-meta">
+                                <span><strong>Location:</strong> Rack A12</span>
+                                <span class="part-price">₹${carModel === 'Alto' ? '12,500' : carModel === 'Swift' ? '15,800' : '18,200'}</span>
+                            </div>
+                            <div class="part-actions">
+                                <div class="quantity-control">
+                                    <button onclick="decrementQuantity(this)">-</button>
+                                    <span>8</span>
+                                    <button onclick="incrementQuantity(this)">+</button>
+                                </div>
+                                <div class="stock-alert" style="display: none;">Low stock!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="part-item">
+                        <img src="https://file.infoservision.com/1635214227812651010/1639177260314423298.webp" alt="Cylinder Head" style="width: 100%; height: auto; object-fit: cover; border-radius: 10px;">
+                        <div class="part-details">
+                            <h4>${carModel} Cylinder Head</h4>
+                            <div class="part-meta">
+                                <span><strong>Part No:</strong> MSUZ-${carModel.replace(' ', '')}-002</span>
+                                <span><strong>Weight:</strong> ${carModel === 'Alto' ? '18kg' : carModel === 'Swift' ? '22kg' : '25kg'}</span>
+                            </div>
+                            <div class="part-meta">
+                                <span><strong>Location:</strong> Rack A13</span>
+                                <span class="part-price">₹${carModel === 'Alto' ? '9,800' : carModel === 'Swift' ? '12,500' : '14,900'}</span>
+                            </div>
+                            <div class="part-actions">
+                                <div class="quantity-control">
+                                    <button onclick="decrementQuantity(this)">-</button>
+                                    <span>5</span>
+                                    <button onclick="incrementQuantity(this)">+</button>
+                                </div>
+                                <div class="stock-alert">Low stock!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="part-item">
+                        <img src="https://img4.dhresource.com/webp/m/0x0/f3/albu/jc/l/01/ae517cc9-ce9c-4aca-a682-d83c5953baf2.jpeg" alt="Turbocharger" style="width: 100%; height: auto; object-fit: cover; border-radius: 10px;">
+                        <div class="part-details">
+                            <h4>${carModel} Turbocharger</h4>
+                            <div class="part-meta">
+                                <span><strong>Part No:</strong> MSUZ-${carModel.replace(' ', '')}-003</span>
+                                <span><strong>Weight:</strong> ${carModel === 'Alto' ? '12kg' : carModel === 'Swift' ? '15kg' : '18kg'}</span>
+                            </div>
+                            <div class="part-meta">
+                                <span><strong>Location:</strong> Rack A14</span>
+                                <span class="part-price">₹${carModel === 'Alto' ? '22,300' : carModel === 'Swift' ? '25,700' : '28,500'}</span>
+                            </div>
+                            <div class="part-actions">
+                                <div class="quantity-control">
+                                    <button onclick="decrementQuantity(this)">-</button>
+                                    <span>3</span>
+                                    <button onclick="incrementQuantity(this)">+</button>
+                                </div>
+                                <div class="stock-alert">Low stock!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3 style="margin-top: 30px;">Transmission Parts</h3>
+                <div class="parts-list">
+                    <div class="part-item">
+                        <img src="https://m.media-amazon.com/images/I/813ZZCjDHUL._AC_SX425_.jpg" alt="Transmission" style="width: 100%; height: auto; object-fit: cover; border-radius: 10px;">
+                        <div class="part-details">
+                            <h4>${carModel} Transmission</h4>
+                            <div class="part-meta">
+                                <span><strong>Part No:</strong> MSUZ-${carModel.replace(' ', '')}-101</span>
+                                <span><strong>Weight:</strong> ${carModel === 'Alto' ? '35kg' : carModel === 'Swift' ? '42kg' : '48kg'}</span>
+                            </div>
+                            <div class="part-meta">
+                                <span><strong>Location:</strong> Rack B12</span>
+                                <span class="part-price">₹${carModel === 'Alto' ? '32,500' : carModel === 'Swift' ? '38,700' : '45,200'}</span>
+                            </div>
+                            <div class="part-actions">
+                                <div class="quantity-control">
+                                    <button onclick="decrementQuantity(this)">-</button>
+                                    <span>6</span>
+                                    <button onclick="incrementQuantity(this)">+</button>
+                                </div>
+                                <div class="stock-alert" style="display: none;">Low stock!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="part-item">
+                        <img src="https://5.imimg.com/data5/SELLER/Default/2022/1/BY/BE/BF/37300586/maruti-alto-800-clutch-kit-500x500.jpg" alt="Clutch Kit" style="width: 100%; height: auto; object-fit: cover; border-radius: 10px;">
+                        <div class="part-details">
+                            <h4>${carModel} Clutch Kit</h4>
+                            <div class="part-meta">
+                                <span><strong>Part No:</strong> MSUZ-${carModel.replace(' ', '')}-102</span>
+                                <span><strong>Weight:</strong> ${carModel === 'Alto' ? '8kg' : carModel === 'Swift' ? '10kg' : '12kg'}</span>
+                            </div>
+                            <div class="part-meta">
+                                <span><strong>Location:</strong> Rack B13</span>
+                                <span class="part-price">₹${carModel === 'Alto' ? '7,800' : carModel === 'Swift' ? '9,500' : '11,200'}</span>
+                            </div>
+                            <div class="part-actions">
+                                <div class="quantity-control">
+                                    <button onclick="decrementQuantity(this)">-</button>
+                                    <span>4</span>
+                                    <button onclick="incrementQuantity(this)">+</button>
+                                </div>
+                                <div class="stock-alert">Low stock!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3 style="margin-top: 30px;">Electrical Parts</h3>
+                <div class="parts-list">
+                    <div class="part-item">
+                        <img src="https://i0.wp.com/partsfactoryaus.com.au/wp-content/uploads/2023/01/Image-1-37-scaled.jpg?fit=1024%2C1024&ssl=1" alt="Alternator" style="width: 100%; height: auto; object-fit: cover; border-radius: 10px;">
+                        <div class="part-details">
+                            <h4>${carModel} Alternator</h4>
+                            <div class="part-meta">
+                                <span><strong>Part No:</strong> MSUZ-${carModel.replace(' ', '')}-201</span>
+                                <span><strong>Weight:</strong> ${carModel === 'Alto' ? '4.5kg' : carModel === 'Swift' ? '5.2kg' : '6kg'}</span>
+                            </div>
+                            <div class="part-meta">
+                                <span><strong>Location:</strong> Rack C12</span>
+                                <span class="part-price">₹${carModel === 'Alto' ? '6,500' : carModel === 'Swift' ? '7,800' : '8,900'}</span>
+                            </div>
+                            <div class="part-actions">
+                                <div class="quantity-control">
+                                    <button onclick="decrementQuantity(this)">-</button>
+                                    <span>7</span>
+                                    <button onclick="incrementQuantity(this)">+</button>
+                                </div>
+                                <div class="stock-alert" style="display: none;">Low stock!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="part-item">
+                        <img src="https://image.made-in-china.com/2f0j00plIzFVUtYiqO/OEM-Accessories-Engine-Spare-Automobile-Magnetic-Motor-Power-Auto-Car-Parts-Starter-for-31100-62L00-000-Starter-Motor-Assembly-MT-OEM-for-Suzuki-New-Alto.jpg" alt="Starter Motor" style="width: 100%; height: auto; object-fit: cover; border-radius: 10px;">
+                        <div class="part-details">
+                            <h4>${carModel} Starter Motor</h4>
+                            <div class="part-meta">
+                                <span><strong>Part No:</strong> MSUZ-${carModel.replace(' ', '')}-202</span>
+                                <span><strong>Weight:</strong> ${carModel === 'Alto' ? '3.2kg' : carModel === 'Swift' ? '3.8kg' : '4.2kg'}</span>
+                            </div>
+                            <div class="part-meta">
+                                <span><strong>Location:</strong> Rack C13</span>
+                                <span class="part-price">₹${carModel === 'Alto' ? '5,200' : carModel === 'Swift' ? '6,300' : '7,100'}</span>
+                            </div>
+                            <div class="part-actions">
+                                <div class="quantity-control">
+                                    <button onclick="decrementQuantity(this)">-</button>
+                                    <span>2</span>
+                                    <button onclick="incrementQuantity(this)">+</button>
+                                </div>
+                                <div class="stock-alert">Low stock!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showHelp() {
+            document.getElementById('helpModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function showLocation() {
+            document.getElementById('locationModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            // Initialize map when modal is shown
+            setTimeout(initWarehouseMap, 100);
+        }
+
+        function showWarehouseTools(tool) {
+            // Scroll to warehouse tools section
+            document.getElementById('warehouseToolsSection').scrollIntoView({ behavior: 'smooth' });
+            
+            // In a real app, you might highlight the specific tool
+            alert(`Showing ${tool} tools. In a real app, this would navigate to the specific tool section.`);
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                closeModal();
+            }
+        });
+
+        // Parts Category Navigation
+        function showPartsList(category) {
+            // In a real application, this would fetch parts data for the selected category
+            // For demo, we're just showing a message
+            alert(`Showing ${category} parts for the selected vehicle. In a real app, this would load specific parts data.`);
+        }
+
+        // Inventory Control Functions
+        function incrementQuantity(button) {
+            const span = button.previousElementSibling;
+            let quantity = parseInt(span.textContent);
+            quantity++;
+            span.textContent = quantity;
+            
+            // Check if quantity is low
+            if (quantity < 5) {
+                span.classList.add('low-stock');
+                showLowStockAlert(span);
+            } else {
+                span.classList.remove('low-stock');
+                hideLowStockAlert(span);
+            }
+        }
+
+        function decrementQuantity(button) {
+            const span = button.nextElementSibling;
+            let quantity = parseInt(span.textContent);
+            if (quantity > 0) {
+                quantity--;
+                span.textContent = quantity;
+                
+                // Check if quantity is low
+                if (quantity < 5) {
+                    span.classList.add('low-stock');
+                    showLowStockAlert(span);
+                } else {
+                    span.classList.remove('low-stock');
+                    hideLowStockAlert(span);
+                }
+            }
+        }
+
+        function showLowStockAlert(span) {
+            const alertDiv = span.parentElement.parentElement.querySelector('.stock-alert');
+            if (alertDiv) {
+                alertDiv.style.display = 'block';
+                alertDiv.textContent = "Your stock is low! You have to order the parts.";
+            }
+        }
+
+        function hideLowStockAlert(span) {
+            const alertDiv = span.parentElement.parentElement.querySelector('.stock-alert');
+            if (alertDiv) {
+                alertDiv.style.display = 'none';
+            }
+        }
+
+        // Search Functionality
+        function searchPart() {
+            const searchTerm = document.getElementById('partSearch').value.toLowerCase();
+            if (searchTerm.trim() === '') {
+                alert('Please enter a search term');
+                return;
+            }
+            
+            // In a real application, this would search the database
+            // For demo, we're just showing a message
+            alert(`Searching for parts matching: "${searchTerm}". In a real app, this would display search results.`);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initPartLocationMap();
+            initAnalyticsChart();
+            
+            // Check for low stock items on page load
+            document.querySelectorAll('.quantity-control span').forEach(span => {
+                if (parseInt(span.textContent) < 5) {
+                    span.classList.add('low-stock');
+                    showLowStockAlert(span);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
