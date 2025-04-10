@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Wiz | Productivity Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+       :root {
+  --primary: #4361ee;
+  --primary-dark: #3a56d4;
+  --secondary: #3f37c9;
+  --accent: #4895ef;
+  --light: #f8f9fa;
+  --dark: #212529;
+  --success: #4cc9f0;
+  --warning: #f8961e;
+  --danger: #f72585;
+  --gray: #6c757d;
+  --light-gray: #e9ecef;
+  --dark-gray: #495057;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f5f7fa;
+  color: var(--dark);
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Header Styles */
+header {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 1rem 0;
+  box-shadow: var(--shadow);
+  position: relative;
+  z-index: 100;
+  width: 100%;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+}
+
+.logo img {
+  height: 40px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  transition: var(--transition);
+}
+
+.user-avatar:hover {
+  transform: scale(1.1);
+}
+
+.notification-bell {
+  position: relative;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.notification-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: var(--danger);
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+/* Main Content */
+.main-content {
+  padding: 20px;
+  transition: var(--transition);
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  animation: fadeIn 0.5s ease;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.page-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-title i {
+  color: var(--primary);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--gray);
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.breadcrumb a {
+  color: var(--gray);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.breadcrumb a:hover {
+  color: var(--primary);
+}
+
+.breadcrumb i {
+  font-size: 0.7rem;
+}
+
+/* Dashboard Cards */
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  animation: slideUp 0.5s ease;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: var(--primary);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--gray);
+}
+
+.card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.card-icon.blue {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+}
+
+.card-icon.green {
+  background: linear-gradient(135deg, #4cc9f0, #4895ef);
+}
+
+.card-icon.orange {
+  background: linear-gradient(135deg, #f8961e, #f3722c);
+}
+
+.card-icon.purple {
+  background: linear-gradient(135deg, #7209b7, #b5179e);
+}
+
+.card-value {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--dark);
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--gray);
+}
+
+.card-trend {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  font-weight: 500;
+}
+
+.card-trend.up {
+  color: #4caf50;
+}
+
+.card-trend.down {
+  color: #f44336;
+}
+
+/* Charts Section */
+.charts-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.chart-container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.7s ease;
+  width: 100%;
+  overflow: hidden;
+}
+
+.chart-container.full-width {
+  grid-column: span 1;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.chart-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.chart-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chart-btn {
+  background-color: var(--light-gray);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.chart-btn:hover {
+  background-color: var(--primary);
+  color: white;
+}
+
+.chart-btn.active {
+  background-color: var(--primary);
+  color: white;
+}
+
+.chart-wrapper {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Productivity Heatmap */
+.heatmap-container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+  animation: fadeIn 0.7s ease;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.heatmap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.heatmap-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(24, minmax(20px, 1fr));
+  gap: 5px;
+  min-width: 0;
+  width: 100%;
+}
+
+.heatmap-hour {
+  height: 30px;
+  border-radius: 3px;
+  background-color: #e9ecef;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+  min-width: 20px;
+}
+
+.heatmap-hour:hover {
+  transform: scale(1.05);
+  z-index: 2;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.heatmap-hour::after {
+  content: attr(data-value);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.6rem;
+  color: white;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.heatmap-hour:hover::after {
+  opacity: 1;
+}
+
+.heatmap-hour.low {
+  background-color: #d8f3dc;
+}
+
+.heatmap-hour.medium {
+  background-color: #52b788;
+}
+
+.heatmap-hour.high {
+  background-color: #40916c;
+}
+
+.heatmap-hour.peak {
+  background-color: #2d6a4f;
+}
+
+/* Top Performers */
+.top-performers {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+  animation: fadeIn 0.7s ease;
+  width: 100%;
+}
+
+.performers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.performers-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.performers-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.performer-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: var(--light-gray);
+  transition: var(--transition);
+  width: 100%;
+}
+
+.performer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.performer-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+.performer-name {
+  font-weight: 600;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.performer-role {
+  font-size: 0.8rem;
+  color: var(--gray);
+  margin-bottom: 10px;
+}
+
+.performer-stats {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.8rem;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Recent Activity */
+.activity-section {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.7s ease;
+  width: 100%;
+}
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.activity-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.activity-list {
+  list-style: none;
+  width: 100%;
+}
+
+.activity-item {
+  display: flex;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--light-gray);
+  align-items: flex-start;
+  width: 100%;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(67, 97, 238, 0.1);
+  color: var(--primary);
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.activity-content {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.activity-message {
+  margin-bottom: 5px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.activity-time {
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+/* Report Section */
+.report-section {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-top: 30px;
+  animation: fadeIn 0.7s ease;
+  width: 100%;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.report-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.report-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: var(--dark-gray);
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid var(--light-gray);
+  border-radius: 5px;
+  font-family: 'Poppins', sans-serif;
+  transition: var(--transition);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 1em;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+}
+
+.btn-outline:hover {
+  background-color: rgba(67, 97, 238, 0.1);
+}
+
+.btn-icon {
+  font-size: 1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: var(--dark);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.8rem;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--dark) transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Loading Animation */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive Styles */
+@media (min-width: 768px) {
+  .charts-section {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .chart-container.full-width {
+    grid-column: span 2;
+  }
+  
+  .report-form {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (min-width: 992px) {
+  .dashboard-cards {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  
+  .performers-list {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .performers-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .heatmap-grid {
+    grid-template-columns: repeat(12, minmax(20px, 1fr));
+  }
+  
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .user-menu {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <img src="https://via.placeholder.com/40x40" alt="Warehouse Wiz Logo">
+                <span>Warehouse Wiz</span>
+            </a>
+            <div class="user-menu">
+                <div class="notification-bell tooltip">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count">3</span>
+                    <span class="tooltiptext">3 new notifications</span>
+                </div>
+                <div class="user-profile">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar" class="user-avatar">
+                    <span>John Doe</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-chart-line"></i>
+                    Productivity Analytics
+                </h1>
+                <div class="breadcrumb">
+                    <a href="#">Dashboard</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Productivity Analytics</span>
+                </div>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tasks Completed</h3>
+                        <div class="card-icon blue">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">1,248</div>
+                    <div class="card-footer">
+                        <span>+12% from last week</span>
+                        <span class="card-trend up"><i class="fas fa-arrow-up"></i></span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Avg. Completion Time</h3>
+                        <div class="card-icon green">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">24.5 min</div>
+                    <div class="card-footer">
+                        <span>-8% from last week</span>
+                        <span class="card-trend down"><i class="fas fa-arrow-down"></i></span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Worker Efficiency</h3>
+                        <div class="card-icon orange">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">87%</div>
+                    <div class="card-footer">
+                        <span>+5% from last week</span>
+                        <span class="card-trend up"><i class="fas fa-arrow-up"></i></span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Idle Time</h3>
+                        <div class="card-icon purple">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">18%</div>
+                    <div class="card-footer">
+                        <span>-3% from last week</span>
+                        <span class="card-trend down"><i class="fas fa-arrow-down"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Tasks Completion Rate</h3>
+                        <div class="chart-actions">
+                            <button class="chart-btn active">Week</button>
+                            <button class="chart-btn">Month</button>
+                            <button class="chart-btn">Quarter</button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="completionChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Worker Efficiency</h3>
+                        <div class="chart-actions">
+                            <button class="chart-btn active">Week</button>
+                            <button class="chart-btn">Month</button>
+                            <button class="chart-btn">Quarter</button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="efficiencyChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container full-width">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Operational Trends</h3>
+                        <div class="chart-actions">
+                            <button class="chart-btn active">Daily</button>
+                            <button class="chart-btn">Weekly</button>
+                            <button class="chart-btn">Monthly</button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="trendsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Productivity Heatmap -->
+            <div class="heatmap-container">
+                <div class="heatmap-header">
+                    <h3 class="heatmap-title">Productivity Heatmap (Last 7 Days)</h3>
+                    <div class="heatmap-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #d8f3dc;"></div>
+                            <span>Low</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #52b788;"></div>
+                            <span>Medium</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #40916c;"></div>
+                            <span>High</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #2d6a4f;"></div>
+                            <span>Peak</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="heatmap-grid">
+                    <!-- Hours 0-23 -->
+                    <div class="heatmap-hour low" data-value="15%"></div>
+                    <div class="heatmap-hour low" data-value="12%"></div>
+                    <div class="heatmap-hour low" data-value="8%"></div>
+                    <div class="heatmap-hour low" data-value="5%"></div>
+                    <div class="heatmap-hour low" data-value="10%"></div>
+                    <div class="heatmap-hour low" data-value="18%"></div>
+                    <div class="heatmap-hour medium" data-value="35%"></div>
+                    <div class="heatmap-hour high" data-value="65%"></div>
+                    <div class="heatmap-hour peak" data-value="85%"></div>
+                    <div class="heatmap-hour peak" data-value="92%"></div>
+                    <div class="heatmap-hour high" data-value="78%"></div>
+                    <div class="heatmap-hour high" data-value="72%"></div>
+                    <div class="heatmap-hour high" data-value="68%"></div>
+                    <div class="heatmap-hour high" data-value="62%"></div>
+                    <div class="heatmap-hour medium" data-value="45%"></div>
+                    <div class="heatmap-hour medium" data-value="38%"></div>
+                    <div class="heatmap-hour high" data-value="55%"></div>
+                    <div class="heatmap-hour high" data-value="58%"></div>
+                    <div class="heatmap-hour medium" data-value="42%"></div>
+                    <div class="heatmap-hour medium" data-value="32%"></div>
+                    <div class="heatmap-hour low" data-value="25%"></div>
+                    <div class="heatmap-hour low" data-value="20%"></div>
+                    <div class="heatmap-hour low" data-value="15%"></div>
+                    <div class="heatmap-hour low" data-value="10%"></div>
+                </div>
+            </div>
+
+            <!-- Top Performers -->
+            <div class="top-performers">
+                <div class="performers-header">
+                    <h3 class="performers-title">Top Performers This Week</h3>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-list"></i> View All
+                    </button>
+                </div>
+                <div class="performers-list">
+                    <div class="performer-card">
+                        <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Performer" class="performer-avatar">
+                        <h4 class="performer-name">Veadnt</h4>
+                        <span class="performer-role">Picking Specialist</span>
+                        <div class="performer-stats">
+                            <span>Tasks: <span class="stat-value">142</span></span>
+                            <span>Efficiency: <span class="stat-value">94%</span></span>
+                        </div>
+                    </div>
+                    <div class="performer-card">
+                        <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Performer" class="performer-avatar">
+                        <h4 class="performer-name">Nikhil</h4>
+                        <span class="performer-role">Forklift Operator</span>
+                        <div class="performer-stats">
+                            <span>Tasks: <span class="stat-value">128</span></span>
+                            <span>Efficiency: <span class="stat-value">91%</span></span>
+                        </div>
+                    </div>
+                    <div class="performer-card">
+                        <img src="https://randomuser.me/api/portraits/men/33.jpg" alt="Performer" class="performer-avatar">
+                        <h4 class="performer-name">Akshad</h4>
+                        <span class="performer-role">Inventory Clerk</span>
+                        <div class="performer-stats">
+                            <span>Tasks: <span class="stat-value">118</span></span>
+                            <span>Efficiency: <span class="stat-value">89%</span></span>
+                        </div>
+                    </div>
+                    <div class="performer-card">
+                        <img src="https://randomuser.me/api/portraits/men/44.jpg" alt="Performer" class="performer-avatar">
+                        <h4 class="performer-name">Satyajit</h4>
+                        <span class="performer-role">Receiving Associate</span>
+                        <div class="performer-stats">
+                            <span>Tasks: <span class="stat-value">112</span></span>
+                            <span>Efficiency: <span class="stat-value">87%</span></span>
+                        </div>
+                    </div>
+                    <div class="performer-card">
+                        <img src="https://randomuser.me/api/portraits/men/55.jpg" alt="Performer" class="performer-avatar">
+                        <h4 class="performer-name">Om</h4>
+                        <span class="performer-role">Shipping Clerk</span>
+                        <div class="performer-stats">
+                            <span>Tasks: <span class="stat-value">105</span></span>
+                            <span>Efficiency: <span class="stat-value">85%</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-section">
+                <div class="activity-header">
+                    <h3 class="activity-title">Recent Activity</h3>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-history"></i> View All
+                    </button>
+                </div>
+                <ul class="activity-list">
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-message">
+                                <strong>Veadnt</strong> completed 15 picking tasks in the last hour with 98% accuracy.
+                            </p>
+                            <span class="activity-time">10 minutes ago</span>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-message">
+                                <strong>Inventory Alert:</strong> Stock levels for SKU #A2045 (Wireless Headphones) are below threshold.
+                            </p>
+                            <span class="activity-time">25 minutes ago</span>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-message">
+                                <strong>Shipment Received:</strong> 250 units from TechGadgets Inc. processed by <strong>Satyajit</strong>.
+                            </p>
+                            <span class="activity-time">1 hour ago</span>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-message">
+                                <strong>Productivity Update:</strong> Warehouse efficiency increased by 7% this week.
+                            </p>
+                            <span class="activity-time">2 hours ago</span>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-message">
+                                <strong>New Worker:</strong> Om has been added to the morning shift team.
+                            </p>
+                            <span class="activity-time">4 hours ago</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Report Section -->
+            <div class="report-section">
+                <div class="report-header">
+                    <h3 class="report-title">Generate Productivity Report</h3>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-file-alt"></i> Report History
+                    </button>
+                </div>
+                <form class="report-form">
+                    <div class="form-group">
+                        <label for="reportType" class="form-label">Report Type</label>
+                        <select id="reportType" class="form-control form-select">
+                            <option value="daily">Daily Productivity</option>
+                            <option value="weekly" selected>Weekly Productivity</option>
+                            <option value="monthly">Monthly Productivity</option>
+                            <option value="custom">Custom Analysis</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateRange" class="form-label">Date Range</label>
+                        <select id="dateRange" class="form-control form-select">
+                            <option value="last7" selected>Last 7 Days</option>
+                            <option value="last14">Last 14 Days</option>
+                            <option value="last30">Last 30 Days</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="department" class="form-label">Department</label>
+                        <select id="department" class="form-control form-select">
+                            <option value="all" selected>All Departments</option>
+                            <option value="receiving">Receiving</option>
+                            <option value="picking">Picking</option>
+                            <option value="packing">Packing</option>
+                            <option value="shipping">Shipping</option>
+                            <option value="inventory">Inventory</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="shift" class="form-label">Shift</label>
+                        <select id="shift" class="form-control form-select">
+                            <option value="all" selected>All Shifts</option>
+                            <option value="morning">Morning (6AM-2PM)</option>
+                            <option value="afternoon">Afternoon (2PM-10PM)</option>
+                            <option value="night">Night (10PM-6AM)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="format" class="form-label">Format</label>
+                        <select id="format" class="form-control form-select">
+                            <option value="pdf" selected>PDF</option>
+                            <option value="excel">Excel</option>
+                            <option value="csv">CSV</option>
+                            <option value="html">HTML</option>
+                        </select>
+                    </div>
+                </form>
+                <div style="display: flex; gap: 15px;">
+                    <button class="btn btn-primary" id="generateReport">
+                        <i class="fas fa-file-export btn-icon"></i> Generate Report
+                    </button>
+                    <!-- <button class="btn btn-outline">
+                        <i class="fas fa-cog btn-icon"></i> Advanced Options
+                    </button> -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Generate Report Button with Download Functionality
+        const generateReportBtn = document.getElementById('generateReport');
+        generateReportBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span class="loading"></span> Generating Report...';
+            this.disabled = true;
+            
+            // Get selected report options
+            const reportType = document.getElementById('reportType').value;
+            const dateRange = document.getElementById('dateRange').value;
+            const department = document.getElementById('department').value;
+            const shift = document.getElementById('shift').value;
+            const format = document.getElementById('format').value;
+            
+            // Simulate report generation with delay
+            setTimeout(() => {
+                // Create a dummy report content based on selections
+                let reportContent = `Warehouse Productivity Report\n`;
+                reportContent += `Type: ${reportType}\n`;
+                reportContent += `Date Range: ${dateRange}\n`;
+                reportContent += `Department: ${department}\n`;
+                reportContent += `Shift: ${shift}\n\n`;
+                
+                // Add some sample data
+                reportContent += `Summary:\n`;
+                reportContent += `- Tasks Completed: 1,248 (+12% from last week)\n`;
+                reportContent += `- Avg. Completion Time: 24.5 min (-8% from last week)\n`;
+                reportContent += `- Worker Efficiency: 87% (+5% from last week)\n`;
+                reportContent += `- Idle Time: 18% (-3% from last week)\n\n`;
+                
+                reportContent += `Top Performers:\n`;
+                reportContent += `1. Veadnt - 142 tasks (94% efficiency)\n`;
+                reportContent += `2. Nikhil - 128 tasks (91% efficiency)\n`;
+                reportContent += `3. Akshad - 118 tasks (89% efficiency)\n`;
+                
+                // Determine file extension and MIME type based on format
+                let fileExtension, mimeType;
+                switch(format) {
+                    case 'pdf':
+                        fileExtension = 'pdf';
+                        mimeType = 'application/pdf';
+                        // In a real app, you would generate an actual PDF here
+                        // For demo, we'll just create a text file labeled as PDF
+                        break;
+                    case 'excel':
+                        fileExtension = 'xlsx';
+                        mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                        break;
+                    case 'csv':
+                        fileExtension = 'csv';
+                        mimeType = 'text/csv';
+                        break;
+                    case 'html':
+                        fileExtension = 'html';
+                        mimeType = 'text/html';
+                        break;
+                    default:
+                        fileExtension = 'txt';
+                        mimeType = 'text/plain';
+                }
+                
+                // Create a Blob with the report content
+                const blob = new Blob([reportContent], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                
+                // Create a download link and trigger click
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `warehouse_productivity_report_${new Date().toISOString().slice(0,10)}.${fileExtension}`;
+                document.body.appendChild(a);
+                a.click();
+                
+                // Clean up
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 100);
+                
+                // Reset button
+                this.innerHTML = originalText;
+                this.disabled = false;
+                
+            }, 1500); // Simulate processing delay
+        });
+
+        // Chart.js Configurations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Completion Rate Chart
+            const completionCtx = document.getElementById('completionChart').getContext('2d');
+            const completionChart = new Chart(completionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Tasks Completed',
+                        data: [120, 190, 170, 210, 240, 180, 150],
+                        backgroundColor: '#4361ee',
+                        borderColor: '#3a56d4',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }, {
+                        label: 'Target',
+                        data: [150, 150, 150, 150, 150, 150, 150],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        borderDash: [5, 5],
+                        type: 'line',
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Tasks'
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+
+            // Efficiency Chart
+            const efficiencyCtx = document.getElementById('efficiencyChart').getContext('2d');
+            const efficiencyChart = new Chart(efficiencyCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Picking', 'Packing', 'Shipping', 'Receiving', 'Inventory'],
+                    datasets: [{
+                        data: [35, 25, 20, 12, 8],
+                        backgroundColor: [
+                            '#4361ee',
+                            '#4895ef',
+                            '#4cc9f0',
+                            '#f8961e',
+                            '#f72585'
+                        ],
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        },
+                        datalabels: {
+                            color: '#fff',
+                            font: {
+                                weight: 'bold'
+                            },
+                            formatter: (value) => {
+                                return value + '%';
+                            }
+                        }
+                    },
+                    cutout: '70%',
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+
+            // Trends Chart
+            const trendsCtx = document.getElementById('trendsChart').getContext('2d');
+            const trendsChart = new Chart(trendsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Tasks Completed',
+                        data: [1200, 1900, 1700, 2100, 2400, 1800, 2500, 2300, 2000, 2200, 2100, 2400],
+                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                        borderColor: '#4361ee',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }, {
+                        label: 'Worker Efficiency',
+                        data: [75, 78, 82, 80, 85, 83, 88, 86, 84, 87, 85, 89],
+                        backgroundColor: 'rgba(76, 201, 240, 0.1)',
+                        borderColor: '#4cc9f0',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Tasks Completed'
+                            }
+                        },
+                        y1: {
+                            position: 'right',
+                            beginAtZero: false,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Efficiency (%)'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+
+            // Chart period toggle functionality
+            const chartBtns = document.querySelectorAll('.chart-btn');
+            chartBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons in this group
+                    const parent = this.parentElement;
+                    parent.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // In a real app, you would update the chart data here based on the selected period
+                    // For this demo, we'll just simulate it with a random data update
+                    if (this.textContent === 'Week') {
+                        completionChart.data.datasets[0].data = [120, 190, 170, 210, 240, 180, 150];
+                        completionChart.data.labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    } else if (this.textContent === 'Month') {
+                        completionChart.data.datasets[0].data = [820, 950, 1020, 1150, 1200];
+                        completionChart.data.labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'];
+                    } else if (this.textContent === 'Quarter') {
+                        completionChart.data.datasets[0].data = [3200, 3800, 4100];
+                        completionChart.data.labels = ['Month 1', 'Month 2', 'Month 3'];
+                    }
+                    completionChart.update();
+                });
+            });
+        });
+
+        // Heatmap hour hover effect
+        const heatmapHours = document.querySelectorAll('.heatmap-hour');
+        heatmapHours.forEach(hour => {
+            hour.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+                this.style.zIndex = '2';
+                this.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+            });
+            
+            hour.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.zIndex = '1';
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // Responsive adjustments
+        function handleResize() {
+            // Additional responsive logic can be added here if needed
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Run on initial load
+    </script>
+</body>
+</html>
