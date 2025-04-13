@@ -16,6 +16,28 @@
                 <div class="logo">
                     <img src="https://companieslogo.com/img/orig/MARUTI.NS-9974f2f4.png?t=1593961147" alt="Maruti Suzuki Logo">
                 </div>
+
+
+
+
+
+                
+<div class="container-input">
+    
+    <input type="text" placeholder="Search" name="text" class="input">
+    
+    
+      <!-- <path d="M790.588 1468.235c-373.722 0-677.647-303.924-677.647-67
+      7.647 0-373.722 303.925-677.647 677.647-677.647 373.723 0 677.64
+      7 303.925 677.647 677.647 0 373.723-303.924 677.647-677.647 677.
+      647Zm596.781-160.715c120.396-138.692 193.807-319.285 193.807-516.932C
+      1581.176 354.748 1226.428 0 790.588 0S0 354.748 0 790.588s354.748 790.58
+      8 790.588 790.588c197.647 0 378.24-73.411 516.932-193.807l516.028 516.142 79.963-79.963-516.142-516.028Z" fill-rule="evenodd">
+      </path> -->
+  </div>
+
+
+  
                 <ul class="nav-links">
                     <li><a href="#">Home</a></li>
                     <li class="dropdown-parent">
@@ -111,7 +133,7 @@
 
     <!-- Banner Below Navbar -->
     <div class="nav-banner">
-        <img src="https://1000logos.net/wp-content/uploads/2022/08/Maruti-Suzuki-Logo-2011.png" alt="Maruti Suzuki Warehouse">
+         <img src="https://1000logos.net/wp-content/uploads/2022/08/Maruti-Suzuki-Logo-2011.png" alt="Maruti Suzuki Warehouse">
         <div class="banner-overlay">
             <div>
                 <h1>Advanced Warehouse Management System</h1>
@@ -120,6 +142,67 @@
             </div>
         </div>
     </div>
+
+    <!-- Advanced Features Section -->
+    <section class="advanced-features" style="background-color: #ffffff;">
+        <div class="container">
+            <div class="section-title">
+                <h2 style="color: #003366;">Advanced Features</h2>
+                <p style="color: #003366;">Cutting-edge technologies transforming warehouse operations</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card" style="background-color: #f7f7f7;">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Real-Time Inventory Flow</h3>
+                    <p style="color: #003366;">Live tracking of all inventory movements with predictive analytics to anticipate stock needs before they occur.</p>
+                    <ul class="feature-benefits">
+                        <li style="color: #003366;">Instant updates on stock movements</li>
+                        <li style="color: #003366;">Predictive restocking alerts</li>
+                        <li style="color: #003366;">Visual flow dashboard</li>
+                    </ul>
+
+                    <button id="ui">
+                        GET STARTED
+                    </button>
+                            
+                </div>
+                <div class="feature-card" style="background-color: #f7f7f7;">
+                    <div class="feature-icon">
+                        <i class="fas fa-arrows-alt"></i>
+                    </div>
+                    <h3>Dynamic Space Allocation</h3>
+                    <p style="color: #003366;">Automatically adjusts storage locations based on demand patterns, seasonal trends, and part characteristics.</p>
+                    <ul class="feature-benefits">
+                        <li style="color: #003366;">Smart bin reassignment</li>
+                        <li style="color: #003366;">Seasonal storage optimization</li>
+                        <li style="color: #003366;">Automated space utilization</li>
+                    </ul>
+                    <button id="ui">
+                        GET STARTED
+                    </button>
+                            
+                </div>
+                <div class="feature-card" style="background-color: #f7f7f7;">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI Layout Optimizer</h3>
+                    <p style="color: #003366;">Machine learning algorithms continuously analyze operations to suggest optimal warehouse layouts and workflows.</p>
+                    <ul class="feature-benefits">
+                        <li style="color: #003366;">Continuous layout improvements</li>
+                        <li style="color: #003366;">Pick path optimization</li>
+                        <li style="color: #003366;">Heatmap analytics</li>
+                    </ul>
+                    <button id="ui">
+                        GET STARTED
+                    </button>
+                            
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Features Section -->
     <section class="container">
@@ -173,10 +256,10 @@
     </section>
 
     <!-- Parts Tracking Section -->
-    <section class="parts-tracking">
+    <section class="parts-tracking" style="background-color: #F5F5F5;">
         <div class="container">
             <div class="section-title">
-                <h2>Parts Tracking System</h2>
+                <h2 style="color: #003366;">Parts Tracking System</h2>
             </div>
             <div class="search-box">
                 <input type="text" placeholder="Search by part number, name, or vehicle model..." id="partSearch">
@@ -1226,6 +1309,89 @@
             --transition: all 0.3s ease;
         }
 
+
+
+        /* search */
+
+         
+.container-input {
+  position: relative;
+}
+
+.input {
+  width: 150px;
+  padding: 10px 0px 10px 40px;
+  border-radius: 9999px;
+  border: solid 1px #333;
+  transition: all .2s ease-in-out;
+  outline: none;
+  opacity: 0.8;
+  /* margin-left: 11rem; */
+}
+
+.container-input svg {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translate(0, -50%);
+}
+
+.input:focus {
+  opacity: 1;
+  width: 250px;
+}
+
+@media (max-width: 320px) {
+    .input {
+  width: 150px;
+  padding: 10px 0px 10px 40px;
+  border-radius: 9999px;
+  border: solid 1px #333;
+  transition: all .2s ease-in-out;
+  outline: none;
+  opacity: 0.8;
+  
+}
+}
+
+
+
+
+
+
+
+
+/* search */
+
+
+
+#ui {
+  border-radius: .25rem;
+  text-transform: uppercase;
+  font-style: normal;
+  font-weight: 400;
+  padding-left: 25px;
+  padding-right: 25px;
+  color: #fff;
+  -webkit-clip-path: polygon(0 0,0 0,100% 0,100% 0,100% calc(100% - 15px),calc(100% - 15px) 100%,15px 100%,0 100%);
+  clip-path: polygon(0 0,0 0,100% 0,100% 0,100% calc(100% - 15px),calc(100% - 15px) 100%,15px 100%,0 100%);
+  height: 40px;
+  font-size: 0.7rem;
+  line-height: 14px;
+  letter-spacing: 1.2px;
+  transition: .2s .1s;
+  background-image: linear-gradient(90deg,#1c1c1c,#6220fb);
+  border: 0 solid;
+  overflow: hidden;
+}
+
+#ui:hover {
+  cursor: pointer;
+  transition: all .3s ease-in;
+  padding-right: 30px;
+  padding-left: 30px;
+}
+
         * {
             margin: 0;
             padding: 0;
@@ -1470,6 +1636,101 @@
         .banner-btn:hover {
             background-color: #e65c00;
             transform: translateY(-3px);
+        }
+
+        /* Advanced Features Section */
+        .advanced-features {
+            background-color: var(--primary-color);
+            
+            color: white;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .advanced-features::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat; */
+            opacity: 0.1;
+            background-color: #ffffff;
+            z-index: 0;
+        }
+
+        .advanced-features .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .advanced-features .section-title h2 {
+            color: white;
+        }
+
+        .advanced-features .section-title h2::after {
+            background-color: var(--secondary-color);
+        }
+
+        .advanced-features .section-title p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            margin-top: 15px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .advanced-features .feature-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 30px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .advanced-features .feature-card:hover {
+            transform: translateY(-10px);
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .advanced-features .feature-icon {
+            font-size: 50px;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        .advanced-features .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .advanced-features .feature-benefits {
+            margin-top: 20px;
+            list-style: none;
+        }
+
+        .advanced-features .feature-benefits li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 10px;
+        }
+
+        .advanced-features .feature-benefits li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
         }
 
         /* Features Section */
