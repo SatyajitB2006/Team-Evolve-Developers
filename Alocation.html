@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Space Allocation | Warehouse Control</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .dark-mode {
+            --primary-color: #4895ef;
+            --secondary-color: #4361ee;
+            --accent-color: #4cc9f0;
+            --text-color: #ecf0f1;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 10px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-toggle i {
+            font-size: 1.3rem;
+            color: var(--text-color);
+        }
+
+        /* Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Main Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-header h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(67, 97, 238, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-lg {
+            padding: 0.8rem 1.6rem;
+            font-size: 1rem;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .select-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.8rem center;
+            background-size: 1rem;
+        }
+
+        /* Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Warehouse Map */
+        .warehouse-map {
+            height: 400px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            height: 100%;
+            gap: 2px;
+            padding: 10px;
+        }
+
+        .map-cell {
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .map-cell:hover {
+            background: rgba(67, 97, 238, 0.2);
+        }
+
+        .map-cell.available {
+            background: rgba(67, 97, 238, 0.1);
+            border: 1px dashed var(--primary-color);
+        }
+
+        .map-cell.occupied {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid var(--success-color);
+        }
+
+        .map-cell.reserved {
+            background: rgba(243, 156, 18, 0.2);
+            border: 1px solid var(--warning-color);
+        }
+
+        .map-cell.optimize {
+            background: rgba(67, 97, 238, 0.3);
+            border: 1px solid var(--primary-color);
+            animation: pulse 2s infinite;
+        }
+
+        .map-cell.heavy {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid var(--danger-color);
+        }
+
+        .map-cell.large {
+            background: rgba(155, 89, 182, 0.2);
+            border: 1px solid #9b59b6;
+        }
+
+        .map-cell.small {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid #3498db;
+        }
+
+        .map-cell-label {
+            font-size: 0.7rem;
+            font-weight: bold;
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        /* 3D Warehouse View */
+        #warehouse3d {
+            width: 100%;
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-top: 1.5rem;
+        }
+
+        .view-toggle {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 100;
+            display: flex;
+            gap: 5px;
+        }
+
+        .view-toggle-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .view-toggle-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Optimization Panel */
+        .optimization-panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .optimization-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--success-color);
+        }
+
+        .status-indicator.active {
+            background: var(--success-color);
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.inactive {
+            background: #95a5a6;
+        }
+
+        .status-indicator.warning {
+            background: var(--warning-color);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Reallocation List */
+        .reallocation-list {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .reallocation-item {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .reallocation-item:last-child {
+            border-bottom: none;
+        }
+
+        .reallocation-item:hover {
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .reallocation-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .reallocation-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+
+        .reallocation-details h4 {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .reallocation-details p {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .reallocation-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Product Registration Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Space Legend */
+        .space-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(67, 97, 238, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(67, 97, 238, 0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .panel-actions {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .reallocation-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .reallocation-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Product Registration Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Register New Product</h2>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <form id="productForm">
+                <div class="form-group">
+                    <label class="form-label">Product Name</label>
+                    <input type="text" class="form-control" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">SKU Code</label>
+                    <input type="text" class="form-control" id="productSKU" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-control select-control" id="productCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="food">Food</option>
+                        <option value="furniture">Furniture</option>
+                        <option value="industrial">Industrial</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" class="form-control" id="productWeight" min="0.1" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Dimensions (L x W x H in cm)</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+                        <input type="number" class="form-control" id="productLength" placeholder="Length" min="1" required>
+                        <input type="number" class="form-control" id="productWidth" placeholder="Width" min="1" required>
+                        <input type="number" class="form-control" id="productHeight" placeholder="Height" min="1" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fragility</label>
+                    <select class="form-control select-control" id="productFragility" required>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hazardous Material</label>
+                    <label class="switch">
+                        <input type="checkbox" id="productHazardous">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelProduct">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Register Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Dashboard Header -->
+        <header class="dashboard-header">
+            <h1>Dynamic Space Allocation</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="registerProduct">
+                    <i class="fas fa-plus"></i> Register Product
+                </button>
+                <button class="btn btn-secondary">
+                    <i class="fas fa-download"></i> Export Report
+                </button>
+                <button class="btn btn-primary">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="spaceUtilization">78%</div>
+                <div class="stat-label">Space Utilization</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="optimizationGain">32%</div>
+                <div class="stat-label">Optimization Gain</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pendingMoves">14</div>
+                <div class="stat-label">Pending Reallocations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="savings">$8,420</div>
+                <div class="stat-label">Monthly Savings</div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Left Column -->
+            <div>
+                <!-- Control Panel -->
+                <div class="control-panel">
+                    <div class="panel-header">
+                        <h2>Allocation Controls</h2>
+                        <div class="panel-actions">
+                            <button class="btn btn-sm btn-success" id="runOptimization">
+                                <i class="fas fa-bolt"></i> Optimize Now
+                            </button>
+                            <button class="btn btn-sm btn-secondary" id="resetAllocation">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Optimization Mode</label>
+                        <select class="form-control select-control" id="optimizationMode">
+                            <option value="balanced">Balanced (Default)</option>
+                            <option value="density">Maximize Density</option>
+                            <option value="speed">Maximize Access Speed</option>
+                            <option value="seasonal">Seasonal Adjustment</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Optimization Intensity</label>
+                        <input type="range" class="form-control" id="optimizationIntensity" min="1" max="10" value="5">
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                            <small>Conservative</small>
+                            <small>Aggressive</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Focus Area</label>
+                        <select class="form-control select-control" id="focusArea">
+                            <option value="all">Entire Warehouse</option>
+                            <option value="north">North Section</option>
+                            <option value="south">South Section</option>
+                            <option value="east">East Section</option>
+                            <option value="west">West Section</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="display: flex; align-items: center; justify-content: space-between;">
+                        <label class="form-label">Enable Auto-Optimization</label>
+                        <label class="switch">
+                            <input type="checkbox" id="autoOptimization" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-group" style="display: flex; align-items: center; justify-content: space-between;">
+                        <label class="form-label">Seasonal Mode</label>
+                        <label class="switch">
+                            <input type="checkbox" id="seasonalMode">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <button class="btn btn-lg btn-primary" style="width: 100%; margin-top: 1rem;" id="applySettings">
+                        <i class="fas fa-check-circle"></i> Apply Settings
+                    </button>
+                </div>
+
+                <!-- 3D Warehouse View -->
+                <div id="warehouse3d"></div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+                <!-- Warehouse Map -->
+                <div class="warehouse-map">
+                    <div class="map-grid" id="warehouseGrid">
+                        <!-- Cells will be generated by JavaScript -->
+                    </div>
+                    
+                    <!-- Space Legend -->
+                    <div class="space-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: rgba(67, 97, 238, 0.1); border: 1px dashed var(--primary-color);"></div>
+                            <span>Available</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: rgba(46, 204, 113, 0.2); border: 1px solid var(--success-color);"></div>
+                            <span>Occupied</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: rgba(243, 156, 18, 0.2); border: 1px solid var(--warning-color);"></div>
+                            <span>Reserved</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: rgba(231, 76, 60, 0.2); border: 1px solid var(--danger-color);"></div>
+                            <span>Heavy Items</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: rgba(155, 89, 182, 0.2); border: 1px solid #9b59b6;"></div>
+                            <span>Large Items</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: rgba(52, 152, 219, 0.2); border: 1px solid #3498db;"></div>
+                            <span>Small Items</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row -->
+        <div class="dashboard-grid">
+            <!-- Optimization Panel -->
+            <div class="optimization-panel">
+                <div class="panel-header">
+                    <h2>Optimization Status</h2>
+                    <div class="panel-actions">
+                        <button class="btn btn-sm btn-warning" id="pauseOptimization">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                        <button class="btn btn-sm btn-danger" id="cancelOptimization">
+                            <i class="fas fa-stop"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+
+                <div class="optimization-status">
+                    <div class="status-indicator active"></div>
+                    <div>
+                        <h3>Optimization Active</h3>
+                        <p>Last run: <span id="lastRunTime">Just now</span></p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Optimization Progress</label>
+                    <div style="background: rgba(0,0,0,0.1); height: 10px; border-radius: 5px; margin-top: 0.5rem;">
+                        <div id="optimizationProgress" style="background: var(--primary-color); width: 45%; height: 100%; border-radius: 5px;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                        <small>0%</small>
+                        <small id="progressPercent">45%</small>
+                        <small>100%</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Next Scheduled Optimization</label>
+                    <input type="datetime-local" class="form-control" id="nextOptimization" value="">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
+                    <button class="btn btn-secondary" id="viewReport">
+                        <i class="fas fa-chart-bar"></i> View Report
+                    </button>
+                    <button class="btn btn-primary" id="scheduleOptimization">
+                        <i class="fas fa-clock"></i> Schedule
+                    </button>
+                </div>
+            </div>
+
+            <!-- Reallocation List -->
+            <div class="reallocation-list">
+                <div class="panel-header" style="padding: 1.5rem 1.5rem 0;">
+                    <h2>Pending Reallocations</h2>
+                    <div class="panel-actions">
+                        <button class="btn btn-sm btn-success" id="approveAll">
+                            <i class="fas fa-check-double"></i> Approve All
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reallocation-item">
+                    <div class="reallocation-info">
+                        <div class="reallocation-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="reallocation-details">
+                            <h4>SKU-10025 (Premium Widget)</h4>
+                            <p>Move from A-12 to B-07 (High Velocity Zone)</p>
+                        </div>
+                    </div>
+                    <div class="reallocation-actions">
+                        <button class="btn btn-sm btn-success">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reallocation-item">
+                    <div class="reallocation-info">
+                        <div class="reallocation-icon">
+                            <i class="fas fa-pallet"></i>
+                        </div>
+                        <div class="reallocation-details">
+                            <h4>SKU-20478 (Bulk Items)</h4>
+                            <p>Consolidate with SKU-20479 in D-15</p>
+                        </div>
+                    </div>
+                    <div class="reallocation-actions">
+                        <button class="btn btn-sm btn-success">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reallocation-item">
+                    <div class="reallocation-info">
+                        <div class="reallocation-icon">
+                            <i class="fas fa-archive"></i>
+                        </div>
+                        <div class="reallocation-details">
+                            <h4>Seasonal Items (Winter)</h4>
+                            <p>Move to long-term storage in F-22 to F-25</p>
+                        </div>
+                    </div>
+                    <div class="reallocation-actions">
+                        <button class="btn btn-sm btn-success">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reallocation-item">
+                    <div class="reallocation-info">
+                        <div class="reallocation-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="reallocation-details">
+                            <h4>SKU-30567 (Industrial Parts)</h4>
+                            <p>Relocate to heavy item zone C-10 to C-12</p>
+                        </div>
+                    </div>
+                    <div class="reallocation-actions">
+                        <button class="btn btn-sm btn-success">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reallocation-item">
+                    <div class="reallocation-info">
+                        <div class="reallocation-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="reallocation-details">
+                            <h4>Fast-Moving Items (Q2)</h4>
+                            <p>Prioritize to front sections A-01 to A-05</p>
+                        </div>
+                    </div>
+                    <div class="reallocation-actions">
+                        <button class="btn btn-sm btn-success">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons Row -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+            <button class="btn btn-warning" id="emergencyOverride">
+                <i class="fas fa-exclamation-triangle"></i> Emergency Override
+            </button>
+            <button class="btn btn-secondary" id="generateReport">
+                <i class="fas fa-file-alt"></i> Generate Full Report
+            </button>
+            <button class="btn btn-primary" id="simulateScenario">
+                <i class="fas fa-project-diagram"></i> Simulate Scenario
+            </button>
+            <button class="btn btn-success" id="applyRecommendations">
+                <i class="fas fa-check-circle"></i> Apply Recommendations
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme') || 
+                         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+        // Apply the saved theme
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Modal functionality
+        const productModal = document.getElementById('productModal');
+        const registerProductBtn = document.getElementById('registerProduct');
+        const closeModalBtn = document.getElementById('closeModal');
+        const cancelProductBtn = document.getElementById('cancelProduct');
+        const productForm = document.getElementById('productForm');
+
+        registerProductBtn.addEventListener('click', () => {
+            productModal.style.display = 'flex';
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            productModal.style.display = 'none';
+        });
+
+        cancelProductBtn.addEventListener('click', () => {
+            productModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === productModal) {
+                productModal.style.display = 'none';
+            }
+        });
+
+        // Initialize 3D warehouse view
+        function init3DWarehouse() {
+            const container = document.getElementById('warehouse3d');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            // Create scene
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(body.classList.contains('dark-mode') ? 0x121212 : 0xf8f9fa);
+
+            // Create camera
+            const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            camera.position.set(15, 20, 15);
+            camera.lookAt(0, 0, 0);
+
+            // Create renderer
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(width, height);
+            container.appendChild(renderer.domElement);
+
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+
+            // Create warehouse floor
+            const floorGeometry = new THREE.PlaneGeometry(20, 20);
+            const floorMaterial = new THREE.MeshStandardMaterial({ 
+                color: body.classList.contains('dark-mode') ? 0x333333 : 0xdddddd,
+                side: THREE.DoubleSide
+            });
+            const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+            floor.rotation.x = -Math.PI / 2;
+            scene.add(floor);
+
+            // Create warehouse walls
+            const wallMaterial = new THREE.MeshStandardMaterial({ 
+                color: body.classList.contains('dark-mode') ? 0x555555 : 0xaaaaaa,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            const leftWall = new THREE.Mesh(
+                new THREE.PlaneGeometry(20, 10),
+                wallMaterial
+            );
+            leftWall.position.set(-10, 5, 0);
+            leftWall.rotation.y = Math.PI / 2;
+            scene.add(leftWall);
+
+            const rightWall = new THREE.Mesh(
+                new THREE.PlaneGeometry(20, 10),
+                wallMaterial
+            );
+            rightWall.position.set(10, 5, 0);
+            rightWall.rotation.y = -Math.PI / 2;
+            scene.add(rightWall);
+
+            const backWall = new THREE.Mesh(
+                new THREE.PlaneGeometry(20, 10),
+                wallMaterial
+            );
+            backWall.position.set(0, 5, -10);
+            scene.add(backWall);
+
+            // Create storage racks
+            const rackMaterial = new THREE.MeshStandardMaterial({ 
+                color: body.classList.contains('dark-mode') ? 0x3f37c9 : 0x4361ee
+            });
+
+            // Create multiple racks
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    const rackGroup = new THREE.Group();
+                    
+                    // Vertical supports
+                    const supportGeometry = new THREE.BoxGeometry(0.2, 8, 0.2);
+                    const support1 = new THREE.Mesh(supportGeometry, rackMaterial);
+                    support1.position.set(-1.5, 4, -1.5);
+                    rackGroup.add(support1);
+
+                    const support2 = new THREE.Mesh(supportGeometry, rackMaterial);
+                    support2.position.set(1.5, 4, -1.5);
+                    rackGroup.add(support2);
+
+                    const support3 = new THREE.Mesh(supportGeometry, rackMaterial);
+                    support3.position.set(-1.5, 4, 1.5);
+                    rackGroup.add(support3);
+
+                    const support4 = new THREE.Mesh(supportGeometry, rackMaterial);
+                    support4.position.set(1.5, 4, 1.5);
+                    rackGroup.add(support4);
+
+                    // Shelves
+                    const shelfGeometry = new THREE.BoxGeometry(3.4, 0.1, 3.4);
+                    for (let k = 0; k < 4; k++) {
+                        const shelf = new THREE.Mesh(shelfGeometry, rackMaterial);
+                        shelf.position.set(0, 2 * k, 0);
+                        rackGroup.add(shelf);
+                    }
+
+                    // Position racks in the warehouse
+                    rackGroup.position.set(-6 + i * 6, 0, -6 + j * 6);
+                    scene.add(rackGroup);
+                }
+            }
+
+            // Add some sample products
+            const productMaterial1 = new THREE.MeshStandardMaterial({ color: 0x2ecc71 });
+            const product1 = new THREE.Mesh(
+                new THREE.BoxGeometry(1.5, 1, 1.5),
+                productMaterial1
+            );
+            product1.position.set(-6, 0.5, -6);
+            scene.add(product1);
+
+            const productMaterial2 = new THREE.MeshStandardMaterial({ color: 0xe74c3c });
+            const product2 = new THREE.Mesh(
+                new THREE.BoxGeometry(1, 2, 1),
+                productMaterial2
+            );
+            product2.position.set(0, 1, -6);
+            scene.add(product2);
+
+            const productMaterial3 = new THREE.MeshStandardMaterial({ color: 0xf39c12 });
+            const product3 = new THREE.Mesh(
+                new THREE.BoxGeometry(2, 0.5, 2),
+                productMaterial3
+            );
+            product3.position.set(6, 0.25, 0);
+            scene.add(product3);
+
+            // View toggle buttons
+            const viewToggle = document.createElement('div');
+            viewToggle.className = 'view-toggle';
+            container.appendChild(viewToggle);
+
+            const topViewBtn = document.createElement('div');
+            topViewBtn.className = 'view-toggle-btn';
+            topViewBtn.innerHTML = '<i class="fas fa-eye"></i>';
+            topViewBtn.addEventListener('click', () => {
+                camera.position.set(0, 20, 0.1);
+                camera.lookAt(0, 0, 0);
+            });
+            viewToggle.appendChild(topViewBtn);
+
+            const sideViewBtn = document.createElement('div');
+            sideViewBtn.className = 'view-toggle-btn';
+            sideViewBtn.innerHTML = '<i class="fas fa-arrow-right"></i>';
+            sideViewBtn.addEventListener('click', () => {
+                camera.position.set(20, 10, 0);
+                camera.lookAt(0, 0, 0);
+            });
+            viewToggle.appendChild(sideViewBtn);
+
+            const perspectiveViewBtn = document.createElement('div');
+            perspectiveViewBtn.className = 'view-toggle-btn';
+            perspectiveViewBtn.innerHTML = '<i class="fas fa-cube"></i>';
+            perspectiveViewBtn.addEventListener('click', () => {
+                camera.position.set(15, 20, 15);
+                camera.lookAt(0, 0, 0);
+            });
+            viewToggle.appendChild(perspectiveViewBtn);
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(width, height);
+            });
+        }
+
+        // Generate warehouse grid
+        const warehouseGrid = document.getElementById('warehouseGrid');
+        const rows = 8;
+        const cols = 10;
+
+        function generateWarehouseGrid() {
+            warehouseGrid.innerHTML = '';
+            
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'map-cell available';
+                    
+                    // Add label
+                    const label = document.createElement('span');
+                    label.className = 'map-cell-label';
+                    label.textContent = `${String.fromCharCode(65 + i)}-${j + 1}`;
+                    cell.appendChild(label);
+                    
+                    warehouseGrid.appendChild(cell);
+                }
+            }
+        }
+
+        // Initialize warehouse grid
+        generateWarehouseGrid();
+
+        // Product form submission
+        productForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('productName').value;
+            const sku = document.getElementById('productSKU').value;
+            const category = document.getElementById('productCategory').value;
+            const weight = parseFloat(document.getElementById('productWeight').value);
+            const length = parseInt(document.getElementById('productLength').value);
+            const width = parseInt(document.getElementById('productWidth').value);
+            const height = parseInt(document.getElementById('productHeight').value);
+            const fragility = document.getElementById('productFragility').value;
+            const hazardous = document.getElementById('productHazardous').checked;
+            
+            // Determine storage requirements
+            let storageType = 'standard';
+            if (weight > 50) storageType = 'heavy';
+            if (length > 200 || width > 200 || height > 200) storageType = 'large';
+            if (length < 50 && width < 50 && height < 50) storageType = 'small';
+            if (fragility === 'high') storageType = 'fragile';
+            if (hazardous) storageType = 'hazardous';
+            
+            // Find available space
+            const cells = document.querySelectorAll('.map-cell.available');
+            if (cells.length === 0) {
+                alert('No available space found for this product!');
+                return;
+            }
+            
+            // Select random available cell (in real app, this would be more sophisticated)
+            const randomIndex = Math.floor(Math.random() * cells.length);
+            const selectedCell = cells[randomIndex];
+            
+            // Mark cell as occupied with appropriate class
+            selectedCell.classList.remove('available');
+            selectedCell.classList.add('occupied');
+            
+            // Add specific class based on storage type
+            if (storageType === 'heavy') selectedCell.classList.add('heavy');
+            if (storageType === 'large') selectedCell.classList.add('large');
+            if (storageType === 'small') selectedCell.classList.add('small');
+            
+            // Add product info to cell
+            selectedCell.innerHTML += `
+                <div style="position: absolute; top: 2px; left: 2px; font-size: 0.6rem; font-weight: bold; color: var(--text-color);">
+                    ${sku}
+                </div>
+            `;
+            
+            // Close modal and reset form
+            productModal.style.display = 'none';
+            productForm.reset();
+            
+            // Show success message
+            alert(`Product "${name}" (${sku}) successfully registered and allocated to ${selectedCell.querySelector('.map-cell-label').textContent} as ${storageType} storage.`);
+            
+            // Update stats
+            const pendingMoves = parseInt(document.getElementById('pendingMoves').textContent);
+            document.getElementById('pendingMoves').textContent = pendingMoves + 1;
+            
+            const spaceUtilization = parseInt(document.getElementById('spaceUtilization').textContent);
+            const newUtilization = Math.min(spaceUtilization + 3, 100);
+            animateValue('spaceUtilization', spaceUtilization, newUtilization, 500, '%');
+        });
+
+        // Animate stats counters
+        function animateValue(id, start, end, duration, suffix = '') {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = value + suffix;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Initialize stats
+        animateValue('spaceUtilization', 0, 78, 1500, '%');
+        animateValue('optimizationGain', 0, 32, 1500, '%');
+        animateValue('pendingMoves', 0, 14, 1000);
+        animateValue('savings', 0, 8420, 2000, '');
+
+        // Set next optimization time (default to tomorrow same time)
+        const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        const formattedDate = tomorrow.toISOString().slice(0, 16);
+        document.getElementById('nextOptimization').value = formattedDate;
+
+        // Button functionality
+        document.getElementById('runOptimization').addEventListener('click', () => {
+            alert('Optimization process started! The system will now analyze and suggest space reallocations.');
+            
+            // Simulate progress
+            let progress = 5;
+            const progressBar = document.getElementById('optimizationProgress');
+            const progressPercent = document.getElementById('progressPercent');
+            
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(progressInterval);
+                    
+                    // Update status
+                    document.querySelector('.status-indicator').classList.remove('active');
+                    document.querySelector('.status-indicator').classList.add('inactive');
+                    document.querySelector('.optimization-status h3').textContent = 'Optimization Complete';
+                    document.getElementById('lastRunTime').textContent = 'Just now';
+                    
+                    // Update pending moves
+                    animateValue('pendingMoves', 14, 23, 1000);
+                }
+                
+                progressBar.style.width = `${progress}%`;
+                progressPercent.textContent = `${Math.round(progress)}%`;
+            }, 500);
+        });
+
+        document.getElementById('pauseOptimization').addEventListener('click', () => {
+            const statusIndicator = document.querySelector('.status-indicator');
+            const statusText = document.querySelector('.optimization-status h3');
+            
+            if (statusIndicator.classList.contains('active')) {
+                statusIndicator.classList.remove('active');
+                statusIndicator.classList.add('warning');
+                statusText.textContent = 'Optimization Paused';
+                alert('Optimization paused. Click "Optimize Now" to resume.');
+            } else {
+                statusIndicator.classList.remove('warning');
+                statusIndicator.classList.add('active');
+                statusText.textContent = 'Optimization Active';
+                alert('Optimization resumed.');
+            }
+        });
+
+        document.getElementById('cancelOptimization').addEventListener('click', () => {
+            if (confirm('Are you sure you want to cancel the current optimization process?')) {
+                document.querySelector('.status-indicator').classList.remove('active', 'warning');
+                document.querySelector('.optimization-status h3').textContent = 'Optimization Canceled';
+                document.getElementById('optimizationProgress').style.width = '0%';
+                document.getElementById('progressPercent').textContent = '0%';
+            }
+        });
+
+        document.getElementById('approveAll').addEventListener('click', () => {
+            if (confirm('Approve all pending reallocations? This will schedule all moves for execution.')) {
+                alert('All 5 pending reallocations have been approved and scheduled.');
+                document.querySelectorAll('.reallocation-item').forEach(item => {
+                    item.style.opacity = '0.5';
+                    item.querySelector('.reallocation-actions').innerHTML = '<span style="color: var(--success-color); font-weight: bold;">Approved</span>';
+                });
+            }
+        });
+
+        document.getElementById('emergencyOverride').addEventListener('click', () => {
+            if (confirm('Enable emergency override? This will pause all automated systems and allow manual control.')) {
+                alert('Emergency override enabled. Automated systems paused. Manual control active.');
+                document.getElementById('autoOptimization').checked = false;
+                
+                // Change status indicator
+                const statusIndicator = document.querySelector('.status-indicator');
+                statusIndicator.classList.remove('active', 'inactive', 'warning');
+                statusIndicator.style.backgroundColor = 'var(--danger-color)';
+                document.querySelector('.optimization-status h3').textContent = 'EMERGENCY OVERRIDE';
+            }
+        });
+
+        document.getElementById('simulateScenario').addEventListener('click', () => {
+            const scenario = prompt('Enter scenario to simulate (holiday surge, inventory reduction, etc.):');
+            if (scenario) {
+                alert(`Running simulation for "${scenario}" scenario... Check reports for results.`);
+                
+                // Temporarily change some cells to show simulation
+                const cells = document.querySelectorAll('.map-cell');
+                cells.forEach(cell => {
+                    if (Math.random() > 0.7) {
+                        cell.classList.add('optimize');
+                    }
+                });
+                
+                setTimeout(() => {
+                    cells.forEach(cell => {
+                        cell.classList.remove('optimize');
+                    });
+                }, 3000);
+            }
+        });
+
+        // Cell click functionality
+        document.querySelectorAll('.map-cell').forEach(cell => {
+            cell.addEventListener('click', () => {
+                const label = cell.querySelector('.map-cell-label').textContent;
+                const status = cell.classList.contains('occupied') ? 'Occupied' : 
+                              cell.classList.contains('reserved') ? 'Reserved' : 
+                              cell.classList.contains('optimize') ? 'Optimization Recommended' : 'Available';
+                
+                alert(`Location: ${label}\nStatus: ${status}\n\nClick "Simulate Scenario" to test changes.`);
+            });
+        });
+
+        // Form control interactions
+        document.getElementById('optimizationMode').addEventListener('change', function() {
+            console.log('Optimization mode changed to:', this.value);
+        });
+
+        document.getElementById('optimizationIntensity').addEventListener('input', function() {
+            console.log('Optimization intensity:', this.value);
+        });
+
+        document.getElementById('autoOptimization').addEventListener('change', function() {
+            console.log('Auto-optimization:', this.checked ? 'ON' : 'OFF');
+        });
+
+        // Initialize with some random optimization progress
+        setInterval(() => {
+            const progress = Math.min(parseInt(document.getElementById('optimizationProgress').style.width) + 1, 100);
+            document.getElementById('optimizationProgress').style.width = `${progress}%`;
+            document.getElementById('progressPercent').textContent = `${progress}%`;
+        }, 3000);
+
+        // Initialize 3D warehouse when page loads
+        window.addEventListener('load', init3DWarehouse);
+    </script>
+</body>
+</html>
