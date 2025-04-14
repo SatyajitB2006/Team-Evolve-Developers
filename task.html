@@ -310,15 +310,15 @@
                     status: "pending",
                     category: "inventory",
                     assignees: [
-                        { id: 2, name: "Sarah M.", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
-                        { id: 3, name: "Mike T.", avatar: "https://randomuser.me/api/portraits/men/22.jpg" }
+                        { id: 2, name: "Satyajit", avatar: "/Hackgenx/satyajit.jpeg" },
+                        { id: 3, name: "Vedant", avatar: "/Hackgenx/1000003249[1].jpg" }
                     ],
                     created: "2023-05-15",
                     deadline: "2023-05-20",
                     comments: [
                         {
                             author: "Satyajit",
-                            avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+                            avatar: "/Hackgenx/satyajit.jpeg",
                             time: "2 hours ago",
                             text: "I've started working on the inventory check. Found some discrepancies in the electronics section. Will update when I finish the whole section."
                         },
@@ -338,7 +338,7 @@
                     status: "in-progress",
                     category: "picking",
                     assignees: [
-                        { id: 3, name: "Mike T.", avatar: "https://randomuser.me/api/portraits/men/22.jpg" }
+                        { id: 3, name: "Nikhil", avatar: "/Hackgenx/Nikhil.jpg" }
                     ],
                     created: "2023-05-16",
                     deadline: "2023-05-17",
@@ -352,14 +352,14 @@
                     status: "completed",
                     category: "maintenance",
                     assignees: [
-                        { id: 1, name: "John D.", avatar: "https://randomuser.me/api/portraits/men/45.jpg" }
+                        { id: 1, name: "Akashad", avatar: "/Hackgenx/1[1].png" }
                     ],
                     created: "2023-05-10",
                     deadline: "2023-05-12",
                     comments: [
                         {
                             author: "Nikhil",
-                            avatar: "https://randomuser.me/api/portraits/men/45.jpg",
+                            avatar: "/Hackgenx/Nikhil.jpg",
                             time: "2 days ago",
                             text: "Completed maintenance. Found worn tires that need replacement soon."
                         }
@@ -373,8 +373,8 @@
                     status: "pending",
                     category: "cleaning",
                     assignees: [
-                        { id: 4, name: "Akshad", avatar: "https://randomuser.me/api/portraits/women/33.jpg" },
-                        { id: 5, name: "Vedant", avatar: "https://randomuser.me/api/portraits/men/65.jpg" }
+                        { id: 4, name: "Akshad", avatar: "/Hackgenx/1[1].png" },
+                        { id: 5, name: "Vedant", avatar: "/Hackgenx/1000003249[1].jpg" }
                     ],
                     created: "2023-05-14",
                     deadline: "2023-05-18",
@@ -474,7 +474,7 @@
                 const selectedOptions = Array.from(taskWorkersSelect.selectedOptions).map(option => ({
                     id: option.value,
                     name: option.text.split(' (')[0],
-                    avatar: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${Math.floor(Math.random() * 100)}.jpg`
+                    avatar: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'men'}/${Math.floor(Math.random() * 100)}.jpg`
                 }));
                 
                 // Check if we're editing an existing task
