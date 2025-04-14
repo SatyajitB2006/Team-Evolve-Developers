@@ -93,7 +93,7 @@
                                 <h3>Inventory Management</h3>
                                 <div class="car-model" onclick="showWarehouseTools('inventory')">
                                     <a href="Stock.html">
-                                        <img class="car-model-img" src="https://images.unsplash.com/photo-1603732551658-5fabbafa84eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Inventory">
+                                        <img class="car-model-img" src="https://salesfokuz.com/images/blog/blog-reduce-operational-cost-inventory-management-system.png" alt="Inventory">
                                     </a>
                                     <p>Stock Control</p>
                                 </div>
@@ -163,9 +163,12 @@
                         <li style="color: #003366;">Visual flow dashboard</li>
                     </ul>
 
+                    <a href="tracking.html">
+
                     <button id="ui">
                         GET STARTED
                     </button>
+                </a>
                             
                 </div>
                 <div class="feature-card" style="background-color: #f7f7f7;">
@@ -179,9 +182,11 @@
                         <li style="color: #003366;">Seasonal storage optimization</li>
                         <li style="color: #003366;">Automated space utilization</li>
                     </ul>
+                    <a href="Alocation.html">
                     <button id="ui">
                         GET STARTED
                     </button>
+                </a>
                             
                 </div>
                 <div class="feature-card" style="background-color: #f7f7f7;">
@@ -195,9 +200,11 @@
                         <li style="color: #003366;">Pick path optimization</li>
                         <li style="color: #003366;">Heatmap analytics</li>
                     </ul>
+                    <a href="layout.html">
                     <button id="ui">
                         GET STARTED
                     </button>
+                </a>
                             
                 </div>
             </div>
@@ -722,6 +729,7 @@
                 <p>&copy; 2023 Maruti Suzuki Warehouse Management System. All Rights Reserved.</p>
             </div>
         </div>
+    
     </footer>
 
     <!-- Parts Modal -->
@@ -1014,30 +1022,31 @@
             partsContainer.innerHTML = `
                 <h3>Engine Parts</h3>
                 <div class="parts-list">
-                    <div class="part-item">
-                        <img src="https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Engine Block">
-                        <div class="part-details">
-                            <h4>${carModel} Engine Block</h4>
-                            <div class="part-meta">
-                                <span><strong>Part No:</strong> MSUZ-${carModel.replace(' ', '')}-001</span>
-                                <span><strong>Weight:</strong> ${carModel === 'Alto' ? '24kg' : carModel === 'Swift' ? '28kg' : '32kg'}</span>
-                            </div>
-                            <div class="part-meta">
-                                <span><strong>Location:</strong> Rack A12</span>
-                                <span class="part-price">₹${carModel === 'Alto' ? '12,500' : carModel === 'Swift' ? '15,800' : '18,200'}</span>
-                            </div>
-                            <div class="part-actions">
-                                <div class="quantity-control">
-                                    <button onclick="decrementQuantity(this)">-</button>
-                                    <span>8</span>
-                                    <button onclick="incrementQuantity(this)">+</button>
-                                </div>
-                                <div class="stock-alert" style="display: none;">Low stock!</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="part-item">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Cylinder Head">
+                   <div class="part-item">
+    <img src="/Hackgenx/engine block.png" alt="Cylinder Head" style="width: 100%; max-width: 290px; height: auto; display: block;">
+    <div class="part-details">
+        <h4>${carModel} Engine Block</h4>
+        <div class="part-meta">
+            <span><strong>Part No:</strong> MSUZ-${carModel.replace(' ', '')}-001</span>
+            <span><strong>Weight:</strong> ${carModel === 'Alto' ? '24kg' : carModel === 'Swift' ? '28kg' : '32kg'}</span>
+        </div>
+        <div class="part-meta">
+            <span><strong>Location:</strong> Rack A12</span>
+            <span class="part-price">₹${carModel === 'Alto' ? '12,500' : carModel === 'Swift' ? '15,800' : '18,200'}</span>
+        </div>
+        <div class="part-actions">
+            <div class="quantity-control">
+                <button onclick="decrementQuantity(this)">-</button>
+                <span>8</span>
+                <button onclick="incrementQuantity(this)">+</button>
+            </div>
+            <div class="stock-alert" style="display: none;">Low stock!</div>
+        </div>
+    </div>
+</div>
+
+                     <div class="part-item">
+                        <img src="/Hackgenx/Cylinder Head.png" alt="Cylinder Head" style="width: 100%; max-width: 290px; height: auto; display: block;">
                         <div class="part-details">
                             <h4>${carModel} Cylinder Head</h4>
                             <div class="part-meta">
@@ -1058,8 +1067,9 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="part-item">
-                        <img src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Turbocharger">
+                        <img src="/Hackgenx/Turbocharger.png" alt="Cylinder Head" style="width: 100%; max-width: 290px; height: auto; display: block;">
                         <div class="part-details">
                             <h4>${carModel} Turbocharger</h4>
                             <div class="part-meta">
@@ -1083,8 +1093,8 @@
                 </div>
                 <h3>Transmission Parts</h3>
                 <div class="parts-list">
-                    <div class="part-item">
-                        <img src="https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Transmission">
+                    <div class="part-item" >
+                        <img src="/Hackgenx/Transmission.png" alt="Cylinder Head" style="width: 100%; max-width: 100%; height: auto; display: block;">
                         <div class="part-details">
                             <h4>${carModel} Transmission</h4>
                             <div class="part-meta">
@@ -1105,8 +1115,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="part-item">
-                        <img src="https://images.unsplash.com/photo-1642784353725-fd56ba6dc6a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Clutch Kit">
+                    <div class="part-item" >
+                        <img src="/Hackgenx/Clutch Kit.png" alt="Cylinder Head" style="width: 100%; max-width: 100%; height: auto; display: block;">
                         <div class="part-details">
                             <h4>${carModel} Clutch Kit</h4>
                             <div class="part-meta">
@@ -1131,7 +1141,7 @@
                 <h3>Electrical Parts</h3>
                 <div class="parts-list">
                     <div class="part-item">
-                        <img src="https://images.unsplash.com/photo-1631729370905-3c23b5a7a01e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Alternator">
+                        <img src="/Hackgenx/Alternator.png" alt="Cylinder Head" style="width: 100%; max-width: 100%; height: auto; display: block;">
                         <div class="part-details">
                             <h4>${carModel} Alternator</h4>
                             <div class="part-meta">
@@ -1152,8 +1162,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="part-item">
-                        <img src="https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Starter Motor">
+                    <div class="part-item" >
+                        <img src="/Hackgenx/Starter Motor.png" alt="Cylinder Head" style="width: 100%; max-width: 100%; height: auto; display: block;">
                         <div class="part-details">
                             <h4>${carModel} Starter Motor</h4>
                             <div class="part-meta">
@@ -2682,6 +2692,33 @@
                 text-align: center;
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+        /* .part-image {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+} */
     </style>
 </body>
 </html>
