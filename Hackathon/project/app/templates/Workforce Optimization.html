@@ -1,0 +1,2387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workforce Management Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-top">
+                <h1><i class="fas fa-users-cog"></i> Workforce Management</h1>
+                <div class="date-display">
+                    <i class="far fa-calendar-alt"></i>
+                    <span id="current-date">Loading...</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="card" style="animation-delay: 0.1s">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Total Employees</h3>
+                        <p class="card-description">Active workforce</p>
+                    </div>
+                    <div class="card-icon icon-blue">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="card-value" id="total-employees">142</div>
+                <div class="trend trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>12% from last month</span>
+                </div>
+            </div>
+
+            <div class="card" style="animation-delay: 0.2s">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">On Shift Now</h3>
+                        <p class="card-description">Currently working</p>
+                    </div>
+                    <div class="card-icon icon-green">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                </div>
+                <div class="card-value" id="on-shift-now">87</div>
+                <div class="trend trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>5% from yesterday</span>
+                </div>
+            </div>
+
+            <div class="card" style="animation-delay: 0.3s">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Overtime Hours</h3>
+                        <p class="card-description">This week</p>
+                    </div>
+                    <div class="card-icon icon-orange">
+                        <i class="fas fa-stopwatch"></i>
+                    </div>
+                </div>
+                <div class="card-value" id="overtime-hours">142</div>
+                <div class="trend trend-down">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>8% from last week</span>
+                </div>
+            </div>
+
+            <div class="card" style="animation-delay: 0.4s">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Open Shifts</h3>
+                        <p class="card-description">Next 7 days</p>
+                    </div>
+                    <div class="card-icon icon-purple">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                </div>
+                <div class="card-value" id="open-shifts">23</div>
+                <div class="trend trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>15% from last week</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div>
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Workforce Utilization</h3>
+                        <div class="chart-filters">
+                            <button class="filter-btn active">Daily</button>
+                            <button class="filter-btn">Weekly</button>
+                            <button class="filter-btn">Monthly</button>
+                        </div>
+                    </div>
+                    <div class="chart">
+                        <div class="chart-real">
+                            <div class="chart-grid">
+                                <div class="chart-grid-line" data-value="100%"></div>
+                                <div class="chart-grid-line" data-value="75%"></div>
+                                <div class="chart-grid-line" data-value="50%"></div>
+                                <div class="chart-grid-line" data-value="25%"></div>
+                                <div class="chart-grid-line" data-value="0%"></div>
+                            </div>
+                            <div class="chart-bars">
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar" style="height: 70%;" data-value="70%"></div>
+                                    <div class="chart-bar-label">Mon</div>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar" style="height: 85%;" data-value="85%"></div>
+                                    <div class="chart-bar-label">Tue</div>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar" style="height: 65%;" data-value="65%"></div>
+                                    <div class="chart-bar-label">Wed</div>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar" style="height: 90%;" data-value="90%"></div>
+                                    <div class="chart-bar-label">Thu</div>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar" style="height: 75%;" data-value="75%"></div>
+                                    <div class="chart-bar-label">Fri</div>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar" style="height: 50%;" data-value="50%"></div>
+                                    <div class="chart-bar-label">Sat</div>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar" style="height: 40%;" data-value="40%"></div>
+                                    <div class="chart-bar-label">Sun</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--primary);"></div>
+                            <span>Utilization</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--accent);"></div>
+                            <span>Target</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="worker-list">
+                    <div class="worker-list-header">
+                        <h3 class="worker-list-title">Available Workers</h3>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="worker-search" placeholder="Search workers...">
+                        </div>
+                    </div>
+                    <div id="workers-container">
+                        <!-- Workers will be added here dynamically -->
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="view-all-workers">View All Workers</button>
+                        <button class="btn btn-outline" id="add-new-worker">Add New Worker</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="shift-scheduler">
+                    <div class="scheduler-header">
+                        <h3 class="scheduler-title">Shift Scheduler</h3>
+                        <div class="scheduler-actions">
+                            <button class="btn btn-outline" id="prev-week"><i class="fas fa-chevron-left"></i></button>
+                            <button class="btn btn-outline" id="current-week">This Week</button>
+                            <button class="btn btn-outline" id="next-week"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="scheduler-grid">
+                        <div class="scheduler-day">Mon</div>
+                        <div class="scheduler-day">Tue</div>
+                        <div class="scheduler-day">Wed</div>
+                        <div class="scheduler-day">Thu</div>
+                        <div class="scheduler-day">Fri</div>
+                        <div class="scheduler-day">Sat</div>
+                        <div class="scheduler-day">Sun</div>
+                    </div>
+                    <div class="scheduler-slots-container">
+                        <div class="scheduler-slot-group" id="morning-shifts">
+                            <!-- Morning shifts will be added here dynamically -->
+                        </div>
+                        <div class="scheduler-slot-group" id="afternoon-shifts">
+                            <!-- Afternoon shifts will be added here dynamically -->
+                        </div>
+                        <div class="scheduler-slot-group" id="night-shifts">
+                            <!-- Night shifts will be added here dynamically -->
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="schedule-shift">Schedule Shift</button>
+                        <button class="btn btn-outline" id="view-all-shifts">View All Shifts</button>
+                    </div>
+                </div>
+
+                <div class="ai-recommendations">
+                    <div class="ai-header">
+                        <div class="ai-icon glow">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <h3 class="ai-title">AI Recommendations</h3>
+                            <p class="ai-subtitle">Optimization suggestions</p>
+                        </div>
+                    </div>
+                    <div id="recommendations-container">
+                        <!-- Recommendations will be added here dynamically -->
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="view-all-recommendations">View All Recommendations</button>
+                    </div>
+                </div>
+
+                <div class="utilization-meters">
+                    <div class="meter-container">
+                        <div class="meter-title">
+                            <i class="fas fa-procedures" style="color: var(--danger);"></i>
+                            <span>Emergency Dept Utilization</span>
+                        </div>
+                        <div class="meter">
+                            <div class="meter-fill high-utilization" style="width: 92%;"></div>
+                        </div>
+                        <div class="meter-labels">
+                            <span>0%</span>
+                            <span class="meter-value">92%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                    <div class="meter-container">
+                        <div class="meter-title">
+                            <i class="fas fa-x-ray" style="color: var(--warning);"></i>
+                            <span>Radiology Utilization</span>
+                        </div>
+                        <div class="meter">
+                            <div class="meter-fill medium-utilization" style="width: 78%;"></div>
+                        </div>
+                        <div class="meter-labels">
+                            <span>0%</span>
+                            <span class="meter-value">78%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                    <div class="meter-container">
+                        <div class="meter-title">
+                            <i class="fas fa-flask" style="color: var(--success);"></i>
+                            <span>Lab Utilization</span>
+                        </div>
+                        <div class="meter">
+                            <div class="meter-fill optimal-utilization" style="width: 65%;"></div>
+                        </div>
+                        <div class="meter-labels">
+                            <span>0%</span>
+                            <span class="meter-value">65%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Worker Modal -->
+    <div class="modal" id="add-worker-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Worker</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="add-worker-form">
+                <div class="form-group">
+                    <label for="worker-name">Full Name</label>
+                    <input type="text" id="worker-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="worker-position">Position</label>
+                    <input type="text" id="worker-position" required>
+                </div>
+                <div class="form-group">
+                    <label for="worker-status">Status</label>
+                    <select id="worker-status" required>
+                        <option value="available">Available</option>
+                        <option value="busy">On Shift</option>
+                        <option value="off">Off Duty</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline close-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Worker</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <script>
+        // Set current date
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', options);
+
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = themeToggle.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // Filter buttons
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
+
+        // Modal functionality
+        const addWorkerModal = document.getElementById('add-worker-modal');
+        const addWorkerBtn = document.getElementById('add-new-worker');
+        const closeModalBtns = document.querySelectorAll('.close-modal');
+
+        addWorkerBtn.addEventListener('click', () => {
+            addWorkerModal.style.display = 'flex';
+        });
+
+        closeModalBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                addWorkerModal.style.display = 'none';
+            });
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === addWorkerModal) {
+                addWorkerModal.style.display = 'none';
+            }
+        });
+
+        // Worker data
+        const workers = [
+            { id: 1, name: "Nikhil", position: "Senior Developer", status: "available", avatar: "https://randomuser.me/api/portraits/men/1.jpg" },
+            { id: 2, name: "Akshad", position: "UX Designer", status: "busy", avatar: "https://randomuser.me/api/portraits/men/5.jpg" },
+            { id: 3, name: "Vedant", position: "Project Manager", status: "available", avatar: "https://randomuser.me/api/portraits/men/3.jpg" },
+            { id: 4, name: "Ram", position: "QA Engineer", status: "off", avatar: "https://randomuser.me/api/portraits/men/4.jpg" },
+            { id: 5, name: "Satyajit", position: "DevOps Engineer", status: "available", avatar: "https://randomuser.me/api/portraits/men/5.jpg" }
+        ];
+
+        // Render workers
+        function renderWorkers(workersToRender) {
+            const workersContainer = document.getElementById('workers-container');
+            workersContainer.innerHTML = '';
+            
+            workersToRender.forEach(worker => {
+                const workerItem = document.createElement('div');
+                workerItem.className = 'worker-item';
+                
+                let statusClass = '';
+                let statusText = '';
+                
+                switch(worker.status) {
+                    case 'available':
+                        statusClass = 'status-available';
+                        statusText = 'Available';
+                        break;
+                    case 'busy':
+                        statusClass = 'status-busy';
+                        statusText = 'On Shift';
+                        break;
+                    case 'off':
+                        statusClass = 'status-off';
+                        statusText = 'Off Duty';
+                        break;
+                }
+                
+                workerItem.innerHTML = `
+                    <img src="${worker.avatar}" alt="${worker.name}" class="worker-avatar">
+                    <div class="worker-info">
+                        <h4 class="worker-name">${worker.name}</h4>
+                        <p class="worker-position">${worker.position}</p>
+                    </div>
+                    <div class="worker-status ${statusClass}">
+                        <i class="fas fa-circle"></i>
+                        <span>${statusText}</span>
+                    </div>
+                `;
+                
+                workersContainer.appendChild(workerItem);
+            });
+        }
+
+        // Initial render
+        renderWorkers(workers);
+
+        // Search functionality
+        const workerSearch = document.getElementById('worker-search');
+        workerSearch.addEventListener('input', () => {
+            const searchTerm = workerSearch.value.toLowerCase();
+            const filteredWorkers = workers.filter(worker => 
+                worker.name.toLowerCase().includes(searchTerm) || 
+                worker.position.toLowerCase().includes(searchTerm)
+            );
+            renderWorkers(filteredWorkers);
+        });
+
+        // Add new worker
+        const addWorkerForm = document.getElementById('add-worker-form');
+        addWorkerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('worker-name').value;
+            const position = document.getElementById('worker-position').value;
+            const status = document.getElementById('worker-status').value;
+            
+            // Generate random avatar
+            const randomId = Math.floor(Math.random() * 100);
+            const avatar = `https://randomuser.me/api/portraits/men/${randomId}.jpg`;
+            
+            const newWorker = {
+                id: workers.length + 1,
+                name,
+                position,
+                status,
+                avatar
+            };
+            
+            workers.unshift(newWorker);
+            renderWorkers(workers);
+            
+            // Update total employees count
+            document.getElementById('total-employees').textContent = workers.length;
+            
+            // Reset form and close modal
+            addWorkerForm.reset();
+            addWorkerModal.style.display = 'none';
+        });
+
+        // Shift scheduler data
+        const shifts = {
+            morning: [12, 8, 10, 9, 11, 5, 3],
+            afternoon: [8, 7, 9, 6, 8, 4, 2],
+            night: [5, 4, 6, 3, 5, 2, 1]
+        };
+
+        // Render shifts
+        function renderShifts() {
+            const morningShifts = document.getElementById('morning-shifts');
+            const afternoonShifts = document.getElementById('afternoon-shifts');
+            const nightShifts = document.getElementById('night-shifts');
+            
+            morningShifts.innerHTML = '';
+            afternoonShifts.innerHTML = '';
+            nightShifts.innerHTML = '';
+            
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            
+            shifts.morning.forEach((count, index) => {
+                const shift = document.createElement('div');
+                shift.className = 'scheduler-slot';
+                if (index === 3) shift.classList.add('active');
+                shift.innerHTML = `
+                    <div class="slot-time">6AM-2PM</div>
+                    <div class="slot-workers">${count} assigned</div>
+                `;
+                morningShifts.appendChild(shift);
+                
+                // Add click event
+                shift.addEventListener('click', () => {
+                    document.querySelectorAll('.scheduler-slot').forEach(s => s.classList.remove('active'));
+                    shift.classList.add('active');
+                });
+            });
+            
+            shifts.afternoon.forEach((count, index) => {
+                const shift = document.createElement('div');
+                shift.className = 'scheduler-slot';
+                shift.innerHTML = `
+                    <div class="slot-time">2PM-10PM</div>
+                    <div class="slot-workers">${count} assigned</div>
+                `;
+                afternoonShifts.appendChild(shift);
+                
+                shift.addEventListener('click', () => {
+                    document.querySelectorAll('.scheduler-slot').forEach(s => s.classList.remove('active'));
+                    shift.classList.add('active');
+                });
+            });
+            
+            shifts.night.forEach((count, index) => {
+                const shift = document.createElement('div');
+                shift.className = 'scheduler-slot';
+                shift.innerHTML = `
+                    <div class="slot-time">10PM-6AM</div>
+                    <div class="slot-workers">${count} assigned</div>
+                `;
+                nightShifts.appendChild(shift);
+                
+                shift.addEventListener('click', () => {
+                    document.querySelectorAll('.scheduler-slot').forEach(s => s.classList.remove('active'));
+                    shift.classList.add('active');
+                });
+            });
+        }
+
+        // Initial render
+        renderShifts();
+
+        // AI Recommendations data
+        const recommendations = [
+            {
+                priority: 'high',
+                icon: 'fa-exclamation',
+                title: 'Staffing Shortage',
+                description: 'Thursday 2PM-10PM shift is understaffed by 3 workers'
+            },
+            {
+                priority: 'medium',
+                icon: 'fa-balance-scale',
+                title: 'Overtime Alert',
+                description: '5 employees approaching overtime limits this week'
+            },
+            {
+                priority: 'low',
+                icon: 'fa-lightbulb',
+                title: 'Skill Optimization',
+                description: '3 available workers have specialized skills not being utilized'
+            }
+        ];
+
+        // Render recommendations
+        function renderRecommendations() {
+            const container = document.getElementById('recommendations-container');
+            container.innerHTML = '';
+            
+            recommendations.forEach(rec => {
+                const item = document.createElement('div');
+                item.className = `recommendation-item priority-${rec.priority}`;
+                
+                item.innerHTML = `
+                    <div class="recommendation-icon">
+                        <i class="fas ${rec.icon}"></i>
+                    </div>
+                    <div class="recommendation-content">
+                        <h4>${rec.title}</h4>
+                        <p>${rec.description}</p>
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            });
+        }
+
+        // Initial render
+        renderRecommendations();
+
+        // View all buttons functionality
+        document.getElementById('view-all-workers').addEventListener('click', () => {
+            alert('Viewing all workers');
+        });
+
+        document.getElementById('view-all-shifts').addEventListener('click', () => {
+            alert('Viewing all shifts');
+        });
+
+        document.getElementById('view-all-recommendations').addEventListener('click', () => {
+            alert('Viewing all recommendations');
+        });
+
+        document.getElementById('schedule-shift').addEventListener('click', () => {
+            alert('Scheduling a new shift');
+        });
+
+        // Week navigation
+        document.getElementById('prev-week').addEventListener('click', () => {
+            alert('Showing previous week');
+        });
+
+        document.getElementById('next-week').addEventListener('click', () => {
+            alert('Showing next week');
+        });
+
+        document.getElementById('current-week').addEventListener('click', () => {
+            alert('Showing current week');
+        });
+    </script>
+    <style>
+        :root {
+    --primary: #4361ee;
+    --primary-dark: #3a56d4;
+    --secondary: #3f37c9;
+    --accent: #4895ef;
+    --danger: #f72585;
+    --warning: #f8961e;
+    --success: #4cc9f0;
+    --info: #560bad;
+    --dark: #2b2d42;
+    --light: #f8f9fa;
+    --gray: #adb5bd;
+    --dark-gray: #495057;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --border-radius: 12px;
+    --section-gap: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f7ff;
+    color: var(--dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .container {
+        padding: 1rem;
+    }
+}
+
+/* Header Styles */
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    position: relative;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.header-top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+@media (min-width: 576px) {
+    .header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .header-top {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 3px;
+}
+
+.header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (min-width: 576px) {
+    .header h1 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .header h1 {
+        font-size: 1.75rem;
+    }
+}
+
+.header h1 i {
+    color: var(--primary);
+    font-size: 1.5rem;
+}
+
+@media (min-width: 576px) {
+    .header h1 i {
+        font-size: 1.75rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .header h1 i {
+        font-size: 2rem;
+    }
+}
+
+.date-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 50px;
+    box-shadow: var(--card-shadow);
+    font-weight: 500;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+@media (min-width: 576px) {
+    .date-display {
+        font-size: 0.8125rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+.date-display i {
+    color: var(--primary);
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--section-gap);
+    margin-bottom: var(--section-gap);
+}
+
+@media (min-width: 576px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Card Styles */
+.card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 0.875rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out forwards;
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+}
+
+@media (min-width: 576px) {
+    .card {
+        padding: 1rem;
+    }
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px -5px rgba(0, 0, 0, 0.1);
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .card-header {
+        margin-bottom: 1rem;
+    }
+}
+
+.card-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+}
+
+@media (min-width: 576px) {
+    .card-title {
+        font-size: 0.9375rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .card-title {
+        font-size: 1rem;
+    }
+}
+
+.card-description {
+    font-size: 0.7rem;
+    color: var(--gray);
+}
+
+@media (min-width: 576px) {
+    .card-description {
+        font-size: 0.75rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .card-description {
+        font-size: 0.8rem;
+    }
+}
+
+.card-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.625rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+@media (min-width: 576px) {
+    .card-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1.125rem;
+    }
+}
+
+.icon-blue {
+    background: linear-gradient(135deg, #4361ee, #4895ef);
+}
+
+.icon-green {
+    background: linear-gradient(135deg, #4cc9f0, #3fbcdf);
+}
+
+.icon-orange {
+    background: linear-gradient(135deg, #f8961e, #f3722c);
+}
+
+.icon-purple {
+    background: linear-gradient(135deg, #560bad, #7209b7);
+}
+
+.card-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.375rem;
+    color: var(--dark);
+}
+
+@media (min-width: 576px) {
+    .card-value {
+        font-size: 1.75rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .card-value {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+}
+
+.trend {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+@media (min-width: 576px) {
+    .trend {
+        font-size: 0.75rem;
+        gap: 0.3rem;
+    }
+}
+
+.trend i {
+    font-size: 0.75rem;
+}
+
+.trend-up {
+    color: #2ecc71;
+}
+
+.trend-down {
+    color: #e74c3c;
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Main Content */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--section-gap);
+    margin-bottom: var(--section-gap);
+}
+
+@media (min-width: 992px) {
+    .main-content {
+        grid-template-columns: 1.5fr 1fr;
+    }
+}
+
+@media (min-width: 576px) {
+    .main-content {
+        margin-bottom: calc(var(--section-gap) * 1.5);
+    }
+}
+
+/* Chart Container */
+.chart-container {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 0.875rem;
+    box-shadow: var(--card-shadow);
+    margin-bottom: var(--section-gap);
+    animation: slideInLeft 0.8s ease-out;
+    overflow: hidden;
+}
+
+@media (min-width: 576px) {
+    .chart-container {
+        padding: 1rem;
+    }
+}
+
+.chart-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .chart-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+}
+
+.chart-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+@media (min-width: 576px) {
+    .chart-title {
+        font-size: 1.0625rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .chart-title {
+        font-size: 1.125rem;
+    }
+}
+
+.chart-filters {
+    display: flex;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+}
+
+@media (min-width: 576px) {
+    .chart-filters {
+        gap: 0.5rem;
+    }
+}
+
+.filter-btn {
+    padding: 0.25rem 0.625rem;
+    border: none;
+    background: #f1f3ff;
+    color: var(--primary);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+@media (min-width: 576px) {
+    .filter-btn {
+        padding: 0.3rem 0.75rem;
+    }
+}
+
+.filter-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+.filter-btn:hover:not(.active) {
+    background: #e2e7ff;
+}
+
+.chart {
+    height: 200px;
+    width: 100%;
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 576px) {
+    .chart {
+        height: 250px;
+    }
+}
+
+@media (min-width: 992px) {
+    .chart {
+        height: 300px;
+    }
+}
+
+.chart-placeholder {
+    height: 100%;
+    width: 100%;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.chart-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Workforce Utilization Chart */
+.chart-real {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.7rem;
+}
+
+.legend-color {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 0.2rem;
+}
+
+/* Shift Scheduler */
+.shift-scheduler {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 0.875rem;
+    box-shadow: var(--card-shadow);
+    animation: slideInRight 0.8s ease-out;
+    overflow-x: auto;
+}
+
+@media (min-width: 576px) {
+    .shift-scheduler {
+        padding: 1rem;
+    }
+}
+
+.scheduler-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .scheduler-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+}
+
+.scheduler-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+@media (min-width: 576px) {
+    .scheduler-title {
+        font-size: 1.0625rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .scheduler-title {
+        font-size: 1.125rem;
+    }
+}
+
+.scheduler-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.scheduler-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(50px, 1fr));
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+    min-width: 350px;
+}
+
+@media (min-width: 576px) {
+    .scheduler-grid {
+        grid-template-columns: repeat(7, minmax(60px, 1fr));
+        gap: 0.3rem;
+        margin-bottom: 0.6rem;
+        min-width: 450px;
+    }
+}
+
+.scheduler-day {
+    text-align: center;
+    font-weight: 600;
+    color: var(--dark-gray);
+    padding: 0.3rem 0;
+    border-radius: 0.4rem;
+    background: #f8f9fa;
+    font-size: 0.7rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (min-width: 576px) {
+    .scheduler-day {
+        padding: 0.4rem 0;
+        font-size: 0.75rem;
+    }
+}
+
+.scheduler-slots-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    min-width: 350px;
+}
+
+@media (min-width: 576px) {
+    .scheduler-slots-container {
+        gap: 0.5rem;
+        min-width: 450px;
+    }
+}
+
+.scheduler-slot-group {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(50px, 1fr));
+    gap: 0.25rem;
+}
+
+@media (min-width: 576px) {
+    .scheduler-slot-group {
+        grid-template-columns: repeat(7, minmax(60px, 1fr));
+        gap: 0.3rem;
+    }
+}
+
+.scheduler-slot {
+    background: #f8f9fa;
+    padding: 0.4rem;
+    border-radius: 0.4rem;
+    text-align: center;
+    transition: var(--transition);
+    cursor: pointer;
+    font-size: 0.65rem;
+    min-height: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+@media (min-width: 576px) {
+    .scheduler-slot {
+        padding: 0.5rem;
+        font-size: 0.7rem;
+        min-height: 3.125rem;
+    }
+}
+
+.scheduler-slot:hover {
+    background: #e9ecef;
+}
+
+.scheduler-slot.active {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px -3px rgba(67, 97, 238, 0.3);
+}
+
+.scheduler-slot.active .slot-workers {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.slot-time {
+    font-size: 0.6rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+@media (min-width: 576px) {
+    .slot-time {
+        font-size: 0.625rem;
+    }
+}
+
+.slot-workers {
+    font-size: 0.6rem;
+    color: var(--gray);
+}
+
+@media (min-width: 576px) {
+    .slot-workers {
+        font-size: 0.625rem;
+    }
+}
+
+/* Worker List */
+.worker-list {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 0.875rem;
+    box-shadow: var(--card-shadow);
+    margin-bottom: var(--section-gap);
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@media (min-width: 576px) {
+    .worker-list {
+        padding: 1rem;
+    }
+}
+
+.worker-list-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .worker-list-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+}
+
+.worker-list-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+@media (min-width: 576px) {
+    .worker-list-title {
+        font-size: 1.0625rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .worker-list-title {
+        font-size: 1.125rem;
+    }
+}
+
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 180px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray);
+    font-size: 0.8rem;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.4rem 0.75rem 0.4rem 1.875rem;
+    border: 1px solid #e9ecef;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    transition: var(--transition);
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+.worker-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f3f5;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+@media (min-width: 576px) {
+    .worker-item {
+        padding: 0.6rem 0;
+    }
+}
+
+.worker-item:hover {
+    background: #f8f9fa;
+    transform: translateX(5px);
+}
+
+.worker-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 0.6rem;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 576px) {
+    .worker-avatar {
+        width: 2.25rem;
+        height: 2.25rem;
+        margin-right: 0.75rem;
+    }
+}
+
+.worker-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.worker-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (min-width: 576px) {
+    .worker-name {
+        font-size: 0.8rem;
+    }
+}
+
+.worker-position {
+    font-size: 0.65rem;
+    color: var(--gray);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (min-width: 576px) {
+    .worker-position {
+        font-size: 0.7rem;
+    }
+}
+
+.worker-status {
+    font-size: 0.65rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+@media (min-width: 576px) {
+    .worker-status {
+        font-size: 0.7rem;
+    }
+}
+
+.worker-status i {
+    font-size: 0.4rem;
+}
+
+.status-available {
+    color: #2ecc71;
+}
+
+.status-busy {
+    color: #e74c3c;
+}
+
+.status-off {
+    color: var(--gray);
+}
+
+/* AI Recommendations */
+.ai-recommendations {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 0.875rem;
+    box-shadow: var(--card-shadow);
+    animation: fadeInUp 0.8s ease-out 0.2s forwards;
+    opacity: 0;
+}
+
+@media (min-width: 576px) {
+    .ai-recommendations {
+        padding: 1rem;
+    }
+}
+
+.ai-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .ai-header {
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+}
+
+.ai-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+    color: white;
+    background: linear-gradient(135deg, #560bad, #7209b7);
+}
+
+@media (min-width: 576px) {
+    .ai-icon {
+        width: 2.8rem;
+        height: 2.8rem;
+        font-size: 1.25rem;
+    }
+}
+
+.glow {
+    animation: glow 2s infinite alternate;
+}
+
+.ai-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+@media (min-width: 576px) {
+    .ai-title {
+        font-size: 1.0625rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .ai-title {
+        font-size: 1.125rem;
+    }
+}
+
+.ai-subtitle {
+    font-size: 0.7rem;
+    color: var(--gray);
+}
+
+@media (min-width: 576px) {
+    .ai-subtitle {
+        font-size: 0.75rem;
+    }
+}
+
+.recommendation-item {
+    display: flex;
+    gap: 0.6rem;
+    padding: 0.625rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.625rem;
+    background: #f8f9fa;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+@media (min-width: 576px) {
+    .recommendation-item {
+        gap: 0.75rem;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+}
+
+.recommendation-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 3px 10px -3px rgba(0, 0, 0, 0.1);
+}
+
+.priority-high {
+    border-left: 3px solid var(--danger);
+}
+
+.priority-medium {
+    border-left: 3px solid var(--warning);
+}
+
+.priority-low {
+    border-left: 3px solid var(--success);
+}
+
+.recommendation-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+@media (min-width: 576px) {
+    .recommendation-icon {
+        width: 1.75rem;
+        height: 1.75rem;
+        font-size: 0.8rem;
+    }
+}
+
+.priority-high .recommendation-icon {
+    background: var(--danger);
+}
+
+.priority-medium .recommendation-icon {
+    background: var(--warning);
+}
+
+.priority-low .recommendation-icon {
+    background: var(--success);
+}
+
+.recommendation-content h4 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.2rem;
+}
+
+@media (min-width: 576px) {
+    .recommendation-content h4 {
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
+}
+
+.recommendation-content p {
+    font-size: 0.7rem;
+    color: var(--dark-gray);
+}
+
+@media (min-width: 576px) {
+    .recommendation-content p {
+        font-size: 0.75rem;
+    }
+}
+
+/* Utilization Meters */
+.utilization-meters {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    animation: fadeIn 0.8s ease-out 0.4s forwards;
+    opacity: 0;
+}
+
+@media (min-width: 576px) {
+    .utilization-meters {
+        gap: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .utilization-meters {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .utilization-meters {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+.meter-container {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 0.875rem;
+    box-shadow: var(--card-shadow);
+}
+
+@media (min-width: 576px) {
+    .meter-container {
+        padding: 1rem;
+    }
+}
+
+.meter-title {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.625rem;
+}
+
+@media (min-width: 576px) {
+    .meter-title {
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
+}
+
+.meter-title i {
+    font-size: 1rem;
+}
+
+@media (min-width: 576px) {
+    .meter-title i {
+        font-size: 1.125rem;
+    }
+}
+
+.meter {
+    height: 0.5rem;
+    width: 100%;
+    background: #f1f3f5;
+    border-radius: 0.25rem;
+    margin-bottom: 0.4rem;
+    overflow: hidden;
+}
+
+@media (min-width: 576px) {
+    .meter {
+        margin-bottom: 0.5rem;
+    }
+}
+
+.meter-fill {
+    height: 100%;
+    border-radius: 0.25rem;
+    transition: width 1.5s ease-out;
+}
+
+.high-utilization {
+    background: linear-gradient(90deg, #f72585, #b5179e);
+}
+
+.medium-utilization {
+    background: linear-gradient(90deg, #f8961e, #f3722c);
+}
+
+.optimal-utilization {
+    background: linear-gradient(90deg, #4cc9f0, #4895ef);
+}
+
+.meter-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    color: var(--gray);
+}
+
+@media (min-width: 576px) {
+    .meter-labels {
+        font-size: 0.7rem;
+    }
+}
+
+.meter-value {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+/* Buttons */
+/* Base Button Styles */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: none;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px -3px rgba(67, 97, 238, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.btn-outline:hover {
+    background: #f1f3ff;
+    transform: translateY(-2px);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Responsive Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 1.25rem;
+    border-radius: var(--border-radius);
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.modal-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--gray);
+    padding: 0.5rem;
+    margin: -0.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #e9ecef;
+    border-radius: 0.4rem;
+    font-size: 0.875rem;
+    box-sizing: border-box;
+}
+
+.form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 576px) {
+    .modal-footer {
+        justify-content: center;
+    }
+    
+    .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Animations */
+.floating {
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(86, 11, 173, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 8px rgba(86, 11, 173, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(86, 11, 173, 0);
+    }
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 5px -5px #7209b7;
+    }
+    to {
+        box-shadow: 0 0 15px -5px #7209b7;
+    }
+}
+
+@keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-3px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Enhanced Responsive Chart Styles */
+.chart-real {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+}
+
+.chart-bars {
+    display: flex;
+    height: 100%;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: 0 1rem;
+    gap: 0.6rem;
+    min-width: max-content;
+}
+
+.chart-bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 90%;
+    width: 100%;
+    min-width: 2rem;
+}
+
+.chart-bar-label {
+    font-size: 0.6rem;
+    color: var(--gray);
+    margin-top: 0.3rem;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.chart-bar {
+    width: 1.5rem;
+    background: linear-gradient(to top, var(--primary), var(--accent));
+    border-radius: 0.25rem 0.25rem 0 0;
+    transition: height 1.5s ease-out;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.chart-bar::after {
+    content: attr(data-value);
+    position: absolute;
+    top: -1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--dark);
+    background: white;
+    padding: 0.1rem 0.25rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chart-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 0;
+}
+
+.chart-grid-line {
+    border-top: 1px dashed rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.chart-grid-line::after {
+    content: attr(data-value);
+    position: absolute;
+    right: -1.5rem;
+    top: -0.4rem;
+    font-size: 0.6rem;
+    color: var(--gray);
+}
+
+/* Responsive department overview */
+.department-overview {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #f1f3f5;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.department-stat {
+    text-align: center;
+    flex: 1;
+    min-width: 60px;
+    margin: 0.25rem 0;
+}
+
+.department-stat-value {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.department-stat-label {
+    font-size: 0.6rem;
+    color: var(--gray);
+}
+
+/* Responsive Theme Toggle */
+.theme-toggle {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+@media (max-width: 576px) {
+    .theme-toggle {
+        width: 2.5rem;
+        height: 2.5rem;
+        bottom: 0.75rem;
+        right: 0.75rem;
+    }
+}
+
+/* Notification Badge */
+.notification-badge {
+    position: absolute;
+    top: -0.3rem;
+    right: -0.3rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    background: var(--danger);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 600;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode .card,
+body.dark-mode .chart-container,
+body.dark-mode .shift-scheduler,
+body.dark-mode .worker-list,
+body.dark-mode .ai-recommendations,
+body.dark-mode .meter-container,
+body.dark-mode .date-display,
+body.dark-mode .modal-content {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+body.dark-mode .card-title,
+body.dark-mode .chart-title,
+body.dark-mode .scheduler-title,
+body.dark-mode .worker-list-title,
+body.dark-mode .ai-title,
+body.dark-mode .meter-title,
+body.dark-mode .worker-name,
+body.dark-mode .recommendation-content h4,
+body.dark-mode .card-value,
+body.dark-mode .meter-value,
+body.dark-mode .modal-title,
+body.dark-mode .form-group label {
+    color: #ffffff;
+}
+
+body.dark-mode .card-description,
+body.dark-mode .worker-position,
+body.dark-mode .ai-subtitle,
+body.dark-mode .recommendation-content p,
+body.dark-mode .chart-bar-label {
+    color: #a0a0a0;
+}
+
+body.dark-mode .search-box input,
+body.dark-mode .scheduler-day,
+body.dark-mode .scheduler-slot,
+body.dark-mode .recommendation-item,
+body.dark-mode .form-group input,
+body.dark-mode .form-group select {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #3d3d3d;
+}
+
+body.dark-mode .search-box input:focus,
+body.dark-mode .form-group input:focus,
+body.dark-mode .form-group select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+body.dark-mode .worker-item:hover,
+body.dark-mode .recommendation-item:hover {
+    background-color: #2d2d2d;
+}
+
+body.dark-mode .chart-placeholder,
+body.dark-mode .meter {
+    background-color: #2d2d2d;
+}
+
+body.dark-mode .chart-grid-line {
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .chart-grid-line::after {
+    color: #a0a0a0;
+}
+
+body.dark-mode .close-modal {
+    color: #a0a0a0;
+}
+
+body.dark-mode .chart-bar::after {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 0.4rem;
+    height: 0.4rem;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 0.6rem;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 0.6rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: #2d2d2d;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: #555;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: #666;
+}
+
+/* Root level responsiveness */
+html {
+    font-size: 16px;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 992px) {
+    html {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+    
+    .action-buttons {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    html {
+        font-size: 13px;
+    }
+    
+    .chart-bar {
+        width: 1rem;
+    }
+    
+    .modal-content {
+        padding: 1rem;
+    }
+    
+    .form-group input, 
+    .form-group select {
+        padding: 0.7rem;
+        font-size: 16px; /* Prevents iOS zoom on focus */
+    }
+    
+    /* Improve tap targets for mobile */
+    .close-modal,
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* Fix for iPhone notch */
+@supports (padding: max(0px)) {
+    .modal,
+    .theme-toggle {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* Additional mobile improvements */
+@media (hover: none) {
+    /* Remove hover effects on touch devices */
+    .btn:hover,
+    .btn-primary:hover,
+    .btn-outline:hover,
+    .theme-toggle:hover {
+        transform: none;
+    }
+}
+
+/* Ensure box-sizing is set for all elements */
+* {
+    box-sizing: border-box;
+}
+
+/* Ensure touch actions work properly */
+body {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+}
+    </style>
+</body>
+</html>

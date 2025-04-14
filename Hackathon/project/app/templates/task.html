@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Task Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="logo">
+            <!-- <img src="https://via.placeholder.com/40/4361ee/ffffff?text=WW" alt="Warehouse Wiz Logo"> -->
+            <span class="logo-text">Task Assignment</span>
+        </div>
+        <div class="nav-actions">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search tasks, workers, inventory...">
+            </div>
+            <div class="user-actions">
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">5</span>
+                </div>
+                <div class="messages">
+                    <i class="fas fa-envelope"></i>
+                    <span class="badge">3</span>
+                </div>
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar" class="user-avatar">
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Task Assignment</h1>
+            <div class="page-actions">
+                <button class="btn btn-outline" id="exportBtn">
+                    <i class="fas fa-download"></i>
+                    <span>Export</span>
+                </button>
+                <button class="btn btn-outline">
+                    <i class="fas fa-filter"></i>
+                    <span>Advanced Filters</span>
+                </button>
+                <button class="btn btn-primary" id="createTaskBtn">
+                    <i class="fas fa-plus"></i>
+                    <span>Create Task</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-cards">
+            <div class="stat-card pending">
+                <div class="stat-title">Pending Tasks</div>
+                <div class="stat-value">24</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>12% from last week</span>
+                </div>
+            </div>
+            <div class="stat-card in-progress">
+                <div class="stat-title">In Progress</div>
+                <div class="stat-value">18</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>5% from last week</span>
+                </div>
+            </div>
+            <div class="stat-card completed">
+                <div class="stat-title">Completed</div>
+                <div class="stat-value">42</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>23% from last week</span>
+                </div>
+            </div>
+            <div class="stat-card overdue">
+                <div class="stat-title">Overdue</div>
+                <div class="stat-value">7</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>15% from last week</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task Management -->
+        <div class="task-management">
+            <!-- Task Creation Panel -->
+            <div class="task-creation-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Create New Task</h2>
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="taskTitle" class="form-label">Task Title</label>
+                        <input type="text" id="taskTitle" class="form-control" placeholder="Enter task title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDescription" class="form-label">Description</label>
+                        <textarea id="taskDescription" class="form-control" placeholder="Enter task description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskPriority" class="form-label">Priority</label>
+                        <div class="select-wrapper">
+                            <select id="taskPriority" class="form-control priority-select" required>
+                                <option value="">Select priority</option>
+                                <option value="high">
+                                    <span class="priority-option">
+                                        <span class="priority-dot priority-high"></span>
+                                        High Priority
+                                    </span>
+                                </option>
+                                <option value="medium">
+                                    <span class="priority-option">
+                                        <span class="priority-dot priority-medium"></span>
+                                        Medium Priority
+                                    </span>
+                                </option>
+                                <option value="low">
+                                    <span class="priority-option">
+                                        <span class="priority-dot priority-low"></span>
+                                        Low Priority
+                                    </span>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDeadline" class="form-label">Deadline</label>
+                        <div class="date-picker">
+                            <input type="date" id="taskDeadline" class="form-control" required>
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskWorkers" class="form-label">Assign To</label>
+                        <select id="taskWorkers" class="form-control" multiple>
+                            <option value="1">Vedant (Forklift Operator)</option>
+                            <option value="2">Nikhil (Inventory Specialist)</option>
+                            <option value="3">Akshad (Picker/Packer)</option>
+                            <option value="4">Satyajit (Shipping Clerk)</option>
+                            <option value="5">Om (Receiving Clerk)</option>
+                        </select>
+                        <div class="worker-selection" id="selectedWorkers"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskCategory" class="form-label">Category</label>
+                        <select id="taskCategory" class="form-control">
+                            <option value="">Select category</option>
+                            <option value="inventory">Inventory Check</option>
+                            <option value="picking">Order Picking</option>
+                            <option value="packing">Packing</option>
+                            <option value="shipping">Shipping</option>
+                            <option value="receiving">Receiving</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="cleaning">Cleaning</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Assign Task</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Task List Panel -->
+            <div class="task-list-panel">
+                <div class="task-filters">
+                    <div class="filter-group">
+                        <button class="filter-btn active">All Tasks</button>
+                        <button class="filter-btn">Pending</button>
+                        <button class="filter-btn">In Progress</button>
+                        <button class="filter-btn">Completed</button>
+                        <button class="filter-btn">Overdue</button>
+                    </div>
+                    <div class="search-filter">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search tasks...">
+                    </div>
+                </div>
+
+                <div class="task-cards" id="taskCards">
+                    <!-- Task cards will be dynamically inserted here -->
+                </div>
+
+                <!-- Empty State (hidden by default) -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4076/4076478.png" alt="No tasks">
+                    <h3>No Tasks Found</h3>
+                    <p>There are currently no tasks matching your filters. Create a new task or adjust your filters.</p>
+                    <button class="btn btn-primary" id="createTaskBtn2">
+                        <i class="fas fa-plus"></i>
+                        <span>Create Task</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Details Modal -->
+    <div class="modal-overlay" id="taskModal">
+        <div class="task-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Task Details</h2>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="task-detail-row">
+                    <div class="detail-label">Task Title:</div>
+                    <div class="detail-value" id="modalTaskTitle">Loading...</div>
+                </div>
+                <div class="task-detail-row">
+                    <div class="detail-label">Priority:</div>
+                    <div class="detail-value priority-high" id="modalTaskPriority">High</div>
+                </div>
+                <div class="task-detail-row">
+                    <div class="detail-label">Status:</div>
+                    <div class="detail-value" id="modalTaskStatus">Pending</div>
+                </div>
+                <div class="task-detail-row">
+                    <div class="detail-label">Assigned To:</div>
+                    <div class="detail-value" id="modalTaskAssignees">Vedant, Akshad</div>
+                </div>
+                <div class="task-detail-row">
+                    <div class="detail-label">Category:</div>
+                    <div class="detail-value" id="modalTaskCategory">Inventory Check</div>
+                </div>
+                <div class="task-detail-row">
+                    <div class="detail-label">Created:</div>
+                    <div class="detail-value" id="modalTaskCreated">May 15, 2023</div>
+                </div>
+                <div class="task-detail-row">
+                    <div class="detail-label">Deadline:</div>
+                    <div class="detail-value" id="modalTaskDeadline">May 20, 2023</div>
+                </div>
+                <div class="task-detail-row">
+                    <div class="detail-label">Description:</div>
+                    <div class="detail-value task-description-full" id="modalTaskDescription">
+                        Conduct a full inventory check of Section A, including all SKUs and their quantities. Verify against the system records and note any discrepancies. Take photos of damaged items and update the inventory management system accordingly.
+                    </div>
+                </div>
+                <div class="task-comments">
+                    <h3 class="comments-title">
+                        <i class="fas fa-comments"></i>
+                        <span>Comments</span>
+                    </h3>
+                    <div class="comment-list" id="commentList">
+                        <div class="comment-item">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="comment-avatar">
+                            <div class="comment-content">
+                                <div class="comment-author">Satyajit</div>
+                                <div class="comment-time">2 hours ago</div>
+                                <div class="comment-text">
+                                    I've started working on the inventory check. Found some discrepancies in the electronics section. Will update when I finish the whole section.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comment-item">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="comment-avatar">
+                            <div class="comment-content">
+                                <div class="comment-author">Vedant</div>
+                                <div class="comment-time">1 hour ago</div>
+                                <div class="comment-text">
+                                    Thanks for the update Sarah. Please make sure to document all discrepancies with photos and detailed notes.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <form class="comment-form" id="commentForm">
+                        <textarea class="comment-input" placeholder="Add a comment..."></textarea>
+                        <button type="submit" class="submit-comment">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="editTaskBtn">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit Task</span>
+                </button>
+                <button class="btn btn-primary" id="updateStatusBtn">
+                    <i class="fas fa-check"></i>
+                    <span>Mark as In Progress</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample task data
+            const tasks = [
+                {
+                    id: 1,
+                    title: "Inventory Check - Section A",
+                    description: "Conduct a full inventory check of Section A, including all SKUs and their quantities.",
+                    priority: "high",
+                    status: "pending",
+                    category: "inventory",
+                    assignees: [
+                        { id: 2, name: "Satyajit", avatar: "/Hackgenx/satyajit.jpeg" },
+                        { id: 3, name: "Vedant", avatar: "/Hackgenx/1000003249[1].jpg" }
+                    ],
+                    created: "2023-05-15",
+                    deadline: "2023-05-20",
+                    comments: [
+                        {
+                            author: "Satyajit",
+                            avatar: "/Hackgenx/satyajit.jpeg",
+                            time: "2 hours ago",
+                            text: "I've started working on the inventory check. Found some discrepancies in the electronics section. Will update when I finish the whole section."
+                        },
+                        {
+                            author: "Vedant",
+                            avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+                            time: "1 hour ago",
+                            text: "Thanks for the update Sarah. Please make sure to document all discrepancies with photos and detailed notes."
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Order Picking #1042",
+                    description: "Pick items for order #1042 according to the packing slip. Ensure all items are correct and undamaged.",
+                    priority: "medium",
+                    status: "in-progress",
+                    category: "picking",
+                    assignees: [
+                        { id: 3, name: "Nikhil", avatar: "/Hackgenx/Nikhil.jpg" }
+                    ],
+                    created: "2023-05-16",
+                    deadline: "2023-05-17",
+                    comments: []
+                },
+                {
+                    id: 3,
+                    title: "Forklift Maintenance",
+                    description: "Perform routine maintenance on forklift #3. Check hydraulic fluid, brakes, and tires.",
+                    priority: "medium",
+                    status: "completed",
+                    category: "maintenance",
+                    assignees: [
+                        { id: 1, name: "Akashad", avatar: "/Hackgenx/1[1].png" }
+                    ],
+                    created: "2023-05-10",
+                    deadline: "2023-05-12",
+                    comments: [
+                        {
+                            author: "Nikhil",
+                            avatar: "/Hackgenx/Nikhil.jpg",
+                            time: "2 days ago",
+                            text: "Completed maintenance. Found worn tires that need replacement soon."
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "Warehouse Cleaning - Zone 2",
+                    description: "Thorough cleaning of Zone 2 including sweeping, mopping, and organizing shelves.",
+                    priority: "low",
+                    status: "pending",
+                    category: "cleaning",
+                    assignees: [
+                        { id: 4, name: "Akshad", avatar: "/Hackgenx/1[1].png" },
+                        { id: 5, name: "Vedant", avatar: "/Hackgenx/1000003249[1].jpg" }
+                    ],
+                    created: "2023-05-14",
+                    deadline: "2023-05-18",
+                    comments: []
+                },
+                {
+                    id: 5,
+                    title: "Urgent: Ship High-Priority Order",
+                    description: "Prepare and ship high-priority order #1058 for express delivery. Must go out today.",
+                    priority: "high",
+                    status: "pending",
+                    category: "shipping",
+                    assignees: [
+                        { id: 4, name: "Om", avatar: "https://randomuser.me/api/portraits/women/33.jpg" }
+                    ],
+                    created: "2023-05-17",
+                    deadline: "2023-05-17",
+                    comments: []
+                }
+            ];
+
+            // DOM Elements
+            const taskCardsContainer = document.getElementById('taskCards');
+            const emptyState = document.getElementById('emptyState');
+            const taskForm = document.getElementById('taskForm');
+            const taskModal = document.getElementById('taskModal');
+            const closeModalBtn = document.querySelector('.close-modal');
+            const createTaskBtns = document.querySelectorAll('#createTaskBtn, #createTaskBtn2');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const taskWorkersSelect = document.getElementById('taskWorkers');
+            const selectedWorkersContainer = document.getElementById('selectedWorkers');
+            const commentForm = document.getElementById('commentForm');
+            const updateStatusBtn = document.getElementById('updateStatusBtn');
+            const editTaskBtn = document.getElementById('editTaskBtn');
+            const exportBtn = document.getElementById('exportBtn');
+
+            // Initialize the app
+            renderTaskCards(tasks);
+
+            // Event Listeners
+            createTaskBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Scroll to the task creation panel
+                    document.querySelector('.task-creation-panel').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    // Focus on the title field
+                    document.getElementById('taskTitle').focus();
+                });
+            });
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Filter tasks based on button text
+                    const filter = this.textContent.trim();
+                    let filteredTasks = [];
+                    
+                    if (filter === 'All Tasks') {
+                        filteredTasks = tasks;
+                    } else if (filter === 'Pending') {
+                        filteredTasks = tasks.filter(task => task.status === 'pending');
+                    } else if (filter === 'In Progress') {
+                        filteredTasks = tasks.filter(task => task.status === 'in-progress');
+                    } else if (filter === 'Completed') {
+                        filteredTasks = tasks.filter(task => task.status === 'completed');
+                    } else if (filter === 'Overdue') {
+                        // Simple overdue logic (for demo purposes)
+                        filteredTasks = tasks.filter(task => {
+                            const deadline = new Date(task.deadline);
+                            const today = new Date();
+                            return deadline < today && task.status !== 'completed';
+                        });
+                    }
+                    
+                    renderTaskCards(filteredTasks);
+                });
+            });
+
+            taskWorkersSelect.addEventListener('change', function() {
+                updateSelectedWorkers();
+            });
+
+            taskForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const title = document.getElementById('taskTitle').value;
+                const description = document.getElementById('taskDescription').value;
+                const priority = document.getElementById('taskPriority').value;
+                const deadline = document.getElementById('taskDeadline').value;
+                const category = document.getElementById('taskCategory').value;
+                const selectedOptions = Array.from(taskWorkersSelect.selectedOptions).map(option => ({
+                    id: option.value,
+                    name: option.text.split(' (')[0],
+                    avatar: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'men'}/${Math.floor(Math.random() * 100)}.jpg`
+                }));
+                
+                // Check if we're editing an existing task
+                const isEditing = taskForm.hasAttribute('data-edit-id');
+                const taskId = isEditing ? parseInt(taskForm.getAttribute('data-edit-id')) : tasks.length + 1;
+                
+                if (isEditing) {
+                    // Update existing task
+                    const taskIndex = tasks.findIndex(t => t.id === taskId);
+                    if (taskIndex !== -1) {
+                        tasks[taskIndex] = {
+                            ...tasks[taskIndex],
+                            title,
+                            description,
+                            priority,
+                            deadline,
+                            category,
+                            assignees: selectedOptions
+                        };
+                        
+                        // Show success message
+                        showNotification('Task updated successfully!', 'success');
+                        
+                        // Reset form
+                        taskForm.reset();
+                        selectedWorkersContainer.innerHTML = '';
+                        taskForm.querySelector('button[type="submit"]').innerHTML = '<i class="fas fa-paper-plane"></i><span>Assign Task</span>';
+                        taskForm.removeAttribute('data-edit-id');
+                    }
+                } else {
+                    // Create new task
+                    const newTask = {
+                        id: taskId,
+                        title,
+                        description,
+                        priority,
+                        status: "pending",
+                        category,
+                        assignees: selectedOptions,
+                        created: new Date().toISOString().split('T')[0],
+                        deadline,
+                        comments: []
+                    };
+                    
+                    // Add to tasks array
+                    tasks.unshift(newTask);
+                    
+                    // Show success message
+                    showNotification('Task created successfully!', 'success');
+                }
+                
+                // Render tasks
+                renderTaskCards(tasks);
+                
+                // Scroll to the top of the task list
+                setTimeout(() => {
+                    taskCardsContainer.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 300);
+            });
+
+            commentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const commentInput = this.querySelector('.comment-input');
+                const commentText = commentInput.value.trim();
+                
+                if (commentText) {
+                    // In a real app, you would save this to your database
+                    const newComment = {
+                        author: "John Smith",
+                        avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+                        time: "Just now",
+                        text: commentText
+                    };
+                    
+                    // Add to the current task's comments (in a real app, you'd update the actual task data)
+                    const commentList = document.getElementById('commentList');
+                    const commentItem = document.createElement('div');
+                    commentItem.className = 'comment-item';
+                    commentItem.innerHTML = `
+                        <img src="${newComment.avatar}" alt="User" class="comment-avatar">
+                        <div class="comment-content">
+                            <div class="comment-author">${newComment.author}</div>
+                            <div class="comment-time">${newComment.time}</div>
+                            <div class="comment-text">${newComment.text}</div>
+                        </div>
+                    `;
+                    commentList.prepend(commentItem);
+                    
+                    // Clear input
+                    commentInput.value = '';
+                    
+                    // Show notification
+                    showNotification('Comment added!', 'success');
+                }
+            });
+
+            updateStatusBtn.addEventListener('click', function() {
+                // Get the current task ID from the modal
+                const taskId = parseInt(document.querySelector('.task-modal').getAttribute('data-task-id'));
+                const task = tasks.find(t => t.id === taskId);
+                
+                if (!task) return;
+                
+                // Update task status
+                if (task.status === 'pending') {
+                    task.status = 'in-progress';
+                } else if (task.status === 'in-progress') {
+                    task.status = 'completed';
+                }
+                
+                // Update UI
+                const currentStatus = task.status.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+                document.getElementById('modalTaskStatus').textContent = currentStatus;
+                document.getElementById('modalTaskStatus').className = 'detail-value';
+                document.getElementById('modalTaskStatus').classList.add(`status-${task.status.toLowerCase().replace(' ', '-')}`);
+                
+                // Update button text if not completed
+                if (task.status !== 'completed') {
+                    this.innerHTML = task.status === 'pending' 
+                        ? '<i class="fas fa-check"></i><span>Mark as In Progress</span>' 
+                        : '<i class="fas fa-check"></i><span>Mark as Completed</span>';
+                } else {
+                    this.innerHTML = '<i class="fas fa-check-circle"></i><span>Task Completed</span>';
+                    this.classList.add('bounce');
+                    setTimeout(() => {
+                        this.classList.remove('bounce');
+                    }, 2000);
+                }
+                
+                // Update the task card in the list
+                const taskCard = document.querySelector(`.task-card[data-id="${taskId}"]`);
+                if (taskCard) {
+                    const statusBadge = taskCard.querySelector('.task-status');
+                    statusBadge.textContent = currentStatus;
+                    statusBadge.className = 'task-status';
+                    statusBadge.classList.add(`status-${task.status.toLowerCase().replace(' ', '-')}`);
+                }
+                
+                // Show notification
+                showNotification(`Task status updated to ${currentStatus}`, 'success');
+            });
+
+            editTaskBtn.addEventListener('click', function() {
+                const taskId = parseInt(document.querySelector('.task-modal').getAttribute('data-task-id'));
+                editTask(taskId);
+                closeTaskModal();
+            });
+
+            exportBtn.addEventListener('click', function() {
+                // Create CSV content
+                let csvContent = "Task ID,Title,Description,Priority,Status,Category,Assignees,Created,Deadline\n";
+                
+                tasks.forEach(task => {
+                    const assignees = task.assignees.map(a => a.name).join('; ');
+                    csvContent += `${task.id},"${task.title}","${task.description}",${task.priority},${task.status},${task.category},"${assignees}",${task.created},${task.deadline}\n`;
+                });
+                
+                // Create download link
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', `warehouse-tasks-${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification('Tasks exported successfully!', 'success');
+            });
+
+            // Close modal when clicking outside
+            taskModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeTaskModal();
+                }
+            });
+
+            closeModalBtn.addEventListener('click', closeTaskModal);
+
+            // Functions
+            function renderTaskCards(tasksToRender) {
+                if (tasksToRender.length === 0) {
+                    taskCardsContainer.style.display = 'none';
+                    emptyState.style.display = 'flex';
+                    return;
+                }
+                
+                taskCardsContainer.style.display = 'grid';
+                emptyState.style.display = 'none';
+                
+                taskCardsContainer.innerHTML = '';
+                
+                tasksToRender.forEach(task => {
+                    const taskCard = document.createElement('div');
+                    taskCard.className = `task-card ${task.priority}-priority`;
+                    taskCard.setAttribute('data-id', task.id);
+                    
+                    // Format dates
+                    const createdDate = new Date(task.created).toLocaleDateString();
+                    const deadlineDate = new Date(task.deadline).toLocaleDateString();
+                    
+                    // Priority badge
+                    let priorityBadge = '';
+                    if (task.priority === 'high') {
+                        priorityBadge = '<span class="task-priority high-priority-badge">High Priority</span>';
+                    } else if (task.priority === 'medium') {
+                        priorityBadge = '<span class="task-priority medium-priority-badge">Medium Priority</span>';
+                    } else {
+                        priorityBadge = '<span class="task-priority low-priority-badge">Low Priority</span>';
+                    }
+                    
+                    // Status badge
+                    let statusBadge = '';
+                    if (task.status === 'pending') {
+                        statusBadge = '<span class="task-status status-pending">Pending</span>';
+                    } else if (task.status === 'in-progress') {
+                        statusBadge = '<span class="task-status status-in-progress">In Progress</span>';
+                    } else {
+                        statusBadge = '<span class="task-status status-completed">Completed</span>';
+                    }
+                    
+                    // Assignees
+                    let assigneesHTML = '';
+                    if (task.assignees.length > 0) {
+                        assigneesHTML = task.assignees.slice(0, 3).map(assignee => 
+                            `<img src="${assignee.avatar}" alt="${assignee.name}" class="assignee-avatar" title="${assignee.name}">`
+                        ).join('');
+                        
+                        if (task.assignees.length > 3) {
+                            assigneesHTML += `<div class="more-assignees" title="${task.assignees.slice(3).map(a => a.name).join(', ')}">+${task.assignees.length - 3}</div>`;
+                        }
+                    }
+                    
+                    taskCard.innerHTML = `
+                        <div class="task-header">
+                            <div>
+                                <h3 class="task-title">${task.title} ${priorityBadge}</h3>
+                                <div class="task-description">${task.description}</div>
+                            </div>
+                            <div class="task-actions">
+                                <button class="task-action-btn edit-task" data-id="${task.id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="task-action-btn delete-task" data-id="${task.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="task-footer">
+                            <div class="task-assignees">
+                                ${assigneesHTML}
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div class="task-deadline">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>${deadlineDate}</span>
+                                </div>
+                                ${statusBadge}
+                            </div>
+                        </div>
+                    `;
+                    
+                    taskCardsContainer.appendChild(taskCard);
+                });
+                
+                // Add event listeners to task cards
+                document.querySelectorAll('.task-card').forEach(card => {
+                    card.addEventListener('click', function(e) {
+                        if (!e.target.closest('.task-actions')) {
+                            const taskId = parseInt(this.getAttribute('data-id'));
+                            openTaskModal(taskId);
+                        }
+                    });
+                });
+                
+                // Add event listeners to edit buttons
+                document.querySelectorAll('.edit-task').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const taskId = parseInt(this.getAttribute('data-id'));
+                        editTask(taskId);
+                    });
+                });
+                
+                // Add event listeners to delete buttons
+                document.querySelectorAll('.delete-task').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const taskId = parseInt(this.getAttribute('data-id'));
+                        deleteTask(taskId);
+                    });
+                });
+            }
+
+            function openTaskModal(taskId) {
+                const task = tasks.find(t => t.id === taskId);
+                if (!task) return;
+                
+                // Set modal content
+                document.querySelector('.task-modal').setAttribute('data-task-id', taskId);
+                document.getElementById('modalTaskTitle').textContent = task.title;
+                document.getElementById('modalTaskDescription').textContent = task.description;
+                document.getElementById('modalTaskPriority').textContent = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
+                document.getElementById('modalTaskPriority').className = `detail-value priority-${task.priority}`;
+                
+                const statusDisplay = task.status.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+                document.getElementById('modalTaskStatus').textContent = statusDisplay;
+                document.getElementById('modalTaskStatus').className = 'detail-value';
+                document.getElementById('modalTaskStatus').classList.add(`status-${task.status.toLowerCase().replace(' ', '-')}`);
+                
+                document.getElementById('modalTaskAssignees').textContent = task.assignees.map(a => a.name).join(', ');
+                document.getElementById('modalTaskCategory').textContent = task.category.charAt(0).toUpperCase() + task.category.slice(1).replace('-', ' ');
+                document.getElementById('modalTaskCreated').textContent = new Date(task.created).toLocaleDateString();
+                document.getElementById('modalTaskDeadline').textContent = new Date(task.deadline).toLocaleDateString();
+                
+                // Set update status button
+                if (task.status === 'pending') {
+                    updateStatusBtn.innerHTML = '<i class="fas fa-check"></i><span>Mark as In Progress</span>';
+                    updateStatusBtn.disabled = false;
+                } else if (task.status === 'in-progress') {
+                    updateStatusBtn.innerHTML = '<i class="fas fa-check"></i><span>Mark as Completed</span>';
+                    updateStatusBtn.disabled = false;
+                } else {
+                    updateStatusBtn.innerHTML = '<i class="fas fa-check-circle"></i><span>Task Completed</span>';
+                    updateStatusBtn.disabled = true;
+                }
+                
+                // Render comments
+                const commentList = document.getElementById('commentList');
+                commentList.innerHTML = '';
+                
+                if (task.comments.length > 0) {
+                    task.comments.forEach(comment => {
+                        const commentItem = document.createElement('div');
+                        commentItem.className = 'comment-item';
+                        commentItem.innerHTML = `
+                            <img src="${comment.avatar}" alt="User" class="comment-avatar">
+                            <div class="comment-content">
+                                <div class="comment-author">${comment.author}</div>
+                                <div class="comment-time">${comment.time}</div>
+                                <div class="comment-text">${comment.text}</div>
+                            </div>
+                        `;
+                        commentList.appendChild(commentItem);
+                    });
+                } else {
+                    commentList.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 20px;">No comments yet</p>';
+                }
+                
+                // Open modal
+                taskModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeTaskModal() {
+                taskModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            function updateSelectedWorkers() {
+                selectedWorkersContainer.innerHTML = '';
+                const selectedOptions = Array.from(taskWorkersSelect.selectedOptions);
+                
+                selectedOptions.forEach(option => {
+                    const workerId = option.value;
+                    const workerName = option.text.split(' (')[0];
+                    
+                    const workerTag = document.createElement('div');
+                    workerTag.className = 'worker-tag';
+                    workerTag.innerHTML = `
+                        <img src="https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${Math.floor(Math.random() * 100)}.jpg" alt="${workerName}">
+                        <span>${workerName}</span>
+                        <span class="remove-worker" data-id="${workerId}">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    `;
+                    
+                    selectedWorkersContainer.appendChild(workerTag);
+                    
+                    // Add event listener to remove button
+                    workerTag.querySelector('.remove-worker').addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const workerId = this.getAttribute('data-id');
+                        const optionToDeselect = Array.from(taskWorkersSelect.options).find(opt => opt.value === workerId);
+                        if (optionToDeselect) {
+                            optionToDeselect.selected = false;
+                            updateSelectedWorkers();
+                        }
+                    });
+                });
+            }
+
+            function editTask(taskId) {
+                const task = tasks.find(t => t.id === taskId);
+                if (!task) return;
+                
+                // Scroll to form
+                document.querySelector('.task-creation-panel').scrollIntoView({
+                    behavior: 'smooth'
+                });
+                
+                // Fill form with task data
+                document.getElementById('taskTitle').value = task.title;
+                document.getElementById('taskDescription').value = task.description;
+                document.getElementById('taskPriority').value = task.priority;
+                document.getElementById('taskDeadline').value = task.deadline;
+                document.getElementById('taskCategory').value = task.category;
+                
+                // Select assignees
+                Array.from(taskWorkersSelect.options).forEach(option => {
+                    option.selected = task.assignees.some(a => a.id === option.value);
+                });
+                updateSelectedWorkers();
+                
+                // Change form button text
+                const submitBtn = taskForm.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<i class="fas fa-save"></i><span>Update Task</span>';
+                
+                // Store task ID in form for reference
+                taskForm.setAttribute('data-edit-id', taskId);
+            }
+
+            function deleteTask(taskId) {
+                if (confirm('Are you sure you want to delete this task?')) {
+                    const taskIndex = tasks.findIndex(t => t.id === taskId);
+                    if (taskIndex !== -1) {
+                        tasks.splice(taskIndex, 1);
+                        renderTaskCards(tasks);
+                        showNotification('Task deleted successfully!', 'success');
+                        
+                        // Close modal if open for this task
+                        const modalTaskId = document.querySelector('.task-modal').getAttribute('data-task-id');
+                        if (modalTaskId && parseInt(modalTaskId) === taskId) {
+                            closeTaskModal();
+                        }
+                    }
+                }
+            }
+
+            function showNotification(message, type) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                
+                // Add to body
+                document.body.appendChild(notification);
+                
+                // Show notification
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 10);
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+        });
+    </script>
+    <style>
+        :root {
+   --primary: #4361ee;
+   --primary-dark: #3a56d4;
+   --secondary: #3f37c9;
+   --accent: #4895ef;
+   --danger: #f72585;
+   --success: #4cc9f0;
+   --warning: #f8961e;
+   --light: #f8f9fa;
+   --dark: #212529;
+   --gray: #6c757d;
+   --light-gray: #e9ecef;
+ }
+ 
+ * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+   transition: all 0.3s ease;
+ }
+ 
+ html {
+   overflow-x: hidden;
+ }
+ 
+ body {
+   font-family: 'Poppins', sans-serif;
+   background-color: #f5f7fa;
+   color: var(--dark);
+   line-height: 1.6;
+   min-height: 100vh;
+   width: 100%;
+   overflow-x: hidden;
+ }
+ 
+ /* Top Navigation */
+ .top-nav {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 15px 30px;
+   background-color: white;
+   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+   position: sticky;
+   top: 0;
+   z-index: 100;
+   width: 100%;
+ }
+ 
+ .logo {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+ }
+ 
+ .logo img {
+   width: 40px;
+   height: 40px;
+   border-radius: 8px;
+ }
+ 
+ .logo-text {
+   font-weight: 700;
+   font-size: 1.2rem;
+   color: var(--primary);
+ }
+ 
+ .nav-actions {
+   display: flex;
+   align-items: center;
+   gap: 20px;
+ }
+ 
+ .search-bar {
+   display: flex;
+   align-items: center;
+   background-color: var(--light-gray);
+   border-radius: 30px;
+   padding: 8px 15px;
+   max-width: 400px;
+   width: 100%;
+ }
+ 
+ .search-bar input {
+   border: none;
+   background: none;
+   outline: none;
+   flex: 1;
+   padding: 5px 10px;
+   font-size: 0.9rem;
+   font-family: 'Poppins', sans-serif;
+   min-width: 0;
+ }
+ 
+ .search-bar i {
+   color: var(--gray);
+   margin-right: 5px;
+ }
+ 
+ .user-actions {
+   display: flex;
+   align-items: center;
+   gap: 20px;
+ }
+ 
+ .notification-bell, .messages {
+   position: relative;
+   color: var(--gray);
+   font-size: 1.2rem;
+   cursor: pointer;
+ }
+ 
+ .notification-bell:hover, .messages:hover {
+   color: var(--primary);
+ }
+ 
+ .badge {
+   position: absolute;
+   top: -5px;
+   right: -5px;
+   background-color: var(--danger);
+   color: white;
+   border-radius: 50%;
+   width: 18px;
+   height: 18px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 0.6rem;
+   font-weight: bold;
+ }
+ 
+ .user-avatar {
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   object-fit: cover;
+   border: 2px solid var(--accent);
+   cursor: pointer;
+ }
+ 
+ /* Main Content */
+ .main-container {
+   padding: 30px;
+   width: 100%;
+   max-width: 100%;
+   overflow: hidden;
+ }
+ 
+ .page-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 30px;
+   flex-wrap: wrap;
+   gap: 15px;
+   width: 100%;
+ }
+ 
+ .page-title {
+   font-weight: 700;
+   font-size: 1.8rem;
+   color: var(--dark);
+ }
+ 
+ .page-actions {
+   display: flex;
+   gap: 15px;
+   flex-wrap: wrap;
+ }
+ 
+ .btn {
+   padding: 10px 20px;
+   border: none;
+   border-radius: 5px;
+   font-weight: 500;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   font-size: 0.9rem;
+   transition: all 0.3s ease;
+   font-family: 'Poppins', sans-serif;
+   white-space: nowrap;
+ }
+ 
+ .btn-primary {
+   background-color: var(--primary);
+   color: white;
+ }
+ 
+ .btn-primary:hover {
+   background-color: var(--primary-dark);
+   transform: translateY(-2px);
+   box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+ }
+ 
+ .btn-outline {
+   background-color: transparent;
+   border: 1px solid var(--gray);
+   color: var(--gray);
+ }
+ 
+ .btn-outline:hover {
+   border-color: var(--primary);
+   color: var(--primary);
+ }
+ 
+ /* Stats Cards */
+ .stats-cards {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+   gap: 20px;
+   margin-bottom: 30px;
+   width: 100%;
+ }
+ 
+ .stat-card {
+   background-color: white;
+   border-radius: 10px;
+   padding: 20px;
+   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+   transition: all 0.3s ease;
+   border-top: 4px solid var(--gray);
+   width: 100%;
+ }
+ 
+ .stat-card:hover {
+   transform: translateY(-5px);
+   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+ }
+ 
+ .stat-card.pending {
+   border-top-color: var(--gray);
+ }
+ 
+ .stat-card.in-progress {
+   border-top-color: var(--primary);
+ }
+ 
+ .stat-card.completed {
+   border-top-color: var(--success);
+ }
+ 
+ .stat-card.overdue {
+   border-top-color: var(--danger);
+ }
+ 
+ .stat-title {
+   font-size: 0.9rem;
+   color: var(--gray);
+   margin-bottom: 10px;
+ }
+ 
+ .stat-value {
+   font-size: 1.8rem;
+   font-weight: 700;
+   margin-bottom: 5px;
+ }
+ 
+ .stat-change {
+   font-size: 0.8rem;
+   display: flex;
+   align-items: center;
+   gap: 5px;
+ }
+ 
+ .stat-change.positive {
+   color: var(--success);
+ }
+ 
+ .stat-change.negative {
+   color: var(--danger);
+ }
+ 
+ /* Task Management */
+ .task-management {
+   display: grid;
+   grid-template-columns: 1fr 2fr;
+   gap: 30px;
+   width: 100%;
+ }
+ 
+ /* Task Creation Panel */
+ .task-creation-panel {
+   background-color: white;
+   border-radius: 10px;
+   padding: 25px;
+   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+   height: fit-content;
+   position: sticky;
+   top: 100px;
+   width: 100%;
+ }
+ 
+ .panel-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 20px;
+   padding-bottom: 15px;
+   border-bottom: 1px solid var(--light-gray);
+   width: 100%;
+ }
+ 
+ .panel-title {
+   font-weight: 600;
+   font-size: 1.2rem;
+   color: var(--dark);
+ }
+ 
+ .form-group {
+   margin-bottom: 20px;
+   width: 100%;
+ }
+ 
+ .form-label {
+   display: block;
+   margin-bottom: 8px;
+   font-weight: 500;
+   font-size: 0.9rem;
+   color: var(--dark);
+ }
+ 
+ .form-control {
+   width: 100%;
+   padding: 12px 15px;
+   border: 1px solid var(--light-gray);
+   border-radius: 5px;
+   font-size: 0.95rem;
+   transition: all 0.3s ease;
+   font-family: 'Poppins', sans-serif;
+ }
+ 
+ .form-control:focus {
+   border-color: var(--primary);
+   box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+   outline: none;
+ }
+ 
+ textarea.form-control {
+   min-height: 100px;
+   resize: vertical;
+ }
+ 
+ .select-wrapper {
+   position: relative;
+   width: 100%;
+ }
+ 
+ .select-wrapper::after {
+   content: '\f078';
+   font-family: 'Font Awesome 6 Free';
+   font-weight: 900;
+   position: absolute;
+   top: 50%;
+   right: 15px;
+   transform: translateY(-50%);
+   color: var(--gray);
+   pointer-events: none;
+ }
+ 
+ .priority-select {
+   appearance: none;
+   background-color: white;
+   width: 100%;
+ }
+ 
+ .priority-option {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+ }
+ 
+ .priority-dot {
+   width: 10px;
+   height: 10px;
+   border-radius: 50%;
+ }
+ 
+ .priority-high {
+   background-color: var(--danger);
+ }
+ 
+ .priority-medium {
+   background-color: var(--warning);
+ }
+ 
+ .priority-low {
+   background-color: var(--success);
+ }
+ 
+ .date-picker {
+   position: relative;
+   width: 100%;
+ }
+ 
+ .date-picker i {
+   position: absolute;
+   top: 50%;
+   right: 15px;
+   transform: translateY(-50%);
+   color: var(--gray);
+   pointer-events: none;
+ }
+ 
+ .worker-selection {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 10px;
+   margin-top: 10px;
+   width: 100%;
+ }
+ 
+ .worker-tag {
+   display: flex;
+   align-items: center;
+   background-color: var(--light-gray);
+   padding: 5px 12px;
+   border-radius: 20px;
+   font-size: 0.85rem;
+   gap: 5px;
+   white-space: nowrap;
+ }
+ 
+ .worker-tag img {
+   width: 20px;
+   height: 20px;
+   border-radius: 50%;
+   object-fit: cover;
+ }
+ 
+ .worker-tag .remove-worker {
+   color: var(--gray);
+   cursor: pointer;
+   font-size: 0.7rem;
+ }
+ 
+ .worker-tag .remove-worker:hover {
+   color: var(--danger);
+ }
+ 
+ /* Task List Panel */
+ .task-list-panel {
+   background-color: white;
+   border-radius: 10px;
+   padding: 25px;
+   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+   width: 100%;
+ }
+ 
+ .task-filters {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 25px;
+   flex-wrap: wrap;
+   gap: 15px;
+   width: 100%;
+ }
+ 
+ .filter-group {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   flex-wrap: wrap;
+ }
+ 
+ .filter-btn {
+   padding: 8px 15px;
+   border-radius: 20px;
+   font-size: 0.85rem;
+   cursor: pointer;
+   background-color: var(--light-gray);
+   border: none;
+   transition: all 0.3s ease;
+   font-family: 'Poppins', sans-serif;
+   white-space: nowrap;
+ }
+ 
+ .filter-btn.active {
+   background-color: var(--primary);
+   color: white;
+ }
+ 
+ .filter-btn:hover:not(.active) {
+   background-color: #d1d7e0;
+ }
+ 
+ .search-filter {
+   display: flex;
+   align-items: center;
+   background-color: var(--light-gray);
+   border-radius: 20px;
+   padding: 8px 15px;
+   min-width: 200px;
+   width: 100%;
+   max-width: 300px;
+ }
+ 
+ .search-filter input {
+   border: none;
+   background: none;
+   outline: none;
+   flex: 1;
+   padding: 5px;
+   font-size: 0.9rem;
+   font-family: 'Poppins', sans-serif;
+   min-width: 0;
+ }
+ 
+ .search-filter i {
+   color: var(--gray);
+   margin-right: 5px;
+ }
+ 
+ /* Task Cards */
+ .task-cards {
+   display: grid;
+   grid-template-columns: 1fr;
+   gap: 15px;
+   width: 100%;
+ }
+ 
+ .task-card {
+   background-color: white;
+   border-radius: 8px;
+   padding: 20px;
+   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+   border-left: 4px solid var(--primary);
+   transition: all 0.3s ease;
+   position: relative;
+   overflow: hidden;
+   width: 100%;
+ }
+ 
+ .task-card:hover {
+   transform: translateY(-5px);
+   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+ }
+ 
+ .task-card.high-priority {
+   border-left-color: var(--danger);
+ }
+ 
+ .task-card.medium-priority {
+   border-left-color: var(--warning);
+ }
+ 
+ .task-card.low-priority {
+   border-left-color: var(--success);
+ }
+ 
+ .task-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: flex-start;
+   margin-bottom: 15px;
+   width: 100%;
+ }
+ 
+ .task-title {
+   font-weight: 600;
+   font-size: 1.1rem;
+   color: var(--dark);
+   margin-bottom: 5px;
+   word-break: break-word;
+ }
+ 
+ .task-priority {
+   display: inline-block;
+   padding: 3px 10px;
+   border-radius: 20px;
+   font-size: 0.75rem;
+   font-weight: 500;
+   margin-left: 10px;
+ }
+ 
+ .high-priority-badge {
+   background-color: rgba(247, 37, 133, 0.1);
+   color: var(--danger);
+ }
+ 
+ .medium-priority-badge {
+   background-color: rgba(248, 150, 30, 0.1);
+   color: var(--warning);
+ }
+ 
+ .low-priority-badge {
+   background-color: rgba(76, 201, 240, 0.1);
+   color: var(--success);
+ }
+ 
+ .task-actions {
+   display: flex;
+   gap: 10px;
+ }
+ 
+ .task-action-btn {
+   background: none;
+   border: none;
+   color: var(--gray);
+   cursor: pointer;
+   font-size: 1rem;
+   transition: all 0.3s ease;
+ }
+ 
+ .task-action-btn:hover {
+   color: var(--primary);
+   transform: scale(1.1);
+ }
+ 
+ .task-action-btn.delete:hover {
+   color: var(--danger);
+ }
+ 
+ .task-description {
+   color: var(--gray);
+   font-size: 0.9rem;
+   margin-bottom: 15px;
+   display: -webkit-box;
+   -webkit-line-clamp: 2;
+   -webkit-box-orient: vertical;
+   overflow: hidden;
+   word-break: break-word;
+ }
+ 
+ .task-footer {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-top: 15px;
+   padding-top: 15px;
+   border-top: 1px solid var(--light-gray);
+   flex-wrap: wrap;
+   gap: 10px;
+   width: 100%;
+ }
+ 
+ .task-assignees {
+   display: flex;
+   align-items: center;
+   flex-wrap: wrap;
+ }
+ 
+ .assignee-avatar {
+   width: 30px;
+   height: 30px;
+   border-radius: 50%;
+   object-fit: cover;
+   border: 2px solid white;
+   margin-left: -10px;
+ }
+ 
+ .assignee-avatar:first-child {
+   margin-left: 0;
+ }
+ 
+ .more-assignees {
+   width: 30px;
+   height: 30px;
+   border-radius: 50%;
+   background-color: var(--light-gray);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 0.7rem;
+   font-weight: 600;
+   color: var(--gray);
+   margin-left: -10px;
+ }
+ 
+ .task-deadline {
+   display: flex;
+   align-items: center;
+   gap: 5px;
+   font-size: 0.85rem;
+   color: var(--gray);
+   white-space: nowrap;
+ }
+ 
+ .task-deadline i {
+   font-size: 0.9rem;
+ }
+ 
+ .task-status {
+   padding: 5px 10px;
+   border-radius: 20px;
+   font-size: 0.8rem;
+   font-weight: 500;
+   white-space: nowrap;
+ }
+ 
+ .status-pending {
+   background-color: rgba(108, 117, 125, 0.1);
+   color: var(--gray);
+ }
+ 
+ .status-in-progress {
+   background-color: rgba(67, 97, 238, 0.1);
+   color: var(--primary);
+ }
+ 
+ .status-completed {
+   background-color: rgba(76, 201, 240, 0.1);
+   color: var(--success);
+ }
+ 
+ /* Task Details Modal */
+ .modal-overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background-color: rgba(0, 0, 0, 0.5);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   z-index: 1000;
+   opacity: 0;
+   visibility: hidden;
+   transition: all 0.3s ease;
+   width: 100%;
+   overflow: hidden;
+ }
+ 
+ .modal-overlay.active {
+   opacity: 1;
+   visibility: visible;
+ }
+ 
+ .task-modal {
+   background-color: white;
+   border-radius: 10px;
+   width: 90%;
+   max-width: 800px;
+   max-height: 90vh;
+   overflow-y: auto;
+   transform: translateY(-50px);
+   transition: all 0.3s ease;
+   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+   margin: 20px;
+ }
+ 
+ .modal-overlay.active .task-modal {
+   transform: translateY(0);
+ }
+ 
+ .modal-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 20px;
+   border-bottom: 1px solid var(--light-gray);
+   position: sticky;
+   top: 0;
+   background-color: white;
+   z-index: 10;
+ }
+ 
+ .modal-title {
+   font-weight: 600;
+   font-size: 1.3rem;
+   color: var(--dark);
+   word-break: break-word;
+ }
+ 
+ .close-modal {
+   background: none;
+   border: none;
+   font-size: 1.5rem;
+   color: var(--gray);
+   cursor: pointer;
+   flex-shrink: 0;
+ }
+ 
+ .close-modal:hover {
+   color: var(--danger);
+ }
+ 
+ .modal-body {
+   padding: 20px;
+   width: 100%;
+ }
+ 
+ .task-detail-row {
+   display: flex;
+   margin-bottom: 20px;
+   flex-wrap: wrap;
+   width: 100%;
+ }
+ 
+ .detail-label {
+   width: 150px;
+   font-weight: 500;
+   color: var(--dark);
+   flex-shrink: 0;
+ }
+ 
+ .detail-value {
+   flex: 1;
+   color: var(--gray);
+   min-width: 200px;
+   word-break: break-word;
+ }
+ 
+ .detail-value.priority-high {
+   color: var(--danger);
+   font-weight: 500;
+ }
+ 
+ .detail-value.priority-medium {
+   color: var(--warning);
+   font-weight: 500;
+ }
+ 
+ .detail-value.priority-low {
+   color: var(--success);
+   font-weight: 500;
+ }
+ 
+ .task-description-full {
+   line-height: 1.7;
+   margin-bottom: 20px;
+   word-break: break-word;
+ }
+ 
+ .task-comments {
+   margin-top: 30px;
+   width: 100%;
+ }
+ 
+ .comments-title {
+   font-weight: 600;
+   margin-bottom: 15px;
+   display: flex;
+   align-items: center;
+   gap: 10px;
+ }
+ 
+ .comment-list {
+   margin-bottom: 20px;
+   width: 100%;
+ }
+ 
+ .comment-item {
+   display: flex;
+   gap: 15px;
+   margin-bottom: 15px;
+   padding-bottom: 15px;
+   border-bottom: 1px solid var(--light-gray);
+   width: 100%;
+ }
+ 
+ .comment-avatar {
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   object-fit: cover;
+   flex-shrink: 0;
+ }
+ 
+ .comment-content {
+   flex: 1;
+ }
+ 
+ .comment-author {
+   font-weight: 500;
+   margin-bottom: 5px;
+ }
+ 
+ .comment-time {
+   font-size: 0.75rem;
+   color: var(--gray);
+   margin-bottom: 5px;
+ }
+ 
+ .comment-text {
+   font-size: 0.9rem;
+   line-height: 1.5;
+   word-break: break-word;
+ }
+ 
+ .comment-form {
+   display: flex;
+   gap: 10px;
+   margin-top: 20px;
+   flex-wrap: wrap;
+   width: 100%;
+ }
+ 
+ .comment-input {
+   flex: 1;
+   padding: 10px 15px;
+   border: 1px solid var(--light-gray);
+   border-radius: 20px;
+   font-size: 0.9rem;
+   resize: none;
+   height: 45px;
+   transition: all 0.3s ease;
+   min-width: 200px;
+   font-family: 'Poppins', sans-serif;
+   width: 100%;
+ }
+ 
+ .comment-input:focus {
+   border-color: var(--primary);
+   outline: none;
+   height: 80px;
+ }
+ 
+ .submit-comment {
+   background-color: var(--primary);
+   color: white;
+   border: none;
+   border-radius: 50%;
+   width: 45px;
+   height: 45px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   flex-shrink: 0;
+ }
+ 
+ .submit-comment:hover {
+   background-color: var(--primary-dark);
+   transform: scale(1.05);
+ }
+ 
+ .modal-footer {
+   padding: 15px 20px;
+   border-top: 1px solid var(--light-gray);
+   display: flex;
+   justify-content: flex-end;
+   gap: 10px;
+   flex-wrap: wrap;
+   width: 100%;
+ }
+ 
+ /* Empty State */
+ .empty-state {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   padding: 40px 20px;
+   text-align: center;
+   width: 100%;
+ }
+ 
+ .empty-state img {
+   width: 200px;
+   margin-bottom: 20px;
+   opacity: 0.7;
+   max-width: 100%;
+ }
+ 
+ .empty-state h3 {
+   font-weight: 600;
+   margin-bottom: 10px;
+   color: var(--dark);
+ }
+ 
+ .empty-state p {
+   color: var(--gray);
+   max-width: 400px;
+   margin-bottom: 20px;
+   width: 100%;
+ }
+ 
+ /* Responsive Styles */
+ @media (max-width: 1200px) {
+   .task-management {
+     grid-template-columns: 1fr;
+   }
+   
+   .task-creation-panel {
+     position: static;
+   }
+ }
+ 
+ @media (max-width: 992px) {
+   .search-bar {
+     max-width: 300px;
+   }
+   
+   .stats-cards {
+     grid-template-columns: repeat(2, 1fr);
+   }
+   
+   .search-filter {
+     max-width: 100%;
+   }
+ }
+ 
+ @media (max-width: 768px) {
+   .top-nav {
+     padding: 15px;
+     flex-wrap: wrap;
+     gap: 15px;
+   }
+   
+   .nav-actions {
+     width: 100%;
+     order: 3;
+     justify-content: space-between;
+   }
+   
+   .search-bar {
+     max-width: 100%;
+     order: 1;
+   }
+   
+   .user-actions {
+     order: 2;
+   }
+   
+   .page-header {
+     flex-direction: column;
+     align-items: flex-start;
+   }
+   
+   .page-actions {
+     width: 100%;
+     justify-content: space-between;
+   }
+   
+   .task-filters {
+     flex-direction: column;
+     align-items: flex-start;
+   }
+   
+   .filter-group {
+     width: 100%;
+     overflow-x: auto;
+     padding-bottom: 10px;
+     scrollbar-width: none;
+     -ms-overflow-style: none;
+   }
+   
+   .filter-group::-webkit-scrollbar {
+     display: none;
+   }
+   
+   .search-filter {
+     max-width: 100%;
+   }
+   
+   .modal-body {
+     padding: 15px;
+   }
+ }
+ 
+ @media (max-width: 576px) {
+   .main-container {
+     padding: 15px;
+   }
+   
+   .btn {
+     padding: 8px 15px;
+     font-size: 0.85rem;
+   }
+   
+   .stats-cards {
+     grid-template-columns: 1fr;
+   }
+   
+   .task-detail-row {
+     flex-direction: column;
+     gap: 5px;
+   }
+   
+   .detail-label {
+     width: 100%;
+   }
+   
+   .comment-form {
+     flex-direction: column;
+   }
+   
+   .submit-comment {
+     width: 100%;
+     border-radius: 20px;
+   }
+   
+   .modal-footer {
+     justify-content: center;
+   }
+   
+   .task-modal {
+     width: 95%;
+     margin: 10px;
+   }
+ }
+ 
+ /* Animations */
+ @keyframes fadeIn {
+   from { opacity: 0; transform: translateY(-20px); }
+   to { opacity: 1; transform: translateY(0); }
+ }
+ 
+ @keyframes slideUp {
+   from { opacity: 0; transform: translateY(30px); }
+   to { opacity: 1; transform: translateY(0); }
+ }
+ 
+ @keyframes pulse {
+   0% { transform: scale(1); }
+   50% { transform: scale(1.05); }
+   100% { transform: scale(1); }
+ }
+ 
+ .pulse {
+   animation: pulse 2s infinite;
+ }
+ 
+ @keyframes bounce {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-10px); }
+ }
+ 
+ .bounce {
+   animation: bounce 2s infinite;
+ }
+ 
+ /* Custom Scrollbar */
+ ::-webkit-scrollbar {
+   width: 8px;
+   height: 8px;
+ }
+ 
+ ::-webkit-scrollbar-track {
+   background: var(--light-gray);
+ }
+ 
+ ::-webkit-scrollbar-thumb {
+   background: var(--primary);
+   border-radius: 10px;
+ }
+ 
+ ::-webkit-scrollbar-thumb:hover {
+   background: var(--primary-dark);
+ }
+     </style>
+</body>
+</html>

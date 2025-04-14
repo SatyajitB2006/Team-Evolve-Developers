@@ -1,0 +1,2529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Control</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/3710/3710315.png" alt="EngineParts Pro">
+            <h1>Stock Control</h1>
+        </div>
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search engine parts...">
+        </div>
+        <div class="user-actions">
+            <div class="notification">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </div>
+            <div class="user-profile">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
+                <span> Evolve Developers</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-title">
+            <h1>Engine Parts Inventory</h1>
+            <p>Manage and track engine components in real-time</p>
+        </div>
+        <div class="action-buttons">
+            <button class="btn btn-outline" id="exportBtn">
+                <i class="fas fa-file-export"></i> Export
+            </button>
+            <button class="btn btn-primary" id="addStockBtn">
+                <i class="fas fa-plus"></i> Add Part
+            </button>
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+        <!-- Stats Cards -->
+        <div class="stats-cards">
+            <div class="stat-card total" id="totalProductsCard">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Total Parts</div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i> 0% change
+                        </div>
+                    </div>
+                    <i class="fas fa-box-open"></i>
+                </div>
+            </div>
+            <div class="stat-card good" id="inStockCard">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">In Stock</div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i> 0% change
+                        </div>
+                    </div>
+                    <i class="fas fa-check-circle"></i>
+                </div>
+            </div>
+            <div class="stat-card warning" id="lowStockCard">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Low Stock</div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-change negative">
+                            <i class="fas fa-arrow-down"></i> 0% change
+                        </div>
+                    </div>
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+            <div class="stat-card low" id="outOfStockCard">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Out of Stock</div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-change negative">
+                            <i class="fas fa-arrow-down"></i> 0% change
+                        </div>
+                    </div>
+                    <i class="fas fa-times-circle"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Inventory Table -->
+                <div class="inventory-card">
+                    <div class="card-header">
+                        <div class="card-title">Current Inventory</div>
+                        <div class="card-actions">
+                            <button id="refreshInventory"><i class="fas fa-sync-alt"></i></button>
+                            <button id="printInventory"><i class="fas fa-print"></i></button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="inventoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Part</th>
+                                    <th>Category</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                    <th>Last Updated</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody">
+                                <!-- Inventory data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Quick Actions -->
+                <div class="quick-actions-card">
+                    <div class="card-header">
+                        <div class="card-title">Quick Actions</div>
+                    </div>
+                    <div class="quick-actions-grid">
+                        <div class="quick-action" id="scanBarcodeBtn">
+                            <i class="fas fa-barcode"></i>
+                            <span>Scan Barcode</span>
+                        </div>
+                        <div class="quick-action" id="bulkImportBtn">
+                            <i class="fas fa-file-import"></i>
+                            <span>Bulk Import</span>
+                        </div>
+                        <div class="quick-action" id="receiveShipmentBtn">
+                            <i class="fas fa-truck"></i>
+                            <span>Receive Shipment</span>
+                        </div>
+                        <div class="quick-action" id="inventoryCountBtn">
+                            <i class="fas fa-box-open"></i>
+                            <span>Inventory Count</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="quick-actions-card">
+                    <div class="card-header">
+                        <div class="card-title">Recent Activity</div>
+                        <button id="refreshActivity"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div class="activity-list" id="activityList">
+                        <!-- Activity items will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Part Modal -->
+    <div class="modal" id="addStockModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Add New Engine Part</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="partName">Part Name</label>
+                    <input type="text" id="partName" class="form-control" placeholder="e.g., Cylinder Head">
+                </div>
+                <div class="form-group">
+                    <label for="partSKU">SKU</label>
+                    <input type="text" id="partSKU" class="form-control" placeholder="e.g., ENG-CH-001">
+                </div>
+                <div class="form-group">
+                    <label for="partCategory">Category</label>
+                    <select id="partCategory" class="form-select">
+                        <option value="Engine">Engine</option>
+                        <option value="Transmission">Transmission</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Cooling">Cooling</option>
+                        <option value="Fuel">Fuel System</option>
+                        <option value="Exhaust">Exhaust</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="partQuantity">Quantity</label>
+                    <input type="number" id="partQuantity" class="form-control" placeholder="Enter quantity" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="partThreshold">Low Stock Threshold</label>
+                    <input type="number" id="partThreshold" class="form-control" placeholder="Enter threshold" min="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">Cancel</button>
+                <button class="btn btn-primary" id="savePartBtn">Save Part</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Part Modal -->
+    <div class="modal" id="editStockModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Edit Engine Part</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editPartId">
+                <div class="form-group">
+                    <label for="editPartName">Part Name</label>
+                    <input type="text" id="editPartName" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="editPartSKU">SKU</label>
+                    <input type="text" id="editPartSKU" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="editPartCategory">Category</label>
+                    <select id="editPartCategory" class="form-select">
+                        <option value="Engine">Engine</option>
+                        <option value="Transmission">Transmission</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Cooling">Cooling</option>
+                        <option value="Fuel">Fuel System</option>
+                        <option value="Exhaust">Exhaust</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editPartQuantity">Quantity</label>
+                    <input type="number" id="editPartQuantity" class="form-control" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="editPartThreshold">Low Stock Threshold</label>
+                    <input type="number" id="editPartThreshold" class="form-control" min="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">Cancel</button>
+                <button class="btn btn-primary" id="updatePartBtn">Update Part</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Export Inventory Data</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exportFormat">Export Format</label>
+                    <select id="exportFormat" class="form-select">
+                        <option value="csv">CSV (Comma Separated Values)</option>
+                        <option value="excel">Excel (XLSX)</option>
+                        <option value="pdf">PDF Document</option>
+                        <option value="json">JSON Format</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exportRange">Data Range</label>
+                    <select id="exportRange" class="form-select">
+                        <option value="all">All Inventory Items</option>
+                        <option value="current">Current View (Filtered Items)</option>
+                        <option value="low">Low Stock Items Only</option>
+                        <option value="out">Out of Stock Items Only</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exportColumns">Columns to Include</label>
+                    <select id="exportColumns" class="form-select" multiple>
+                        <option value="name" selected>Part Name</option>
+                        <option value="sku" selected>SKU</option>
+                        <option value="category" selected>Category</option>
+                        <option value="quantity" selected>Quantity</option>
+                        <option value="status" selected>Stock Status</option>
+                        <option value="updated" selected>Last Updated</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">Cancel</button>
+                <button class="btn btn-primary" id="confirmExportBtn">Export Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barcode Scanner Modal -->
+    <div class="modal" id="barcodeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Barcode Scanner</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="scanner-container">
+                    <div class="scanner-placeholder">
+                        <i class="fas fa-barcode"></i>
+                        <p>Position barcode within the frame to scan</p>
+                        <p class="text-muted">Camera access required for scanning</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="manualBarcode">Or enter barcode manually</label>
+                    <input type="text" id="manualBarcode" class="form-control" placeholder="Enter barcode number">
+                </div>
+                <div class="scanner-controls">
+                    <button class="btn btn-outline" id="toggleCameraBtn">
+                        <i class="fas fa-camera"></i> Toggle Camera
+                    </button>
+                    <button class="btn btn-primary" id="searchBarcodeBtn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">Cancel</button>
+                <button class="btn btn-primary" id="addScannedItemBtn" disabled>Add to Inventory</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Import Modal -->
+    <div class="modal" id="bulkImportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Bulk Import Parts</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="file-upload" id="fileUploadArea">
+                    <i class="fas fa-file-excel"></i>
+                    <p>Drag & drop your Excel/CSV file here or click to browse</p>
+                    <input type="file" id="importFile" accept=".csv, .xlsx, .xls">
+                    <div class="file-name" id="fileName">No file selected</div>
+                </div>
+                <div class="form-group">
+                    <label for="importAction">Import Action</label>
+                    <select id="importAction" class="form-select">
+                        <option value="add">Add new parts only</option>
+                        <option value="update">Update existing parts only</option>
+                        <option value="both">Add new and update existing</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="importTemplate">Download Import Template</label>
+                    <div>
+                        <button class="btn btn-outline" id="downloadTemplateBtn">
+                            <i class="fas fa-download"></i> Download CSV Template
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">Cancel</button>
+                <button class="btn btn-primary" id="confirmImportBtn" disabled>Start Import</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receive Shipment Modal -->
+    <div class="modal" id="receiveShipmentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Receive New Shipment</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="shipmentSupplier">Supplier</label>
+                    <select id="shipmentSupplier" class="form-select">
+                        <option value="">Select supplier</option>
+                        <option value="AutoParts Inc.">AutoParts Inc.</option>
+                        <option value="EngineWorld">EngineWorld</option>
+                        <option value="Global Motors">Global Motors</option>
+                        <option value="Turbo Components">Turbo Components</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="shipmentNumber">Shipment Number</label>
+                    <input type="text" id="shipmentNumber" class="form-control" placeholder="Enter shipment/tracking number">
+                </div>
+                <div class="form-group">
+                    <label for="shipmentDate">Received Date</label>
+                    <input type="date" id="shipmentDate" class="form-control">
+                </div>
+                
+                <h5>Shipment Items</h5>
+                <div class="shipment-items" id="shipmentItems">
+                    <!-- Shipment items will be added here -->
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-outline" id="addShipmentItemBtn">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">Cancel</button>
+                <button class="btn btn-primary" id="confirmShipmentBtn">Receive Shipment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory Count Modal -->
+    <div class="modal" id="inventoryCountModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Physical Inventory Count</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="countLocation">Location</label>
+                    <select id="countLocation" class="form-select">
+                        <option value="main">Main Warehouse</option>
+                        <option value="backroom">Backroom Storage</option>
+                        <option value="showroom">Showroom</option>
+                        <option value="all">All Locations</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="countReference">Count Reference</label>
+                    <input type="text" id="countReference" class="form-control" placeholder="Enter reference name/number">
+                </div>
+                
+                <h5>Count Items</h5>
+                <div class="count-sheet" id="countSheet">
+                    <!-- Count items will be added here -->
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-outline" id="addCountItemBtn">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">Cancel</button>
+                <button class="btn btn-primary" id="completeCountBtn">Complete Count</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shipment Item Modal -->
+    <div class="modal" id="shipmentItemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Add Shipment Item</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="shipmentItemPart">Part</label>
+                    <select id="shipmentItemPart" class="form-select">
+                        <option value="">Select part</option>
+                        <!-- Parts will be populated here -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="shipmentItemQty">Quantity Received</label>
+                    <input type="number" id="shipmentItemQty" class="form-control" min="1" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="shipmentItemBatch">Batch/Lot Number</label>
+                    <input type="text" id="shipmentItemBatch" class="form-control" placeholder="Optional">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">Cancel</button>
+                <button class="btn btn-primary" id="saveShipmentItemBtn">Add Item</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Count Item Modal -->
+    <div class="modal" id="countItemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Add Count Item</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="countItemPart">Part</label>
+                    <select id="countItemPart" class="form-select">
+                        <option value="">Select part</option>
+                        <!-- Parts will be populated here -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="countItemQty">Counted Quantity</label>
+                    <input type="number" id="countItemQty" class="form-control" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="countItemNotes">Notes</label>
+                    <textarea id="countItemNotes" class="form-control" placeholder="Any notes about this count"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">Cancel</button>
+                <button class="btn btn-primary" id="saveCountItemBtn">Add Item</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toastNotification">
+        <i class="fas fa-check-circle"></i>
+        <div class="toast-content">Part added successfully!</div>
+        <button class="toast-close">&times;</button>
+    </div>
+
+    <script>
+        // Sample engine parts data
+        const engineParts = [
+            {
+                id: 1,
+                name: "Cylinder Head",
+                sku: "ENG-CH-001",
+                category: "Engine",
+                quantity: 25,
+                threshold: 5,
+                lastUpdated: "2 hours ago"
+            },
+            {
+                id: 2,
+                name: "Crankshaft",
+                sku: "ENG-CS-002",
+                category: "Engine",
+                quantity: 12,
+                threshold: 10,
+                lastUpdated: "1 day ago"
+            },
+            {
+                id: 3,
+                name: "Lifters",
+                sku: "ENG-LF-003",
+                category: "Engine",
+                quantity: 45,
+                threshold: 20,
+                lastUpdated: "3 hours ago"
+            },
+            {
+                id: 4,
+                name: "Combustion Chamber",
+                sku: "ENG-CC-004",
+                category: "Engine",
+                quantity: 8,
+                threshold: 5,
+                lastUpdated: "5 days ago"
+            },
+            {
+                id: 5,
+                name: "Engine Valves",
+                sku: "ENG-EV-005",
+                category: "Engine",
+                quantity: 30,
+                threshold: 15,
+                lastUpdated: "1 hour ago"
+            },
+            {
+                id: 6,
+                name: "Engine Distributor",
+                sku: "ENG-ED-006",
+                category: "Engine",
+                quantity: 5,
+                threshold: 3,
+                lastUpdated: "2 days ago"
+            },
+            {
+                id: 7,
+                name: "Gasket",
+                sku: "ENG-GK-007",
+                category: "Engine",
+                quantity: 60,
+                threshold: 30,
+                lastUpdated: "6 hours ago"
+            }
+        ];
+
+        // Sample activity data
+        const activities = [
+            {
+                type: "in",
+                title: "Stock Received",
+                description: "25 units of Cylinder Heads added to inventory",
+                time: "2 hours ago"
+            },
+            {
+                type: "out",
+                title: "Order Fulfilled",
+                description: "12 units of Crankshafts shipped to customer",
+                time: "1 day ago"
+            },
+            {
+                type: "alert",
+                title: "Low Stock Alert",
+                description: "Engine Distributor stock below threshold",
+                time: "2 days ago"
+            }
+        ];
+
+        // DOM Elements
+        const inventoryTableBody = document.getElementById('inventoryTableBody');
+        const activityList = document.getElementById('activityList');
+        const searchInput = document.getElementById('searchInput');
+        const addStockBtn = document.getElementById('addStockBtn');
+        const addStockModal = document.getElementById('addStockModal');
+        const savePartBtn = document.getElementById('savePartBtn');
+        const editStockModal = document.getElementById('editStockModal');
+        const updatePartBtn = document.getElementById('updatePartBtn');
+        const toastNotification = document.getElementById('toastNotification');
+        const modalCloses = document.querySelectorAll('.modal-close');
+        const totalProductsCard = document.getElementById('totalProductsCard');
+        const inStockCard = document.getElementById('inStockCard');
+        const lowStockCard = document.getElementById('lowStockCard');
+        const outOfStockCard = document.getElementById('outOfStockCard');
+        
+        // New feature elements
+        const exportBtn = document.getElementById('exportBtn');
+        const exportModal = document.getElementById('exportModal');
+        const confirmExportBtn = document.getElementById('confirmExportBtn');
+        
+        const scanBarcodeBtn = document.getElementById('scanBarcodeBtn');
+        const barcodeModal = document.getElementById('barcodeModal');
+        const searchBarcodeBtn = document.getElementById('searchBarcodeBtn');
+        const toggleCameraBtn = document.getElementById('toggleCameraBtn');
+        const addScannedItemBtn = document.getElementById('addScannedItemBtn');
+        
+        const bulkImportBtn = document.getElementById('bulkImportBtn');
+        const bulkImportModal = document.getElementById('bulkImportModal');
+        const importFile = document.getElementById('importFile');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileName = document.getElementById('fileName');
+        const downloadTemplateBtn = document.getElementById('downloadTemplateBtn');
+        const confirmImportBtn = document.getElementById('confirmImportBtn');
+        
+        const receiveShipmentBtn = document.getElementById('receiveShipmentBtn');
+        const receiveShipmentModal = document.getElementById('receiveShipmentModal');
+        const shipmentItems = document.getElementById('shipmentItems');
+        const addShipmentItemBtn = document.getElementById('addShipmentItemBtn');
+        const confirmShipmentBtn = document.getElementById('confirmShipmentBtn');
+        const shipmentItemModal = document.getElementById('shipmentItemModal');
+        const saveShipmentItemBtn = document.getElementById('saveShipmentItemBtn');
+        
+        const inventoryCountBtn = document.getElementById('inventoryCountBtn');
+        const inventoryCountModal = document.getElementById('inventoryCountModal');
+        const countSheet = document.getElementById('countSheet');
+        const addCountItemBtn = document.getElementById('addCountItemBtn');
+        const completeCountBtn = document.getElementById('completeCountBtn');
+        const countItemModal = document.getElementById('countItemModal');
+        const saveCountItemBtn = document.getElementById('saveCountItemBtn');
+        
+        const printInventoryBtn = document.getElementById('printInventory');
+
+        // Initialize the dashboard
+        function initDashboard() {
+            loadInventoryData();
+            loadActivityData();
+            updateStats();
+            setupEventListeners();
+        }
+
+        // Load inventory data into the table
+        function loadInventoryData(filter = '') {
+            inventoryTableBody.innerHTML = '';
+            
+            const filteredParts = engineParts.filter(part => 
+                part.name.toLowerCase().includes(filter.toLowerCase()) || 
+                part.sku.toLowerCase().includes(filter.toLowerCase())
+            );
+            
+            filteredParts.forEach(part => {
+                const status = getStockStatus(part.quantity, part.threshold);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="product-cell">
+                            <div>
+                                <div class="product-name">${part.name}</div>
+                                <div class="product-sku">SKU: ${part.sku}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${part.category}</td>
+                    <td>${part.quantity}</td>
+                    <td><span class="status-badge ${status.class}">${status.text}</span></td>
+                    <td>${part.lastUpdated}</td>
+                    <td>
+                        <button class="action-btn edit-btn" data-id="${part.id}"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete-btn delete" data-id="${part.id}"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                
+                inventoryTableBody.appendChild(row);
+            });
+            
+            // Add event listeners to edit and delete buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const partId = parseInt(e.currentTarget.getAttribute('data-id'));
+                    openEditModal(partId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const partId = parseInt(e.currentTarget.getAttribute('data-id'));
+                    deletePart(partId);
+                });
+            });
+        }
+
+        // Load activity data
+        function loadActivityData() {
+            activityList.innerHTML = '';
+            
+            activities.forEach(activity => {
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                
+                let iconClass, iconType;
+                if (activity.type === 'in') {
+                    iconClass = 'in';
+                    iconType = 'fa-arrow-down';
+                } else if (activity.type === 'out') {
+                    iconClass = 'out';
+                    iconType = 'fa-arrow-up';
+                } else {
+                    iconClass = 'alert';
+                    iconType = 'fa-exclamation';
+                }
+                
+                activityItem.innerHTML = `
+                    <div class="activity-icon ${iconClass}">
+                        <i class="fas ${iconType}"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-title">${activity.title}</div>
+                        <div class="activity-description">${activity.description}</div>
+                        <div class="activity-time">${activity.time}</div>
+                    </div>
+                `;
+                
+                activityList.appendChild(activityItem);
+            });
+        }
+
+        // Determine stock status
+        function getStockStatus(quantity, threshold) {
+            if (quantity === 0) {
+                return { class: 'status-out-of-stock', text: 'Out of Stock' };
+            } else if (quantity <= threshold) {
+                return { class: 'status-low-stock', text: 'Low Stock' };
+            } else {
+                return { class: 'status-in-stock', text: 'In Stock' };
+            }
+        }
+
+        // Update stats cards
+        function updateStats() {
+            const totalParts = engineParts.length;
+            const inStock = engineParts.filter(part => part.quantity > part.threshold).length;
+            const lowStock = engineParts.filter(part => part.quantity > 0 && part.quantity <= part.threshold).length;
+            const outOfStock = engineParts.filter(part => part.quantity === 0).length;
+            
+            document.querySelector('#totalProductsCard .stat-value').textContent = totalParts;
+            document.querySelector('#inStockCard .stat-value').textContent = inStock;
+            document.querySelector('#lowStockCard .stat-value').textContent = lowStock;
+            document.querySelector('#outOfStockCard .stat-value').textContent = outOfStock;
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = toastNotification;
+            const toastIcon = toast.querySelector('i');
+            const toastContent = toast.querySelector('.toast-content');
+            
+            // Set content and icon based on type
+            toastContent.textContent = message;
+            toastIcon.className = 'fas';
+            
+            if (type === 'success') {
+                toastIcon.classList.add('fa-check-circle');
+                toast.className = 'toast success';
+            } else if (type === 'error') {
+                toastIcon.classList.add('fa-times-circle');
+                toast.className = 'toast error';
+            } else if (type === 'warning') {
+                toastIcon.classList.add('fa-exclamation-triangle');
+                toast.className = 'toast warning';
+            }
+            
+            // Show toast
+            toast.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Open edit modal with part data
+        function openEditModal(partId) {
+            const part = engineParts.find(p => p.id === partId);
+            
+            if (part) {
+                document.getElementById('editPartId').value = part.id;
+                document.getElementById('editPartName').value = part.name;
+                document.getElementById('editPartSKU').value = part.sku;
+                document.getElementById('editPartCategory').value = part.category;
+                document.getElementById('editPartQuantity').value = part.quantity;
+                document.getElementById('editPartThreshold').value = part.threshold;
+                
+                editStockModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Delete a part
+        function deletePart(partId) {
+            if (confirm('Are you sure you want to delete this part?')) {
+                const index = engineParts.findIndex(p => p.id === partId);
+                
+                if (index !== -1) {
+                    engineParts.splice(index, 1);
+                    loadInventoryData();
+                    updateStats();
+                    showToast('Part deleted successfully');
+                }
+            }
+        }
+
+        // Populate parts dropdown
+        function populatePartsDropdown(selectElement) {
+            selectElement.innerHTML = '<option value="">Select part</option>';
+            engineParts.forEach(part => {
+                const option = document.createElement('option');
+                option.value = part.id;
+                option.textContent = `${part.name} (${part.sku})`;
+                selectElement.appendChild(option);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search functionality
+            searchInput.addEventListener('input', (e) => {
+                loadInventoryData(e.target.value);
+            });
+            
+            // Add part modal
+            addStockBtn.addEventListener('click', () => {
+                addStockModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Save new part
+            savePartBtn.addEventListener('click', () => {
+                const name = document.getElementById('partName').value;
+                const sku = document.getElementById('partSKU').value;
+                const category = document.getElementById('partCategory').value;
+                const quantity = parseInt(document.getElementById('partQuantity').value);
+                const threshold = parseInt(document.getElementById('partThreshold').value);
+                
+                if (!name || !sku || isNaN(quantity) || isNaN(threshold)) {
+                    showToast('Please fill in all fields correctly', 'error');
+                    return;
+                }
+                
+                // Create new part
+                const newPart = {
+                    id: engineParts.length + 1,
+                    name,
+                    sku,
+                    category,
+                    quantity,
+                    threshold,
+                    lastUpdated: "Just now"
+                };
+                
+                engineParts.push(newPart);
+                loadInventoryData();
+                updateStats();
+                showToast('Part added successfully');
+                
+                // Close modal and reset form
+                addStockModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                document.getElementById('partName').value = '';
+                document.getElementById('partSKU').value = '';
+                document.getElementById('partQuantity').value = '';
+                document.getElementById('partThreshold').value = '';
+            });
+            
+            // Update part
+            updatePartBtn.addEventListener('click', () => {
+                const id = parseInt(document.getElementById('editPartId').value);
+                const name = document.getElementById('editPartName').value;
+                const sku = document.getElementById('editPartSKU').value;
+                const category = document.getElementById('editPartCategory').value;
+                const quantity = parseInt(document.getElementById('editPartQuantity').value);
+                const threshold = parseInt(document.getElementById('editPartThreshold').value);
+                
+                if (!name || !sku || isNaN(quantity) || isNaN(threshold)) {
+                    showToast('Please fill in all fields correctly', 'error');
+                    return;
+                }
+                
+                const part = engineParts.find(p => p.id === id);
+                
+                if (part) {
+                    part.name = name;
+                    part.sku = sku;
+                    part.category = category;
+                    part.quantity = quantity;
+                    part.threshold = threshold;
+                    part.lastUpdated = "Just now";
+                    
+                    loadInventoryData();
+                    updateStats();
+                    showToast('Part updated successfully');
+                    
+                    // Close modal
+                    editStockModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Close modals
+            modalCloses.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                    document.body.style.overflow = 'auto';
+                });
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Close toast
+            document.querySelector('.toast-close').addEventListener('click', () => {
+                toastNotification.classList.remove('show');
+            });
+            
+            // Refresh buttons
+            document.getElementById('refreshInventory').addEventListener('click', () => {
+                loadInventoryData();
+                showToast('Inventory refreshed');
+            });
+            
+            document.getElementById('refreshActivity').addEventListener('click', () => {
+                loadActivityData();
+                showToast('Activity feed refreshed');
+            });
+            
+            // Print button
+            printInventoryBtn.addEventListener('click', () => {
+                window.print();
+            });
+            
+            // Export functionality
+            exportBtn.addEventListener('click', () => {
+                exportModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+            
+            confirmExportBtn.addEventListener('click', () => {
+                const format = document.getElementById('exportFormat').value;
+                const range = document.getElementById('exportRange').value;
+                const columns = Array.from(document.getElementById('exportColumns').selectedOptions)
+                                    .map(option => option.value);
+                
+                // In a real app, this would generate and download the file
+                showToast(`Exporting ${range} data as ${format.toUpperCase()} with selected columns`);
+                exportModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Barcode scanning
+            scanBarcodeBtn.addEventListener('click', () => {
+                barcodeModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+            
+            searchBarcodeBtn.addEventListener('click', () => {
+                const barcode = document.getElementById('manualBarcode').value;
+                if (barcode) {
+                    // In a real app, this would search for the barcode in inventory
+                    showToast(`Searching for barcode: ${barcode}`);
+                    addScannedItemBtn.disabled = false;
+                } else {
+                    showToast('Please enter a barcode', 'error');
+                }
+            });
+            
+            toggleCameraBtn.addEventListener('click', () => {
+                // In a real app, this would toggle the camera for scanning
+                showToast('Camera toggled (simulated)', 'warning');
+            });
+            
+            addScannedItemBtn.addEventListener('click', () => {
+                showToast('Scanned item added to inventory');
+                barcodeModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Bulk import
+            bulkImportBtn.addEventListener('click', () => {
+                bulkImportModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+            
+            fileUploadArea.addEventListener('click', () => {
+                importFile.click();
+            });
+            
+            importFile.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    fileName.textContent = e.target.files[0].name;
+                    confirmImportBtn.disabled = false;
+                } else {
+                    fileName.textContent = 'No file selected';
+                    confirmImportBtn.disabled = true;
+                }
+            });
+            
+            downloadTemplateBtn.addEventListener('click', () => {
+                // In a real app, this would download a template file
+                showToast('Downloading import template');
+            });
+            
+            confirmImportBtn.addEventListener('click', () => {
+                const action = document.getElementById('importAction').value;
+                // In a real app, this would process the import file
+                showToast(`Importing file with action: ${action}`);
+                bulkImportModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Receive shipment
+            receiveShipmentBtn.addEventListener('click', () => {
+                receiveShipmentModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                shipmentItems.innerHTML = '';
+                
+                // Set default date to today
+                document.getElementById('shipmentDate').valueAsDate = new Date();
+            });
+            
+            addShipmentItemBtn.addEventListener('click', () => {
+                populatePartsDropdown(document.getElementById('shipmentItemPart'));
+                shipmentItemModal.style.display = 'flex';
+            });
+            
+            saveShipmentItemBtn.addEventListener('click', () => {
+                const partId = document.getElementById('shipmentItemPart').value;
+                const qty = document.getElementById('shipmentItemQty').value;
+                const batch = document.getElementById('shipmentItemBatch').value;
+                
+                if (!partId || !qty) {
+                    showToast('Please select a part and enter quantity', 'error');
+                    return;
+                }
+                
+                const part = engineParts.find(p => p.id === parseInt(partId));
+                
+                if (part) {
+                    const shipmentItem = document.createElement('div');
+                    shipmentItem.className = 'shipment-item';
+                    shipmentItem.innerHTML = `
+                        <div class="shipment-item-info">
+                            <div class="shipment-item-name">${part.name}</div>
+                            <div class="shipment-item-sku">SKU: ${part.sku}</div>
+                            ${batch ? `<div class="shipment-item-sku">Batch: ${batch}</div>` : ''}
+                        </div>
+                        <div class="shipment-item-qty">${qty} units</div>
+                        <button class="action-btn delete-shipment-item"><i class="fas fa-trash"></i></button>
+                    `;
+                    
+                    shipmentItems.appendChild(shipmentItem);
+                    
+                    // Add delete handler
+                    shipmentItem.querySelector('.delete-shipment-item').addEventListener('click', () => {
+                        shipmentItem.remove();
+                    });
+                    
+                    showToast('Item added to shipment');
+                    shipmentItemModal.style.display = 'none';
+                }
+            });
+            
+            confirmShipmentBtn.addEventListener('click', () => {
+                const supplier = document.getElementById('shipmentSupplier').value;
+                const shipmentNumber = document.getElementById('shipmentNumber').value;
+                const shipmentDate = document.getElementById('shipmentDate').value;
+                
+                if (!supplier || !shipmentNumber || !shipmentDate) {
+                    showToast('Please fill in all shipment details', 'error');
+                    return;
+                }
+                
+                if (shipmentItems.children.length === 0) {
+                    showToast('Please add at least one item to the shipment', 'error');
+                    return;
+                }
+                
+                // In a real app, this would save the shipment and update inventory
+                showToast('Shipment received successfully');
+                receiveShipmentModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Inventory count
+            inventoryCountBtn.addEventListener('click', () => {
+                inventoryCountModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                countSheet.innerHTML = '';
+            });
+            
+            addCountItemBtn.addEventListener('click', () => {
+                populatePartsDropdown(document.getElementById('countItemPart'));
+                countItemModal.style.display = 'flex';
+            });
+            
+            saveCountItemBtn.addEventListener('click', () => {
+                const partId = document.getElementById('countItemPart').value;
+                const qty = document.getElementById('countItemQty').value;
+                const notes = document.getElementById('countItemNotes').value;
+                
+                if (!partId || !qty) {
+                    showToast('Please select a part and enter quantity', 'error');
+                    return;
+                }
+                
+                const part = engineParts.find(p => p.id === parseInt(partId));
+                
+                if (part) {
+                    const countItem = document.createElement('div');
+                    countItem.className = 'count-item';
+                    countItem.innerHTML = `
+                        <div class="count-item-info">
+                            <div class="count-item-name">${part.name}</div>
+                            <div class="count-item-sku">SKU: ${part.sku}</div>
+                            ${notes ? `<div class="count-item-sku">Notes: ${notes}</div>` : ''}
+                        </div>
+                        <div class="count-item-qty">${qty} units</div>
+                        <button class="action-btn delete-count-item"><i class="fas fa-trash"></i></button>
+                    `;
+                    
+                    countSheet.appendChild(countItem);
+                    
+                    // Add delete handler
+                    countItem.querySelector('.delete-count-item').addEventListener('click', () => {
+                        countItem.remove();
+                    });
+                    
+                    showToast('Item added to count sheet');
+                    countItemModal.style.display = 'none';
+                }
+            });
+            
+            completeCountBtn.addEventListener('click', () => {
+                const location = document.getElementById('countLocation').value;
+                const reference = document.getElementById('countReference').value;
+                
+                if (!reference) {
+                    showToast('Please enter a count reference', 'error');
+                    return;
+                }
+                
+                if (countSheet.children.length === 0) {
+                    showToast('Please add at least one item to count', 'error');
+                    return;
+                }
+                
+                // In a real app, this would save the count and update inventory
+                showToast('Inventory count completed successfully');
+                inventoryCountModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+        }
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+    <style>
+        :root {
+    --primary: #4361ee;
+    --primary-dark: #3a56d4;
+    --secondary: #3f37c9;
+    --danger: #f72585;
+    --danger-dark: #e51777;
+    --warning: #f77f00;
+    --warning-dark: #e57200;
+    --success: #4cc9f0;
+    --success-dark: #3ab7de;
+    --dark: #2b2d42;
+    --light: #f8f9fa;
+    --gray: #6c757d;
+    --gray-light: #e9ecef;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f5f7fa;
+    color: var(--dark);
+    overflow-x: hidden;
+    min-width: 320px; /* Prevent horizontal scrolling on very small devices */
+
+}
+
+body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Top Navigation */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: var(--white);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 150px;
+}
+
+.logo img {
+    width: 30px;
+    height: 30px;
+}
+
+.logo h1 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary);
+    white-space: nowrap;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: var(--gray-light);
+    border-radius: 30px;
+    padding: 8px 15px;
+    flex-grow: 1;
+    max-width: 500px;
+    min-width: 150px;
+    border: 1px solid transparent;
+    transition: all 0.3s;
+}
+
+.search-bar:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+.search-bar input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    padding: 5px 10px;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.search-bar i {
+    color: var(--gray);
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.notification {
+    position: relative;
+    cursor: pointer;
+}
+
+.notification i {
+    font-size: 1.2rem;
+    color: var(--dark);
+    transition: all 0.3s;
+}
+
+.notification:hover i {
+    color: var(--primary);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--danger);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: bold;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.user-profile img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary);
+}
+
+.user-profile span {
+    font-weight: 500;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+/* Page Header */
+.page-header {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.page-title h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+    position: relative;
+}
+
+.page-title h1::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+.page-title p {
+    color: var(--gray);
+    font-size: 0.85rem;
+    margin-top: 8px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(67, 97, 238, 0.2);
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+}
+
+.btn-outline:hover {
+    background-color: rgba(67, 97, 238, 0.1);
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    padding: 0 20px 20px;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+/* Stats Cards */
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+}
+
+.stat-card.total::before {
+    background-color: var(--primary);
+}
+
+.stat-card.low::before {
+    background-color: var(--danger);
+}
+
+.stat-card.warning::before {
+    background-color: var(--warning);
+}
+
+.stat-card.good::before {
+    background-color: var(--success);
+}
+
+.stat-card .stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.stat-card .stat-header i {
+    font-size: 1.2rem;
+    padding: 8px;
+    border-radius: 6px;
+    color: white;
+}
+
+.stat-card.total .stat-header i {
+    background-color: var(--primary);
+}
+
+.stat-card.low .stat-header i {
+    background-color: var(--danger);
+}
+
+.stat-card.warning .stat-header i {
+    background-color: var(--warning);
+}
+
+.stat-card.good .stat-header i {
+    background-color: var(--success);
+}
+
+.stat-card .stat-title {
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
+.stat-card .stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 8px 0;
+}
+
+.stat-card .stat-change {
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-card .stat-change.positive {
+    color: var(--success);
+}
+
+.stat-card .stat-change.negative {
+    color: var(--danger);
+}
+
+/* Inventory Table */
+.inventory-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.card-actions button {
+    background: none;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.card-actions button:hover {
+    color: var(--primary);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    font-weight: 500;
+    color: var(--gray);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    background-color: #f8f9fa;
+    position: sticky;
+    top: 0;
+}
+
+td {
+    font-size: 0.85rem;
+}
+
+tr:hover {
+    background-color: rgba(67, 97, 238, 0.03);
+}
+
+.product-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-img {
+    width: 35px;
+    height: 35px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.product-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.product-sku {
+    font-size: 0.75rem;
+    color: var(--gray);
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    display: inline-block;
+    min-width: 70px;
+    text-align: center;
+}
+
+.status-in-stock {
+    background-color: rgba(76, 201, 240, 0.1);
+    color: var(--success);
+}
+
+.status-low-stock {
+    background-color: rgba(247, 37, 133, 0.1);
+    color: var(--danger);
+}
+
+.status-out-of-stock {
+    background-color: rgba(108, 117, 125, 0.1);
+    color: var(--gray);
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--gray);
+    transition: all 0.3s;
+    padding: 5px;
+}
+
+.action-btn:hover {
+    color: var(--primary);
+}
+
+.action-btn.delete:hover {
+    color: var(--danger);
+}
+
+/* Quick Actions */
+.quick-actions-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
+}
+
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.quick-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 8px;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.quick-action:hover {
+    background-color: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.quick-action:hover i {
+    color: white;
+}
+
+.quick-action i {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: var(--primary);
+    transition: all 0.3s;
+}
+
+.quick-action span {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Recent Activity */
+.activity-list {
+    margin-top: 10px;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.activity-icon.in {
+    background-color: rgba(76, 201, 240, 0.1);
+    color: var(--success);
+}
+
+.activity-icon.out {
+    background-color: rgba(247, 37, 133, 0.1);
+    color: var(--danger);
+}
+
+.activity-icon.alert {
+    background-color: rgba(247, 127, 0, 0.1);
+    color: var(--warning);
+}
+
+.activity-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-title {
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.activity-description {
+    font-size: 0.75rem;
+    color: var(--gray);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.activity-time {
+    font-size: 0.7rem;
+    color: var(--gray);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+}
+
+.modal-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--gray);
+    padding: 0;
+    line-height: 1;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+}
+
+.form-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    background-color: white;
+}
+
+.form-select:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    position: sticky;
+    bottom: 0;
+    background: white;
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--dark);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 1100;
+    transform: translateX(150%);
+    transition: all 0.3s ease-out;
+    max-width: calc(100% - 40px);
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast i {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.toast.success i {
+    color: var(--success);
+}
+
+.toast.error i {
+    color: var(--danger);
+}
+
+.toast.warning i {
+    color: var(--warning);
+}
+
+.toast-content {
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* Barcode Scanner */
+.scanner-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.scanner-placeholder {
+    text-align: center;
+    color: var(--gray);
+    padding: 0 15px;
+}
+
+.scanner-placeholder i {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.scanner-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* File Upload */
+.file-upload {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.file-upload:hover {
+    border-color: var(--primary);
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+.file-upload i {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.file-upload input {
+    display: none;
+}
+
+.file-name {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: var(--gray);
+    word-break: break-all;
+}
+
+/* Shipment Items */
+.shipment-items {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+.shipment-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    gap: 10px;
+}
+
+.shipment-item:last-child {
+    border-bottom: none;
+}
+
+.shipment-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.shipment-item-name {
+    font-weight: 500;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shipment-item-sku {
+    font-size: 0.75rem;
+    color: var(--gray);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shipment-item-qty {
+    min-width: 60px;
+    text-align: right;
+}
+
+/* Count Sheet */
+.count-sheet {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+.count-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    gap: 10px;
+}
+
+.count-item:last-child {
+    border-bottom: none;
+}
+
+.count-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.count-item-name {
+    font-weight: 500;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.count-item-sku {
+    font-size: 0.75rem;
+    color: var(--gray);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.count-item-qty {
+    min-width: 60px;
+    text-align: right;
+}
+
+/* Export Options */
+.export-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.export-option {
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.export-option:hover {
+    border-color: var(--primary);
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+.export-option i {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.export-option span {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* ============================================= */
+/* Enhanced Responsive Breakpoints */
+/* ============================================= */
+
+/* Extra Large Screens (1200px and up) */
+@media (min-width: 1200px) {
+    .content-grid {
+        grid-template-columns: 2.5fr 1fr;
+    }
+    
+    .dashboard-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .stats-cards {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Large Screens (992px to 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .content-grid {
+        grid-template-columns: 2fr 1fr;
+    }
+    
+    .stats-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Medium Screens (768px to 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+    .top-nav {
+        padding: 12px 15px;
+    }
+    
+    .logo h1 {
+        font-size: 1.1rem;
+    }
+    
+    .user-profile span {
+        display: none;
+    }
+    
+    .page-header {
+        padding: 15px;
+    }
+    
+    .page-title h1 {
+        font-size: 1.3rem;
+    }
+    
+    .stats-cards {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .export-options {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .modal-footer {
+        flex-wrap: wrap;
+    }
+    
+    .modal-footer .btn {
+        flex: 1;
+        min-width: 100px;
+    }
+}
+
+/* Small Screens (576px to 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+    .stats-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-buttons {
+        width: 100%;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .scanner-controls .btn {
+        width: auto;
+    }
+    
+    .modal-content {
+        max-height: 85vh;
+    }
+    
+    .modal-body {
+        padding: 15px;
+    }
+    
+    .modal-footer {
+        padding: 10px 15px;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .export-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Extra Small Screens (up to 575px) */
+@media (max-width: 575px) {
+    .logo h1 {
+        font-size: 1rem;
+    }
+    
+    .search-bar {
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .user-actions {
+        margin-left: auto;
+    }
+    
+    .page-title h1 {
+        font-size: 1.2rem;
+    }
+    
+    .page-title p {
+        font-size: 0.8rem;
+    }
+    
+    .card-title {
+        font-size: 1rem;
+    }
+    
+    .modal-title {
+        font-size: 1.1rem;
+    }
+    
+    .modal-header, .modal-footer {
+        padding: 10px 15px;
+    }
+    
+    .stats-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+    }
+    
+    table {
+        min-width: 100%;
+    }
+    
+    .product-cell {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .product-img {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .product-name, .product-sku {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 120px;
+    }
+}
+
+/* Very Small Screens (up to 400px) - Mobile Phones */
+@media (max-width: 400px) {
+    .top-nav {
+        padding: 10px;
+    }
+    
+    .logo h1 {
+        font-size: 0.9rem;
+    }
+    
+    .search-bar {
+        padding: 6px 10px;
+    }
+    
+    .page-header {
+        padding: 10px;
+    }
+    
+    .page-title h1 {
+        font-size: 1.1rem;
+    }
+    
+    .btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .stat-card {
+        padding: 12px;
+    }
+    
+    .stat-card .stat-value {
+        font-size: 1.3rem;
+    }
+    
+    .modal-content {
+        max-height: 80vh;
+    }
+    
+    .modal-body {
+        padding: 10px;
+    }
+    
+    .form-control, .form-select {
+        padding: 6px 10px;
+    }
+}
+
+/* Print styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .inventory-card, .inventory-card * {
+        visibility: visible;
+    }
+    .inventory-card {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none;
+    }
+    .card-actions {
+        display: none;
+    }
+}
+
+
+
+
+/* Add these rules to your existing CSS */
+
+/* 1. Ensure body doesn't allow overflow */
+
+
+/* 2. Constrain all main containers */
+.dashboard-content, 
+.page-header, 
+.top-nav {
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 3. Make tables responsive without forcing min-width */
+table {
+    width: 100%;
+    min-width: 0; /* Remove fixed min-width */
+}
+
+/* 4. Fix responsive behavior for inventory card */
+.inventory-card {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+}
+
+/* 5. Ensure all grid items stay within bounds */
+.content-grid, 
+.stats-cards, 
+.quick-actions-grid {
+    grid-template-columns: 100%;
+    width: 100%;
+}
+
+/* 6. Media query adjustments for small screens */
+@media (max-width: 768px) {
+    /* Remove any fixed widths that might cause overflow */
+    .search-bar {
+        max-width: 100%;
+    }
+    
+    /* Make stats cards stack vertically */
+    .stats-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Ensure modal doesn't cause overflow */
+    .modal-content {
+        width: 95vw;
+    }
+}
+
+/* 7. Fix product cells on small screens */
+@media (max-width: 576px) {
+    .product-cell {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .product-name, 
+    .product-sku {
+        max-width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* 8. Prevent form elements from causing overflow */
+.form-control, 
+.form-select {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+    </style>
+</body>
+</html>
