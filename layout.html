@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Layout Optimizer | Warehouse Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --secondary: #8338ec;
+            --success: #06d6a0;
+            --warning: #ffbe0b;
+            --danger: #ef476f;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
+            --bg: #ffffff;
+            --text: #212529;
+            --card-bg: #ffffff;
+        }
+
+        .dark-mode {
+            --primary: #4d9eff;
+            --primary-dark: #3a86ff;
+            --light: #343a40;
+            --dark: #f8f9fa;
+            --gray: #adb5bd;
+            --border: #495057;
+            --bg: #212529;
+            --text: #f8f9fa;
+            --card-bg: #2c3034;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.6rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(58, 134, 255, 0.1);
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1.2rem;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .dark-mode .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .feature-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .feature-tab {
+            padding: 0.75rem 1.25rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .feature-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .feature-tab:hover:not(.active) {
+            color: var(--text);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .section-description {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark-mode .metric-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .metric-title {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .metric-change {
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .metric-change.up {
+            color: var(--success);
+        }
+
+        .metric-change.down {
+            color: var(--danger);
+        }
+
+        .visualization-container {
+            margin-top: 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .visualization-header {
+            padding: 0.75rem 1rem;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .visualization-title {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .visualization-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .visualization-content {
+            padding: 1rem;
+            background: var(--card-bg);
+            position: relative;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .warehouse-container {
+            min-width: 800px;
+            min-height: 500px;
+            position: relative;
+        }
+
+        .warehouse-layout {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 4px;
+            min-height: 500px;
+            background: var(--bg);
+            padding: 10px;
+        }
+
+        .rack {
+            background: rgba(58, 134, 255, 0.1);
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .rack::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.05);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .rack:hover::after {
+            opacity: 1;
+        }
+
+        .rack.high-activity {
+            background: rgba(239, 71, 111, 0.15);
+            color: var(--danger);
+            border-color: rgba(239, 71, 111, 0.3);
+        }
+
+        .rack.medium-activity {
+            background: rgba(255, 190, 11, 0.15);
+            color: var(--warning);
+            border-color: rgba(255, 190, 11, 0.3);
+        }
+
+        .rack.low-activity {
+            background: rgba(6, 214, 160, 0.15);
+            color: var(--success);
+            border-color: rgba(6, 214, 160, 0.3);
+        }
+
+        .aisle {
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--gray);
+            border: 1px dashed var(--border);
+            border-radius: 0.25rem;
+        }
+
+        .heatmap-legend {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 0.25rem;
+        }
+
+        .optimization-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .recommendations-list {
+            margin-top: 2rem;
+        }
+
+        .recommendation-item {
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            background: var(--card-bg);
+            transition: transform 0.2s;
+        }
+
+        .recommendation-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .recommendation-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(58, 134, 255, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .recommendation-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .recommendation-content h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: var(--text);
+        }
+
+        .recommendation-content p {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .recommendation-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1.25rem;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .optimization-controls {
+                justify-content: flex-start;
+            }
+            
+            .warehouse-container {
+                min-width: 600px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-text {
+                display: none;
+            }
+            
+            .btn-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .feature-tab {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+            
+            .recommendation-item {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .recommendation-actions {
+                margin-left: 0;
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="header-title">AI Layout Optimizer</h1>
+            <div class="header-actions">
+                <button class="btn btn-outline" id="exportBtn">
+                    <i class="fas fa-download"></i>
+                    <span class="btn-text">Export Report</span>
+                </button>
+                <button class="btn btn-primary" id="runOptimizationBtn">
+                    <i class="fas fa-magic"></i>
+                    <span class="btn-text">Run Optimization</span>
+                </button>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="feature-tabs">
+            <div class="feature-tab active" data-tab="current">Current Layout</div>
+            <div class="feature-tab" data-tab="optimized">Optimized Layout</div>
+            <div class="feature-tab" data-tab="comparison">Comparison</div>
+        </div>
+
+        <!-- Current Layout Tab -->
+        <div class="tab-content active" id="current-tab">
+            <h2 class="section-title">Current Warehouse Layout Analysis</h2>
+            <p class="section-description">AI-powered analysis of your current warehouse layout showing inefficiencies and optimization opportunities.</p>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-title">
+                        <i class="fas fa-route"></i> Average Pick Path
+                    </div>
+                    <div class="metric-value">427m</div>
+                    <div class="metric-change down">
+                        <i class="fas fa-arrow-down"></i> 12% from optimal
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">
+                        <i class="fas fa-clock"></i> Travel Time
+                    </div>
+                    <div class="metric-value">8.2min</div>
+                    <div class="metric-change down">
+                        <i class="fas fa-arrow-down"></i> 18% from optimal
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">
+                        <i class="fas fa-boxes"></i> Space Utilization
+                    </div>
+                    <div class="metric-value">68%</div>
+                    <div class="metric-change up">
+                        <i class="fas fa-arrow-up"></i> 5% from last week
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">
+                        <i class="fas fa-exchange-alt"></i> Cross Aisles
+                    </div>
+                    <div class="metric-value">3</div>
+                    <div class="metric-change down">
+                        <i class="fas fa-arrow-down"></i> 2 needed
+                    </div>
+                </div>
+            </div>
+
+            <div class="visualization-container">
+                <div class="visualization-header">
+                    <div class="visualization-title">Warehouse Layout Heatmap</div>
+                    <div class="visualization-actions">
+                        <button class="btn btn-outline btn-sm btn-icon">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                        <button class="btn btn-outline btn-sm btn-icon">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="visualization-content">
+                    <div class="warehouse-container">
+                        <div class="warehouse-layout" id="warehouseLayout"></div>
+                    </div>
+                    <div class="heatmap-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: rgba(239, 71, 111, 0.15); border: 1px solid rgba(239, 71, 111, 0.3);"></div>
+                            <span>High Activity</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: rgba(255, 190, 11, 0.15); border: 1px solid rgba(255, 190, 11, 0.3);"></div>
+                            <span>Medium Activity</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: rgba(6, 214, 160, 0.15); border: 1px solid rgba(6, 214, 160, 0.3);"></div>
+                            <span>Low Activity</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="optimization-controls">
+                <button class="btn btn-outline" id="resetViewBtn">
+                    <i class="fas fa-redo"></i>
+                    <span class="btn-text">Reset View</span>
+                </button>
+                <button class="btn btn-primary" id="optimizeBtn">
+                    <i class="fas fa-magic"></i>
+                    <span class="btn-text">Optimize Layout</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Optimized Layout Tab -->
+        <div class="tab-content" id="optimized-tab">
+            <h2 class="section-title">Optimized Warehouse Layout</h2>
+            <p class="section-description">AI-generated optimized layout showing potential improvements to your current warehouse configuration.</p>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-title">
+                        <i class="fas fa-route"></i> Average Pick Path
+                    </div>
+                    <div class="metric-value">376m</div>
+                    <div class="metric-change up">
+                        <i class="fas fa-arrow-up"></i> 12% improvement
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">
+                        <i class="fas fa-clock"></i> Travel Time
+                    </div>
+                    <div class="metric-value">6.7min</div>
+                    <div class="metric-change up">
+                        <i class="fas fa-arrow-up"></i> 18% improvement
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">
+                        <i class="fas fa-boxes"></i> Space Utilization
+                    </div>
+                    <div class="metric-value">82%</div>
+                    <div class="metric-change up">
+                        <i class="fas fa-arrow-up"></i> 14% improvement
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">
+                        <i class="fas fa-exchange-alt"></i> Cross Aisles
+                    </div>
+                    <div class="metric-value">5</div>
+                    <div class="metric-change up">
+                        <i class="fas fa-arrow-up"></i> 2 added
+                    </div>
+                </div>
+            </div>
+
+            <div class="visualization-container">
+                <div class="visualization-header">
+                    <div class="visualization-title">Optimized Layout Preview</div>
+                    <div class="visualization-actions">
+                        <button class="btn btn-outline btn-sm btn-icon">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                        <button class="btn btn-outline btn-sm btn-icon" id="exportPlanBtn">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="visualization-content">
+                    <div class="warehouse-container">
+                        <div class="warehouse-layout" id="optimizedLayout"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="optimization-controls">
+                <button class="btn btn-outline" id="exportPlanBtnFull">
+                    <i class="fas fa-file-export"></i>
+                    <span class="btn-text">Export Plan</span>
+                </button>
+                <button class="btn btn-primary" id="applyChangesBtn">
+                    <i class="fas fa-check-circle"></i>
+                    <span class="btn-text">Apply Changes</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Comparison Tab -->
+        <div class="tab-content" id="comparison-tab">
+            <h2 class="section-title">Layout Comparison</h2>
+            <p class="section-description">Side-by-side comparison of current vs. optimized warehouse layouts with key performance metrics.</p>
+
+            <div class="visualization-container" style="margin-bottom: 2rem;">
+                <div class="visualization-header">
+                    <div class="visualization-title">Current vs. Optimized Layout</div>
+                    <div class="visualization-actions">
+                        <button class="btn btn-outline btn-sm btn-icon">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                        <button class="btn btn-outline btn-sm btn-icon">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="visualization-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; min-width: 1200px;">
+                        <div>
+                            <h4 style="text-align: center; margin-bottom: 1rem; color: var(--text);">Current Layout</h4>
+                            <div class="warehouse-layout" id="currentComparisonLayout" style="height: 400px;"></div>
+                        </div>
+                        <div>
+                            <h4 style="text-align: center; margin-bottom: 1rem; color: var(--text);">Optimized Layout</h4>
+                            <div class="warehouse-layout" id="optimizedComparisonLayout" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recommendations-list">
+                <h3 class="section-title">Key Recommendations</h3>
+                
+                <div class="recommendation-item">
+                    <div class="recommendation-icon">
+                        <i class="fas fa-arrows-alt-h"></i>
+                    </div>
+                    <div class="recommendation-content">
+                        <h4>Add Cross Aisles</h4>
+                        <p>Adding 2 cross aisles in zones B and D will reduce average travel distance by 15%.</p>
+                    </div>
+                    <div class="recommendation-actions">
+                        <button class="btn btn-outline btn-sm btn-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="recommendation-item">
+                    <div class="recommendation-icon">
+                        <i class="fas fa-random"></i>
+                    </div>
+                    <div class="recommendation-content">
+                        <h4>Reorganize Fast-Moving Items</h4>
+                        <p>Relocate 23 high-velocity SKUs to the golden zone near packing stations.</p>
+                    </div>
+                    <div class="recommendation-actions">
+                        <button class="btn btn-outline btn-sm btn-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="recommendation-item">
+                    <div class="recommendation-icon">
+                        <i class="fas fa-people-carry"></i>
+                    </div>
+                    <div class="recommendation-content">
+                        <h4>Optimize Work Zones</h4>
+                        <p>Redesign picking zones to minimize congestion during peak hours.</p>
+                    </div>
+                    <div class="recommendation-actions">
+                        <button class="btn btn-outline btn-sm btn-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dark/Light Mode Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            let darkMode = localStorage.getItem('darkMode') === 'true' || prefersDark;
+
+            function applyTheme() {
+                if (darkMode) {
+                    document.body.classList.add('dark-mode');
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            }
+
+            themeToggle.addEventListener('click', () => {
+                darkMode = !darkMode;
+                localStorage.setItem('darkMode', darkMode);
+                applyTheme();
+            });
+
+            applyTheme();
+
+            // Generate warehouse layout
+            function generateLayout(containerId, optimized = false) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = '';
+                
+                // Create aisles
+                for (let i = 0; i < 8; i++) {
+                    if (i % 2 === 0) {
+                        const aisle = document.createElement('div');
+                        aisle.className = 'aisle';
+                        aisle.textContent = `Aisle ${i/2 + 1}`;
+                        aisle.style.gridRow = `${i + 1} / span 1`;
+                        if (optimized && (i === 2 || i === 4)) {
+                            // Add cross aisles in optimized layout
+                            aisle.style.gridColumn = '1 / span 12';
+                            aisle.textContent = `Cross Aisle ${i === 2 ? 'A' : 'B'}`;
+                        } else {
+                            aisle.style.gridColumn = '4 / span 6';
+                        }
+                        container.appendChild(aisle);
+                    }
+                }
+                
+                // Create racks
+                for (let row = 1; row <= 8; row++) {
+                    for (let col = 1; col <= 12; col++) {
+                        if ((col <= 3 || col >= 10) && row % 2 !== 0) {
+                            const rack = document.createElement('div');
+                            rack.className = 'rack';
+                            rack.textContent = `R${row}C${col}`;
+                            rack.style.gridRow = row;
+                            rack.style.gridColumn = col;
+                            
+                            // Assign traffic levels
+                            if (optimized) {
+                                // Optimized layout has better distribution
+                                if ((row === 1 || row === 3) && (col === 1 || col === 2 || col === 11 || col === 12)) {
+                                    rack.classList.add('low-activity');
+                                } else if ((row === 5 || row === 7) && (col === 1 || col === 12)) {
+                                    rack.classList.add('high-activity');
+                                } else {
+                                    rack.classList.add('medium-activity');
+                                }
+                            } else {
+                                // Current layout has congestion points
+                                const traffic = Math.random();
+                                if ((col === 1 || col === 12) && (row === 1 || row === 3 || row === 5)) {
+                                    rack.classList.add('high-activity');
+                                } else if (traffic > 0.7) {
+                                    rack.classList.add('high-activity');
+                                } else if (traffic > 0.4) {
+                                    rack.classList.add('medium-activity');
+                                } else {
+                                    rack.classList.add('low-activity');
+                                }
+                            }
+                            
+                            container.appendChild(rack);
+                        }
+                    }
+                }
+            }
+            
+            // Generate all layouts
+            generateLayout('warehouseLayout');
+            generateLayout('optimizedLayout', true);
+            generateLayout('currentComparisonLayout');
+            generateLayout('optimizedComparisonLayout', true);
+            
+            // Tab functionality
+            const tabs = document.querySelectorAll('.feature-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // Run Optimization button
+            document.getElementById('runOptimizationBtn').addEventListener('click', function() {
+                // Show loading state
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Optimizing...';
+                this.disabled = true;
+                
+                // Simulate optimization processing
+                setTimeout(() => {
+                    // Restore button state
+                    this.innerHTML = originalHTML;
+                    this.disabled = false;
+                    
+                    // Switch to optimized tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    document.querySelector('.feature-tab[data-tab="optimized"]').classList.add('active');
+                    
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById('optimized-tab').classList.add('active');
+                    
+                    // Show success message
+                    alert('Layout optimization completed successfully!');
+                }, 2000);
+            });
+            
+            // Optimize button in current tab
+            document.getElementById('optimizeBtn').addEventListener('click', function() {
+                document.getElementById('runOptimizationBtn').click();
+            });
+            
+            // Export Plan buttons
+            const exportPlanBtns = document.querySelectorAll('[id^="exportPlanBtn"]');
+            exportPlanBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    alert('Exporting optimized layout plan...');
+                    // In a real implementation, this would trigger a file download
+                });
+            });
+            
+            // Apply Changes button
+            document.getElementById('applyChangesBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to apply these layout changes? This will update your warehouse configuration.')) {
+                    // Show loading state
+                    const originalHTML = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Applying...';
+                    this.disabled = true;
+                    
+                    // Simulate apply changes processing
+                    setTimeout(() => {
+                        // Restore button state
+                        this.innerHTML = originalHTML;
+                        this.disabled = false;
+                        
+                        // Show success message
+                        alert('Layout changes applied successfully! The new configuration is now active.');
+                    }, 1500);
+                }
+            });
+            
+            // Reset View button
+            document.getElementById('resetViewBtn').addEventListener('click', function() {
+                generateLayout('warehouseLayout');
+                alert('View reset to default state');
+            });
+            
+            // Export Report button
+            document.getElementById('exportBtn').addEventListener('click', function() {
+                alert('Exporting current layout report...');
+                // In a real implementation, this would trigger a file download
+            });
+            
+            // Make warehouse containers horizontally scrollable on mobile
+            const warehouseContainers = document.querySelectorAll('.warehouse-container');
+            warehouseContainers.forEach(container => {
+                container.addEventListener('touchstart', function(e) {
+                    this.style.overflowX = 'auto';
+                    this.style.overflowY = 'hidden';
+                });
+                
+                container.addEventListener('touchend', function(e) {
+                    this.style.overflowX = 'auto';
+                    this.style.overflowY = 'hidden';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
