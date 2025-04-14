@@ -7,7 +7,932 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
+   
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <label class="toggle-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider">
+                <i class="fas fa-sun sun"></i>
+                <i class="fas fa-moon moon"></i>
+            </span>
+        </label>
+    </div>
+
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="header-content">
+                <h1>Live Inventory Tracking with Predictive Analytics</h1>
+                <p>Stay ahead of demand with our cutting-edge inventory management system. Monitor all stock movements in real-time with instant updates that keep your entire team in sync.</p>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="demo-btn">
+                        <i class="fas fa-play"></i> Demo Predictive Analytics
+                    </button>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-book"></i> Documentation
+                    </button>
+                </div>
+            </div>
+            <!-- <div class="header-image">
+                <img src="https://i.imgur.com/JfZxwQh.jpg" alt="Inventory Analytics Dashboard">
+            </div> -->
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-card-title">Total SKUs</div>
+                    <div class="stat-card-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value">2,847</div>
+                <div class="stat-card-description">Active products in inventory</div>
+                <div class="trend trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>12% from last month</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-card-title">Inventory Value</div>
+                    <div class="stat-card-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value">$1.42M</div>
+                <div class="stat-card-description">Current stock value</div>
+                <div class="trend trend-down">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>5% reduction in excess stock</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-card-title">Stock Accuracy</div>
+                    <div class="stat-card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value">98.7%</div>
+                <div class="stat-card-description">Match between system and physical count</div>
+                <div class="trend trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>1.2% improvement</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-card-title">AI Alerts</div>
+                    <div class="stat-card-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value">24</div>
+                <div class="stat-card-description">Active recommendations</div>
+                <div class="trend">
+                    <i class="fas fa-bell"></i>
+                    <span>8 require immediate action</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <div>
+                <!-- Inventory Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">Inventory Levels & Demand Forecasting</div>
+                        <div class="chart-filters">
+                            <button class="filter-btn active" data-period="daily">Daily</button>
+                            <button class="filter-btn" data-period="weekly">Weekly</button>
+                            <button class="filter-btn" data-period="monthly">Monthly</button>
+                            <button class="filter-btn" data-period="quarterly">Quarterly</button>
+                        </div>
+                    </div>
+                    <div class="chart-canvas-container">
+                        <canvas id="inventoryChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Predictive Analytics -->
+                <div class="predictive-analytics">
+                    <div class="analytics-header">
+                        <div class="analytics-title">AI-Powered Predictive Analytics</div>
+                        <div class="analytics-tabs">
+                            <button class="tab-btn active" data-tab="restocking">Restocking</button>
+                            <button class="tab-btn" data-tab="demand">Demand</button>
+                            <button class="tab-btn" data-tab="seasonal">Seasonal</button>
+                        </div>
+                    </div>
+                    <div class="predictive-content">
+                        <div class="predictive-chart-container">
+                            <canvas id="predictiveChart"></canvas>
+                        </div>
+                        <div class="predictive-list">
+                            <div class="predictive-item">
+                                <div class="predictive-icon icon-red">
+                                    <i class="fas fa-exclamation"></i>
+                                </div>
+                                <div class="predictive-content">
+                                    <div class="predictive-item-title">Urgent Restock Needed</div>
+                                    <div class="predictive-item-description">SKU #45872 (Wireless Headphones) will be out of stock in 3 days based on current sales velocity.</div>
+                                    <div class="predictive-item-meta">
+                                        <div class="meta-item">
+                                            <i class="fas fa-fire"></i>
+                                            <span>High Demand</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-clock"></i>
+                                            <span>2 days lead time</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="predictive-item">
+                                <div class="predictive-icon icon-orange">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="predictive-content">
+                                    <div class="predictive-item-title">Demand Spike Predicted</div>
+                                    <div class="predictive-item-description">SKU #32945 (Bluetooth Speakers) expected to sell 40% more units next week due to upcoming promotion.</div>
+                                    <div class="predictive-item-meta">
+                                        <div class="meta-item">
+                                            <i class="fas fa-bullhorn"></i>
+                                            <span>Marketing Event</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-calendar"></i>
+                                            <span>Jun 12-18</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="predictive-item">
+                                <div class="predictive-icon icon-blue">
+                                    <i class="fas fa-box-open"></i>
+                                </div>
+                                <div class="predictive-content">
+                                    <div class="predictive-item-title">Excess Stock Detected</div>
+                                    <div class="predictive-item-description">SKU #18723 (USB-C Cables) has 120 days of inventory. Recommend discounting or bundle offers.</div>
+                                    <div class="predictive-item-meta">
+                                        <div class="meta-item">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                            <span>Cost $2,400/mo</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-warehouse"></i>
+                                            <span>Occupies 3 pallets</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <!-- Flow Dashboard -->
+                <div class="flow-dashboard">
+                    <div class="flow-header">
+                        <div class="flow-title">Inventory Flow Dashboard</div>
+                        <button class="btn-icon" id="expand-flow">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                    <div class="flow-visualization">
+                        <canvas id="flowChart"></canvas>
+                    </div>
+                    <div class="flow-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #3a86ff;"></div>
+                            <div class="legend-label">Inbound</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #8338ec;"></div>
+                            <div class="legend-label">Processing</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #ff006e;"></div>
+                            <div class="legend-label">Outbound</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #06d6a0;"></div>
+                            <div class="legend-label">Returns</div>
+                        </div>
+                    </div>
+                    <div class="flow-stats">
+                        <div class="flow-stat">
+                            <div class="flow-stat-value">142</div>
+                            <div class="flow-stat-label">Daily Inbound</div>
+                        </div>
+                        <div class="flow-stat">
+                            <div class="flow-stat-value">87%</div>
+                            <div class="flow-stat-label">Processing Efficiency</div>
+                        </div>
+                        <div class="flow-stat">
+                            <div class="flow-stat-value">328</div>
+                            <div class="flow-stat-label">Daily Outbound</div>
+                        </div>
+                        <div class="flow-stat">
+                            <div class="flow-stat-value">12</div>
+                            <div class="flow-stat-label">Daily Returns</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Low Stock Alerts -->
+                <div class="alerts-container">
+                    <div class="alerts-header">
+                        <div class="alerts-title">Low Stock Alerts</div>
+                        <div class="alerts-count">8 Critical</div>
+                    </div>
+                    <div class="alerts-grid">
+                        <div class="alert-card">
+                            <div class="alert-card-header">
+                                <div class="alert-card-title">SKU #45872 - Wireless Headphones</div>
+                                <div class="alert-card-priority">Critical</div>
+                            </div>
+                            <div class="alert-card-description">
+                                Only 12 units remaining (3 days of stock). 45 units sold in last 7 days.
+                            </div>
+                            <div class="alert-card-meta">
+                                <div class="alert-card-stock">
+                                    <i class="fas fa-exclamation-triangle"></i> 12 left
+                                </div>
+                                <div class="alert-card-actions">
+                                    <button class="alert-btn alert-btn-primary reorder-btn">Reorder</button>
+                                    <button class="alert-btn alert-btn-outline details-btn">Details</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert-card">
+                            <div class="alert-card-header">
+                                <div class="alert-card-title">SKU #32901 - Smart Watches</div>
+                                <div class="alert-card-priority">High</div>
+                            </div>
+                            <div class="alert-card-description">
+                                23 units remaining (5 days of stock). Backorder expected from supplier.
+                            </div>
+                            <div class="alert-card-meta">
+                                <div class="alert-card-stock">
+                                    <i class="fas fa-exclamation-triangle"></i> 23 left
+                                </div>
+                                <div class="alert-card-actions">
+                                    <button class="alert-btn alert-btn-primary reorder-btn">Reorder</button>
+                                    <button class="alert-btn alert-btn-outline details-btn">Details</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert-card">
+                            <div class="alert-card-header">
+                                <div class="alert-card-title">SKU #78234 - Laptop Chargers</div>
+                                <div class="alert-card-priority">Medium</div>
+                            </div>
+                            <div class="alert-card-description">
+                                45 units remaining (9 days of stock). Increased demand detected.
+                            </div>
+                            <div class="alert-card-meta">
+                                <div class="alert-card-stock">
+                                    <i class="fas fa-exclamation-triangle"></i> 45 left
+                                </div>
+                                <div class="alert-card-actions">
+                                    <button class="alert-btn alert-btn-primary reorder-btn">Reorder</button>
+                                    <button class="alert-btn alert-btn-outline details-btn">Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="activity-container">
+            <div class="activity-header">
+                <div class="activity-title">Recent Inventory Activity</div>
+                <button class="btn btn-outline">
+                    <i class="fas fa-history"></i> View Full History
+                </button>
+            </div>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-message">
+                            <strong>Received shipment</strong> of 250 units for SKU #45872 (Wireless Headphones) from Supplier A
+                        </div>
+                        <div class="activity-meta">
+                            <div class="activity-time">
+                                <i class="fas fa-clock"></i>
+                                <span>15 minutes ago</span>
+                            </div>
+                            <div class="activity-user">
+                                <i class="fas fa-user"></i>
+                                <span>John Smith</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-message">
+                            <strong>Inventory adjustment</strong> for SKU #18723 (USB-C Cables) - 12 units added for damaged goods replacement
+                        </div>
+                        <div class="activity-meta">
+                            <div class="activity-time">
+                                <i class="fas fa-clock"></i>
+                                <span>1 hour ago</span>
+                            </div>
+                            <div class="activity-user">
+                                <i class="fas fa-user"></i>
+                                <span>Maria Garcia</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-message">
+                            <strong>Order fulfilled</strong> for 35 units of SKU #32901 (Smart Watches) to Customer #4582 (TechOutlet Inc.)
+                        </div>
+                        <div class="activity-meta">
+                            <div class="activity-time">
+                                <i class="fas fa-clock"></i>
+                                <span>2 hours ago</span>
+                            </div>
+                            <div class="activity-user">
+                                <i class="fas fa-user"></i>
+                                <span>System Auto</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-message">
+                            <strong>AI recommendation</strong> generated: Reduce order quantity for SKU #78234 (Laptop Chargers) by 20% based on demand forecast
+                        </div>
+                        <div class="activity-meta">
+                            <div class="activity-time">
+                                <i class="fas fa-clock"></i>
+                                <span>4 hours ago</span>
+                            </div>
+                            <div class="activity-user">
+                                <i class="fas fa-user"></i>
+                                <span>Predictive Analytics</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme Toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            themeToggle.addEventListener('change', function() {
+                document.body.classList.toggle('dark-mode');
+                updateChartsForTheme();
+            });
+
+            // Initialize charts
+            const inventoryChart = initInventoryChart();
+            const predictiveChart = initPredictiveChart('restocking');
+            const flowChart = initFlowChart();
+
+            // Chart filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Update chart data based on selected period
+                    const period = button.dataset.period;
+                    updateInventoryChart(inventoryChart, period);
+                });
+            });
+
+            // Analytics tabs
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Update predictive chart based on selected tab
+                    const tab = button.dataset.tab;
+                    updatePredictiveChart(predictiveChart, tab);
+                });
+            });
+
+            // Reorder buttons
+            const reorderButtons = document.querySelectorAll('.reorder-btn');
+            reorderButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const card = this.closest('.alert-card');
+                    const title = card.querySelector('.alert-card-title').textContent;
+                    
+                    // Show confirmation
+                    alert(`Reorder initiated for ${title}. A purchase order has been created.`);
+                    
+                    // Update UI
+                    const priorityBadge = card.querySelector('.alert-card-priority');
+                    priorityBadge.textContent = 'Ordered';
+                    priorityBadge.style.backgroundColor = '#06d6a0';
+                    this.textContent = 'Order Placed';
+                    this.style.backgroundColor = '#06d6a0';
+                    this.disabled = true;
+                });
+            });
+
+            // Details buttons
+            const detailsButtons = document.querySelectorAll('.details-btn');
+            detailsButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const card = this.closest('.alert-card');
+                    const title = card.querySelector('.alert-card-title').textContent;
+                    const description = card.querySelector('.alert-card-description').textContent;
+                    
+                    // Show details modal (simplified as alert for this demo)
+                    alert(`Details for ${title}\n\n${description}\n\nAdditional details would be shown in a modal or expanded view.`);
+                });
+            });
+
+            // Demo button
+            document.getElementById('demo-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Add loading state
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Loading demo...';
+                this.disabled = true;
+                
+                // Simulate demo loading
+                setTimeout(() => {
+                    // Restore button
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                    
+                    // Create notification
+                    showNotification('Predictive demo started! Check the analytics section.', 'success');
+                    
+                    // Update charts with demo data
+                    updateInventoryChart(inventoryChart, 'daily', true);
+                    updatePredictiveChart(predictiveChart, 'restocking', true);
+                    updateFlowChart(flowChart, true);
+                    
+                    // Add a demo alert
+                    addDemoAlert();
+                    
+                }, 1500);
+            });
+
+            // Expand flow chart button
+            document.getElementById('expand-flow').addEventListener('click', function() {
+                alert('In a real application, this would open the flow visualization in full screen mode.');
+            });
+
+            // Simulate real-time updates
+            setInterval(() => {
+                updateStatsRandomly();
+                
+                // Occasionally add new activity
+                if (Math.random() > 0.7) {
+                    addRandomActivity();
+                }
+            }, 10000);
+
+            // Initialize with some random data
+            updateStatsRandomly();
+        });
+
+        // Chart Initialization Functions
+        function initInventoryChart() {
+            const ctx = document.getElementById('inventoryChart').getContext('2d');
+            return new Chart(ctx, {
+                type: 'line',
+                data: getInventoryChartData('daily'),
+                options: getChartOptions('Inventory Levels vs Demand Forecast')
+            });
+        }
+
+        function initPredictiveChart(tab) {
+            const ctx = document.getElementById('predictiveChart').getContext('2d');
+            return new Chart(ctx, {
+                type: 'bar',
+                data: getPredictiveChartData(tab),
+                options: getChartOptions('Predictive Analytics - ' + tab.charAt(0).toUpperCase() + tab.slice(1))
+            });
+        }
+
+        function initFlowChart() {
+            const ctx = document.getElementById('flowChart').getContext('2d');
+            return new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Inbound', 'Processing', 'Outbound', 'Returns'],
+                    datasets: [{
+                        data: [142, 328, 284, 12],
+                        backgroundColor: [
+                            '#3a86ff',
+                            '#8338ec',
+                            '#ff006e',
+                            '#06d6a0'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: true
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        // Data Generation Functions
+        function getInventoryChartData(period) {
+            let labels, inventoryData, demandData;
+            
+            switch(period) {
+                case 'weekly':
+                    labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                    inventoryData = [1200, 950, 700, 450];
+                    demandData = [800, 850, 900, 950];
+                    break;
+                case 'monthly':
+                    labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+                    inventoryData = [4200, 3800, 3500, 3200, 2900, 2500];
+                    demandData = [2800, 3000, 3200, 3400, 3600, 3800];
+                    break;
+                case 'quarterly':
+                    labels = ['Q1', 'Q2', 'Q3', 'Q4'];
+                    inventoryData = [12500, 11000, 9500, 8000];
+                    demandData = [8500, 9500, 10500, 11500];
+                    break;
+                default: // daily
+                    labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    inventoryData = [350, 300, 250, 200, 180, 150, 120];
+                    demandData = [120, 140, 160, 180, 200, 220, 240];
+            }
+            
+            return {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Inventory Levels',
+                        data: inventoryData,
+                        borderColor: '#3a86ff',
+                        backgroundColor: 'rgba(58, 134, 255, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Demand Forecast',
+                        data: demandData,
+                        borderColor: '#ff006e',
+                        backgroundColor: 'rgba(255, 0, 110, 0.1)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            };
+        }
+
+        function getPredictiveChartData(tab) {
+            let labels, data, backgroundColor;
+            
+            switch(tab) {
+                case 'demand':
+                    labels = ['Electronics', 'Clothing', 'Home Goods', 'Toys', 'Sports'];
+                    data = [85, 72, 64, 45, 38];
+                    backgroundColor = '#ffbe0b';
+                    break;
+                case 'seasonal':
+                    labels = ['Winter', 'Spring', 'Summer', 'Fall'];
+                    data = [45, 65, 85, 60];
+                    backgroundColor = '#8338ec';
+                    break;
+                default: // restocking
+                    labels = ['SKU #45872', 'SKU #32901', 'SKU #78234', 'SKU #18723', 'SKU #56012'];
+                    data = [12, 23, 45, 120, 32];
+                    backgroundColor = '#ef476f';
+            }
+            
+            return {
+                labels: labels,
+                datasets: [{
+                    label: tab === 'restocking' ? 'Days of Stock Remaining' : 
+                           tab === 'demand' ? 'Demand Score' : 'Seasonal Impact',
+                    data: data,
+                    backgroundColor: backgroundColor,
+                    borderColor: backgroundColor,
+                    borderWidth: 1
+                }]
+            };
+        }
+
+        function getChartOptions(title) {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                        }
+                    },
+                    title: {
+                        display: false,
+                        text: title,
+                        color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: getComputedStyle(document.body).getPropertyValue('--border-color')
+                        },
+                        ticks: {
+                            color: getComputedStyle(document.body).getPropertyValue('--medium-gray')
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: getComputedStyle(document.body).getPropertyValue('--border-color')
+                        },
+                        ticks: {
+                            color: getComputedStyle(document.body).getPropertyValue('--medium-gray')
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            };
+        }
+
+        // Chart Update Functions
+        function updateInventoryChart(chart, period, isDemo = false) {
+            const originalData = chart.data.datasets[0].data;
+            const loadingSpinner = '<div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> Loading data...</div>';
+            document.querySelector('.chart-canvas-container').innerHTML = loadingSpinner;
+            
+            setTimeout(() => {
+                document.querySelector('.chart-canvas-container').innerHTML = '<canvas id="inventoryChart"></canvas>';
+                const newCtx = document.getElementById('inventoryChart').getContext('2d');
+                chart.destroy();
+                
+                const newData = getInventoryChartData(period);
+                if (isDemo) {
+                    // Make demo data more dramatic
+                    newData.datasets[0].data = newData.datasets[0].data.map(val => val * 0.7);
+                    newData.datasets[1].data = newData.datasets[1].data.map(val => val * 1.3);
+                }
+                
+                chart = new Chart(newCtx, {
+                    type: 'line',
+                    data: newData,
+                    options: getChartOptions('Inventory Levels vs Demand Forecast')
+                });
+                
+                return chart;
+            }, 800);
+        }
+
+        function updatePredictiveChart(chart, tab, isDemo = false) {
+            const loadingSpinner = '<div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> Loading visualization...</div>';
+            document.querySelector('.predictive-chart-container').innerHTML = loadingSpinner;
+            
+            setTimeout(() => {
+                document.querySelector('.predictive-chart-container').innerHTML = '<canvas id="predictiveChart"></canvas>';
+                const newCtx = document.getElementById('predictiveChart').getContext('2d');
+                chart.destroy();
+                
+                const newData = getPredictiveChartData(tab);
+                if (isDemo) {
+                    // Make demo data more dramatic
+                    newData.datasets[0].data = newData.datasets[0].data.map((val, i) => 
+                        i === 0 ? val * 0.3 : i === 1 ? val * 0.6 : val * 1.2
+                    );
+                }
+                
+                chart = new Chart(newCtx, {
+                    type: 'bar',
+                    data: newData,
+                    options: getChartOptions('Predictive Analytics - ' + tab.charAt(0).toUpperCase() + tab.slice(1))
+                });
+                
+                return chart;
+            }, 800);
+        }
+
+        function updateFlowChart(chart, isDemo = false) {
+            const newData = [142, 328, 284, 12];
+            if (isDemo) {
+                // Make demo data more dramatic
+                chart.data.datasets[0].data = [200, 400, 350, 8];
+            } else {
+                // Small random fluctuations
+                chart.data.datasets[0].data = newData.map(val => 
+                    Math.max(50, val + (Math.random() * 40 - 20))
+                );
+            }
+            chart.update();
+        }
+
+        function updateChartsForTheme() {
+            // This would be called when theme changes to update chart colors
+            // In a real app, we would destroy and recreate charts with new colors
+            console.log('Theme changed - charts would update colors');
+        }
+
+        // UI Update Functions
+        function updateStatsRandomly() {
+            const stats = document.querySelectorAll('.stat-card-value');
+            const values = [2847, 1.42, 98.7, 24];
+            
+            stats.forEach((stat, index) => {
+                const current = parseFloat(stat.textContent.replace(/[^0-9.]/g, ''));
+                const change = (Math.random() * 2 - 1) * (index === 0 ? 10 : (index === 1 ? 0.05 : (index === 2 ? 0.3 : 2)));
+                const newValue = current + change;
+                
+                // Format based on index
+                if (index === 0) {
+                    stat.textContent = Math.round(newValue).toLocaleString();
+                } else if (index === 1) {
+                    stat.textContent = '$' + newValue.toFixed(2) + 'M';
+                } else if (index === 2) {
+                    stat.textContent = newValue.toFixed(1) + '%';
+                } else {
+                    stat.textContent = Math.round(newValue);
+                }
+            });
+        }
+
+        function addRandomActivity() {
+            const activities = [
+                "Inventory count completed for Aisle 3 - 98.5% accuracy",
+                "New purchase order created for SKU #45872 (Wireless Headphones) - 200 units",
+                "Return processed for SKU #32901 (Smart Watches) - 1 unit",
+                "Stock transfer initiated to Satellite Warehouse - 15 SKUs"
+            ];
+            
+            const users = ["John Smith", "Maria Garcia", "Robert Johnson", "System Auto"];
+            const icons = ["fa-boxes", "fa-clipboard-list", "fa-undo", "fa-exchange-alt"];
+            
+            const activityList = document.querySelector('.activity-list');
+            const newActivity = document.createElement('div');
+            newActivity.className = 'activity-item';
+            
+            const randomIndex = Math.floor(Math.random() * activities.length);
+            
+            newActivity.innerHTML = `
+                <div class="activity-icon">
+                    <i class="fas ${icons[randomIndex]}"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-message">
+                        <strong>${activities[randomIndex].split(' - ')[0]}</strong> ${activities[randomIndex].split(' - ')[1] || ''}
+                    </div>
+                    <div class="activity-meta">
+                        <div class="activity-time">
+                            <i class="fas fa-clock"></i>
+                            <span>Just now</span>
+                        </div>
+                        <div class="activity-user">
+                            <i class="fas fa-user"></i>
+                            <span>${users[randomIndex]}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            activityList.prepend(newActivity);
+            
+            // Remove oldest activity if more than 5
+            if (activityList.children.length > 5) {
+                activityList.removeChild(activityList.lastChild);
+            }
+        }
+
+        function addDemoAlert() {
+            const alertsGrid = document.querySelector('.alerts-grid');
+            const demoAlert = document.createElement('div');
+            demoAlert.className = 'alert-card';
+            demoAlert.innerHTML = `
+                <div class="alert-card-header">
+                    <div class="alert-card-title">SKU #98765 - Demo Product</div>
+                    <div class="alert-card-priority">Demo</div>
+                </div>
+                <div class="alert-card-description">
+                    This is a simulated alert showing how the system predicts stock shortages 7 days in advance.
+                </div>
+                <div class="alert-card-meta">
+                    <div class="alert-card-stock">
+                        <i class="fas fa-exclamation-triangle"></i> 42 left
+                    </div>
+                    <div class="alert-card-actions">
+                        <button class="alert-btn alert-btn-primary reorder-btn">Reorder</button>
+                        <button class="alert-btn alert-btn-outline details-btn">Details</button>
+                    </div>
+                </div>
+            `;
+            alertsGrid.prepend(demoAlert);
+            
+            // Add event listeners to new buttons
+            demoAlert.querySelector('.reorder-btn').addEventListener('click', function() {
+                const card = this.closest('.alert-card');
+                const title = card.querySelector('.alert-card-title').textContent;
+                alert(`Reorder initiated for ${title}. A purchase order has been created.`);
+                const priorityBadge = card.querySelector('.alert-card-priority');
+                priorityBadge.textContent = 'Ordered';
+                priorityBadge.style.backgroundColor = '#06d6a0';
+                this.textContent = 'Order Placed';
+                this.style.backgroundColor = '#06d6a0';
+                this.disabled = true;
+            });
+            
+            demoAlert.querySelector('.details-btn').addEventListener('click', function() {
+                const card = this.closest('.alert-card');
+                const title = card.querySelector('.alert-card-title').textContent;
+                const description = card.querySelector('.alert-card-description').textContent;
+                alert(`Details for ${title}\n\n${description}\n\nThis is a demo alert showing the functionality.`);
+            });
+            
+            // Remove oldest alert if more than 3
+            if (alertsGrid.children.length > 3) {
+                alertsGrid.removeChild(alertsGrid.lastChild);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.position = 'fixed';
+            notification.style.bottom = '20px';
+            notification.style.right = '20px';
+            notification.style.backgroundColor = type === 'success' ? '#06d6a0' : '#3a86ff';
+            notification.style.color = 'white';
+            notification.style.padding = '15px 25px';
+            notification.style.borderRadius = '8px';
+            notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+            notification.style.zIndex = '1000';
+            notification.style.animation = 'fadeInUp 0.5s ease-out';
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i> ${message}`;
+            document.body.appendChild(notification);
+            
+            // Remove notification after 5 seconds
+            setTimeout(() => {
+                notification.style.animation = 'fadeOutDown 0.5s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 5000);
+        }
+    </script>
+     <style>
 :root {
   --primary: #3a86ff;
   --primary-dark: #2667cc;
@@ -945,929 +1870,5 @@ img, svg, video, canvas {
   height: auto;
 }
     </style>
-</head>
-<body>
-    <!-- Theme Toggle -->
-    <div class="theme-toggle">
-        <label class="toggle-switch">
-            <input type="checkbox" id="theme-toggle">
-            <span class="slider">
-                <i class="fas fa-sun sun"></i>
-                <i class="fas fa-moon moon"></i>
-            </span>
-        </label>
-    </div>
-
-    <div class="container">
-        <!-- Header Section -->
-        <div class="header">
-            <div class="header-content">
-                <h1>Live Inventory Tracking with Predictive Analytics</h1>
-                <p>Stay ahead of demand with our cutting-edge inventory management system. Monitor all stock movements in real-time with instant updates that keep your entire team in sync.</p>
-                <div class="header-actions">
-                    <button class="btn btn-primary" id="demo-btn">
-                        <i class="fas fa-play"></i> Demo Predictive Analytics
-                    </button>
-                    <button class="btn btn-outline">
-                        <i class="fas fa-book"></i> Documentation
-                    </button>
-                </div>
-            </div>
-            <!-- <div class="header-image">
-                <img src="https://i.imgur.com/JfZxwQh.jpg" alt="Inventory Analytics Dashboard">
-            </div> -->
-        </div>
-
-        <!-- Stats Grid -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-card-header">
-                    <div class="stat-card-title">Total SKUs</div>
-                    <div class="stat-card-icon">
-                        <i class="fas fa-boxes"></i>
-                    </div>
-                </div>
-                <div class="stat-card-value">2,847</div>
-                <div class="stat-card-description">Active products in inventory</div>
-                <div class="trend trend-up">
-                    <i class="fas fa-arrow-up"></i>
-                    <span>12% from last month</span>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-card-header">
-                    <div class="stat-card-title">Inventory Value</div>
-                    <div class="stat-card-icon">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                </div>
-                <div class="stat-card-value">$1.42M</div>
-                <div class="stat-card-description">Current stock value</div>
-                <div class="trend trend-down">
-                    <i class="fas fa-arrow-down"></i>
-                    <span>5% reduction in excess stock</span>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-card-header">
-                    <div class="stat-card-title">Stock Accuracy</div>
-                    <div class="stat-card-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                </div>
-                <div class="stat-card-value">98.7%</div>
-                <div class="stat-card-description">Match between system and physical count</div>
-                <div class="trend trend-up">
-                    <i class="fas fa-arrow-up"></i>
-                    <span>1.2% improvement</span>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-card-header">
-                    <div class="stat-card-title">AI Alerts</div>
-                    <div class="stat-card-icon">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                </div>
-                <div class="stat-card-value">24</div>
-                <div class="stat-card-description">Active recommendations</div>
-                <div class="trend">
-                    <i class="fas fa-bell"></i>
-                    <span>8 require immediate action</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Dashboard Grid -->
-        <div class="dashboard-grid">
-            <div>
-                <!-- Inventory Chart -->
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <div class="chart-title">Inventory Levels & Demand Forecasting</div>
-                        <div class="chart-filters">
-                            <button class="filter-btn active" data-period="daily">Daily</button>
-                            <button class="filter-btn" data-period="weekly">Weekly</button>
-                            <button class="filter-btn" data-period="monthly">Monthly</button>
-                            <button class="filter-btn" data-period="quarterly">Quarterly</button>
-                        </div>
-                    </div>
-                    <div class="chart-canvas-container">
-                        <canvas id="inventoryChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Predictive Analytics -->
-                <div class="predictive-analytics">
-                    <div class="analytics-header">
-                        <div class="analytics-title">AI-Powered Predictive Analytics</div>
-                        <div class="analytics-tabs">
-                            <button class="tab-btn active" data-tab="restocking">Restocking</button>
-                            <button class="tab-btn" data-tab="demand">Demand</button>
-                            <button class="tab-btn" data-tab="seasonal">Seasonal</button>
-                        </div>
-                    </div>
-                    <div class="predictive-content">
-                        <div class="predictive-chart-container">
-                            <canvas id="predictiveChart"></canvas>
-                        </div>
-                        <div class="predictive-list">
-                            <div class="predictive-item">
-                                <div class="predictive-icon icon-red">
-                                    <i class="fas fa-exclamation"></i>
-                                </div>
-                                <div class="predictive-content">
-                                    <div class="predictive-item-title">Urgent Restock Needed</div>
-                                    <div class="predictive-item-description">SKU #45872 (Wireless Headphones) will be out of stock in 3 days based on current sales velocity.</div>
-                                    <div class="predictive-item-meta">
-                                        <div class="meta-item">
-                                            <i class="fas fa-fire"></i>
-                                            <span>High Demand</span>
-                                        </div>
-                                        <div class="meta-item">
-                                            <i class="fas fa-clock"></i>
-                                            <span>2 days lead time</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="predictive-item">
-                                <div class="predictive-icon icon-orange">
-                                    <i class="fas fa-chart-line"></i>
-                                </div>
-                                <div class="predictive-content">
-                                    <div class="predictive-item-title">Demand Spike Predicted</div>
-                                    <div class="predictive-item-description">SKU #32945 (Bluetooth Speakers) expected to sell 40% more units next week due to upcoming promotion.</div>
-                                    <div class="predictive-item-meta">
-                                        <div class="meta-item">
-                                            <i class="fas fa-bullhorn"></i>
-                                            <span>Marketing Event</span>
-                                        </div>
-                                        <div class="meta-item">
-                                            <i class="fas fa-calendar"></i>
-                                            <span>Jun 12-18</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="predictive-item">
-                                <div class="predictive-icon icon-blue">
-                                    <i class="fas fa-box-open"></i>
-                                </div>
-                                <div class="predictive-content">
-                                    <div class="predictive-item-title">Excess Stock Detected</div>
-                                    <div class="predictive-item-description">SKU #18723 (USB-C Cables) has 120 days of inventory. Recommend discounting or bundle offers.</div>
-                                    <div class="predictive-item-meta">
-                                        <div class="meta-item">
-                                            <i class="fas fa-money-bill-wave"></i>
-                                            <span>Cost $2,400/mo</span>
-                                        </div>
-                                        <div class="meta-item">
-                                            <i class="fas fa-warehouse"></i>
-                                            <span>Occupies 3 pallets</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <!-- Flow Dashboard -->
-                <div class="flow-dashboard">
-                    <div class="flow-header">
-                        <div class="flow-title">Inventory Flow Dashboard</div>
-                        <button class="btn-icon" id="expand-flow">
-                            <i class="fas fa-expand"></i>
-                        </button>
-                    </div>
-                    <div class="flow-visualization">
-                        <canvas id="flowChart"></canvas>
-                    </div>
-                    <div class="flow-legend">
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #3a86ff;"></div>
-                            <div class="legend-label">Inbound</div>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #8338ec;"></div>
-                            <div class="legend-label">Processing</div>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #ff006e;"></div>
-                            <div class="legend-label">Outbound</div>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #06d6a0;"></div>
-                            <div class="legend-label">Returns</div>
-                        </div>
-                    </div>
-                    <div class="flow-stats">
-                        <div class="flow-stat">
-                            <div class="flow-stat-value">142</div>
-                            <div class="flow-stat-label">Daily Inbound</div>
-                        </div>
-                        <div class="flow-stat">
-                            <div class="flow-stat-value">87%</div>
-                            <div class="flow-stat-label">Processing Efficiency</div>
-                        </div>
-                        <div class="flow-stat">
-                            <div class="flow-stat-value">328</div>
-                            <div class="flow-stat-label">Daily Outbound</div>
-                        </div>
-                        <div class="flow-stat">
-                            <div class="flow-stat-value">12</div>
-                            <div class="flow-stat-label">Daily Returns</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Low Stock Alerts -->
-                <div class="alerts-container">
-                    <div class="alerts-header">
-                        <div class="alerts-title">Low Stock Alerts</div>
-                        <div class="alerts-count">8 Critical</div>
-                    </div>
-                    <div class="alerts-grid">
-                        <div class="alert-card">
-                            <div class="alert-card-header">
-                                <div class="alert-card-title">SKU #45872 - Wireless Headphones</div>
-                                <div class="alert-card-priority">Critical</div>
-                            </div>
-                            <div class="alert-card-description">
-                                Only 12 units remaining (3 days of stock). 45 units sold in last 7 days.
-                            </div>
-                            <div class="alert-card-meta">
-                                <div class="alert-card-stock">
-                                    <i class="fas fa-exclamation-triangle"></i> 12 left
-                                </div>
-                                <div class="alert-card-actions">
-                                    <button class="alert-btn alert-btn-primary reorder-btn">Reorder</button>
-                                    <button class="alert-btn alert-btn-outline details-btn">Details</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="alert-card">
-                            <div class="alert-card-header">
-                                <div class="alert-card-title">SKU #32901 - Smart Watches</div>
-                                <div class="alert-card-priority">High</div>
-                            </div>
-                            <div class="alert-card-description">
-                                23 units remaining (5 days of stock). Backorder expected from supplier.
-                            </div>
-                            <div class="alert-card-meta">
-                                <div class="alert-card-stock">
-                                    <i class="fas fa-exclamation-triangle"></i> 23 left
-                                </div>
-                                <div class="alert-card-actions">
-                                    <button class="alert-btn alert-btn-primary reorder-btn">Reorder</button>
-                                    <button class="alert-btn alert-btn-outline details-btn">Details</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="alert-card">
-                            <div class="alert-card-header">
-                                <div class="alert-card-title">SKU #78234 - Laptop Chargers</div>
-                                <div class="alert-card-priority">Medium</div>
-                            </div>
-                            <div class="alert-card-description">
-                                45 units remaining (9 days of stock). Increased demand detected.
-                            </div>
-                            <div class="alert-card-meta">
-                                <div class="alert-card-stock">
-                                    <i class="fas fa-exclamation-triangle"></i> 45 left
-                                </div>
-                                <div class="alert-card-actions">
-                                    <button class="alert-btn alert-btn-primary reorder-btn">Reorder</button>
-                                    <button class="alert-btn alert-btn-outline details-btn">Details</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="activity-container">
-            <div class="activity-header">
-                <div class="activity-title">Recent Inventory Activity</div>
-                <button class="btn btn-outline">
-                    <i class="fas fa-history"></i> View Full History
-                </button>
-            </div>
-            <div class="activity-list">
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-truck"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-message">
-                            <strong>Received shipment</strong> of 250 units for SKU #45872 (Wireless Headphones) from Supplier A
-                        </div>
-                        <div class="activity-meta">
-                            <div class="activity-time">
-                                <i class="fas fa-clock"></i>
-                                <span>15 minutes ago</span>
-                            </div>
-                            <div class="activity-user">
-                                <i class="fas fa-user"></i>
-                                <span>John Smith</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-box-open"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-message">
-                            <strong>Inventory adjustment</strong> for SKU #18723 (USB-C Cables) - 12 units added for damaged goods replacement
-                        </div>
-                        <div class="activity-meta">
-                            <div class="activity-time">
-                                <i class="fas fa-clock"></i>
-                                <span>1 hour ago</span>
-                            </div>
-                            <div class="activity-user">
-                                <i class="fas fa-user"></i>
-                                <span>Maria Garcia</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-message">
-                            <strong>Order fulfilled</strong> for 35 units of SKU #32901 (Smart Watches) to Customer #4582 (TechOutlet Inc.)
-                        </div>
-                        <div class="activity-meta">
-                            <div class="activity-time">
-                                <i class="fas fa-clock"></i>
-                                <span>2 hours ago</span>
-                            </div>
-                            <div class="activity-user">
-                                <i class="fas fa-user"></i>
-                                <span>System Auto</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-message">
-                            <strong>AI recommendation</strong> generated: Reduce order quantity for SKU #78234 (Laptop Chargers) by 20% based on demand forecast
-                        </div>
-                        <div class="activity-meta">
-                            <div class="activity-time">
-                                <i class="fas fa-clock"></i>
-                                <span>4 hours ago</span>
-                            </div>
-                            <div class="activity-user">
-                                <i class="fas fa-user"></i>
-                                <span>Predictive Analytics</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Theme Toggle
-            const themeToggle = document.getElementById('theme-toggle');
-            themeToggle.addEventListener('change', function() {
-                document.body.classList.toggle('dark-mode');
-                updateChartsForTheme();
-            });
-
-            // Initialize charts
-            const inventoryChart = initInventoryChart();
-            const predictiveChart = initPredictiveChart('restocking');
-            const flowChart = initFlowChart();
-
-            // Chart filter buttons
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            filterButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    
-                    // Update chart data based on selected period
-                    const period = button.dataset.period;
-                    updateInventoryChart(inventoryChart, period);
-                });
-            });
-
-            // Analytics tabs
-            const tabButtons = document.querySelectorAll('.tab-btn');
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    
-                    // Update predictive chart based on selected tab
-                    const tab = button.dataset.tab;
-                    updatePredictiveChart(predictiveChart, tab);
-                });
-            });
-
-            // Reorder buttons
-            const reorderButtons = document.querySelectorAll('.reorder-btn');
-            reorderButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const card = this.closest('.alert-card');
-                    const title = card.querySelector('.alert-card-title').textContent;
-                    
-                    // Show confirmation
-                    alert(`Reorder initiated for ${title}. A purchase order has been created.`);
-                    
-                    // Update UI
-                    const priorityBadge = card.querySelector('.alert-card-priority');
-                    priorityBadge.textContent = 'Ordered';
-                    priorityBadge.style.backgroundColor = '#06d6a0';
-                    this.textContent = 'Order Placed';
-                    this.style.backgroundColor = '#06d6a0';
-                    this.disabled = true;
-                });
-            });
-
-            // Details buttons
-            const detailsButtons = document.querySelectorAll('.details-btn');
-            detailsButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const card = this.closest('.alert-card');
-                    const title = card.querySelector('.alert-card-title').textContent;
-                    const description = card.querySelector('.alert-card-description').textContent;
-                    
-                    // Show details modal (simplified as alert for this demo)
-                    alert(`Details for ${title}\n\n${description}\n\nAdditional details would be shown in a modal or expanded view.`);
-                });
-            });
-
-            // Demo button
-            document.getElementById('demo-btn').addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Add loading state
-                const originalText = this.innerHTML;
-                this.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Loading demo...';
-                this.disabled = true;
-                
-                // Simulate demo loading
-                setTimeout(() => {
-                    // Restore button
-                    this.innerHTML = originalText;
-                    this.disabled = false;
-                    
-                    // Create notification
-                    showNotification('Predictive demo started! Check the analytics section.', 'success');
-                    
-                    // Update charts with demo data
-                    updateInventoryChart(inventoryChart, 'daily', true);
-                    updatePredictiveChart(predictiveChart, 'restocking', true);
-                    updateFlowChart(flowChart, true);
-                    
-                    // Add a demo alert
-                    addDemoAlert();
-                    
-                }, 1500);
-            });
-
-            // Expand flow chart button
-            document.getElementById('expand-flow').addEventListener('click', function() {
-                alert('In a real application, this would open the flow visualization in full screen mode.');
-            });
-
-            // Simulate real-time updates
-            setInterval(() => {
-                updateStatsRandomly();
-                
-                // Occasionally add new activity
-                if (Math.random() > 0.7) {
-                    addRandomActivity();
-                }
-            }, 10000);
-
-            // Initialize with some random data
-            updateStatsRandomly();
-        });
-
-        // Chart Initialization Functions
-        function initInventoryChart() {
-            const ctx = document.getElementById('inventoryChart').getContext('2d');
-            return new Chart(ctx, {
-                type: 'line',
-                data: getInventoryChartData('daily'),
-                options: getChartOptions('Inventory Levels vs Demand Forecast')
-            });
-        }
-
-        function initPredictiveChart(tab) {
-            const ctx = document.getElementById('predictiveChart').getContext('2d');
-            return new Chart(ctx, {
-                type: 'bar',
-                data: getPredictiveChartData(tab),
-                options: getChartOptions('Predictive Analytics - ' + tab.charAt(0).toUpperCase() + tab.slice(1))
-            });
-        }
-
-        function initFlowChart() {
-            const ctx = document.getElementById('flowChart').getContext('2d');
-            return new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Inbound', 'Processing', 'Outbound', 'Returns'],
-                    datasets: [{
-                        data: [142, 328, 284, 12],
-                        backgroundColor: [
-                            '#3a86ff',
-                            '#8338ec',
-                            '#ff006e',
-                            '#06d6a0'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            enabled: true
-                        }
-                    },
-                    cutout: '70%'
-                }
-            });
-        }
-
-        // Data Generation Functions
-        function getInventoryChartData(period) {
-            let labels, inventoryData, demandData;
-            
-            switch(period) {
-                case 'weekly':
-                    labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-                    inventoryData = [1200, 950, 700, 450];
-                    demandData = [800, 850, 900, 950];
-                    break;
-                case 'monthly':
-                    labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-                    inventoryData = [4200, 3800, 3500, 3200, 2900, 2500];
-                    demandData = [2800, 3000, 3200, 3400, 3600, 3800];
-                    break;
-                case 'quarterly':
-                    labels = ['Q1', 'Q2', 'Q3', 'Q4'];
-                    inventoryData = [12500, 11000, 9500, 8000];
-                    demandData = [8500, 9500, 10500, 11500];
-                    break;
-                default: // daily
-                    labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                    inventoryData = [350, 300, 250, 200, 180, 150, 120];
-                    demandData = [120, 140, 160, 180, 200, 220, 240];
-            }
-            
-            return {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Inventory Levels',
-                        data: inventoryData,
-                        borderColor: '#3a86ff',
-                        backgroundColor: 'rgba(58, 134, 255, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'Demand Forecast',
-                        data: demandData,
-                        borderColor: '#ff006e',
-                        backgroundColor: 'rgba(255, 0, 110, 0.1)',
-                        borderWidth: 2,
-                        borderDash: [5, 5],
-                        tension: 0.4,
-                        fill: true
-                    }
-                ]
-            };
-        }
-
-        function getPredictiveChartData(tab) {
-            let labels, data, backgroundColor;
-            
-            switch(tab) {
-                case 'demand':
-                    labels = ['Electronics', 'Clothing', 'Home Goods', 'Toys', 'Sports'];
-                    data = [85, 72, 64, 45, 38];
-                    backgroundColor = '#ffbe0b';
-                    break;
-                case 'seasonal':
-                    labels = ['Winter', 'Spring', 'Summer', 'Fall'];
-                    data = [45, 65, 85, 60];
-                    backgroundColor = '#8338ec';
-                    break;
-                default: // restocking
-                    labels = ['SKU #45872', 'SKU #32901', 'SKU #78234', 'SKU #18723', 'SKU #56012'];
-                    data = [12, 23, 45, 120, 32];
-                    backgroundColor = '#ef476f';
-            }
-            
-            return {
-                labels: labels,
-                datasets: [{
-                    label: tab === 'restocking' ? 'Days of Stock Remaining' : 
-                           tab === 'demand' ? 'Demand Score' : 'Seasonal Impact',
-                    data: data,
-                    backgroundColor: backgroundColor,
-                    borderColor: backgroundColor,
-                    borderWidth: 1
-                }]
-            };
-        }
-
-        function getChartOptions(title) {
-            return {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            color: getComputedStyle(document.body).getPropertyValue('--text-color')
-                        }
-                    },
-                    title: {
-                        display: false,
-                        text: title,
-                        color: getComputedStyle(document.body).getPropertyValue('--text-color')
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            color: getComputedStyle(document.body).getPropertyValue('--border-color')
-                        },
-                        ticks: {
-                            color: getComputedStyle(document.body).getPropertyValue('--medium-gray')
-                        }
-                    },
-                    y: {
-                        grid: {
-                            color: getComputedStyle(document.body).getPropertyValue('--border-color')
-                        },
-                        ticks: {
-                            color: getComputedStyle(document.body).getPropertyValue('--medium-gray')
-                        }
-                    }
-                },
-                interaction: {
-                    mode: 'nearest',
-                    axis: 'x',
-                    intersect: false
-                }
-            };
-        }
-
-        // Chart Update Functions
-        function updateInventoryChart(chart, period, isDemo = false) {
-            const originalData = chart.data.datasets[0].data;
-            const loadingSpinner = '<div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> Loading data...</div>';
-            document.querySelector('.chart-canvas-container').innerHTML = loadingSpinner;
-            
-            setTimeout(() => {
-                document.querySelector('.chart-canvas-container').innerHTML = '<canvas id="inventoryChart"></canvas>';
-                const newCtx = document.getElementById('inventoryChart').getContext('2d');
-                chart.destroy();
-                
-                const newData = getInventoryChartData(period);
-                if (isDemo) {
-                    // Make demo data more dramatic
-                    newData.datasets[0].data = newData.datasets[0].data.map(val => val * 0.7);
-                    newData.datasets[1].data = newData.datasets[1].data.map(val => val * 1.3);
-                }
-                
-                chart = new Chart(newCtx, {
-                    type: 'line',
-                    data: newData,
-                    options: getChartOptions('Inventory Levels vs Demand Forecast')
-                });
-                
-                return chart;
-            }, 800);
-        }
-
-        function updatePredictiveChart(chart, tab, isDemo = false) {
-            const loadingSpinner = '<div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> Loading visualization...</div>';
-            document.querySelector('.predictive-chart-container').innerHTML = loadingSpinner;
-            
-            setTimeout(() => {
-                document.querySelector('.predictive-chart-container').innerHTML = '<canvas id="predictiveChart"></canvas>';
-                const newCtx = document.getElementById('predictiveChart').getContext('2d');
-                chart.destroy();
-                
-                const newData = getPredictiveChartData(tab);
-                if (isDemo) {
-                    // Make demo data more dramatic
-                    newData.datasets[0].data = newData.datasets[0].data.map((val, i) => 
-                        i === 0 ? val * 0.3 : i === 1 ? val * 0.6 : val * 1.2
-                    );
-                }
-                
-                chart = new Chart(newCtx, {
-                    type: 'bar',
-                    data: newData,
-                    options: getChartOptions('Predictive Analytics - ' + tab.charAt(0).toUpperCase() + tab.slice(1))
-                });
-                
-                return chart;
-            }, 800);
-        }
-
-        function updateFlowChart(chart, isDemo = false) {
-            const newData = [142, 328, 284, 12];
-            if (isDemo) {
-                // Make demo data more dramatic
-                chart.data.datasets[0].data = [200, 400, 350, 8];
-            } else {
-                // Small random fluctuations
-                chart.data.datasets[0].data = newData.map(val => 
-                    Math.max(50, val + (Math.random() * 40 - 20))
-                );
-            }
-            chart.update();
-        }
-
-        function updateChartsForTheme() {
-            // This would be called when theme changes to update chart colors
-            // In a real app, we would destroy and recreate charts with new colors
-            console.log('Theme changed - charts would update colors');
-        }
-
-        // UI Update Functions
-        function updateStatsRandomly() {
-            const stats = document.querySelectorAll('.stat-card-value');
-            const values = [2847, 1.42, 98.7, 24];
-            
-            stats.forEach((stat, index) => {
-                const current = parseFloat(stat.textContent.replace(/[^0-9.]/g, ''));
-                const change = (Math.random() * 2 - 1) * (index === 0 ? 10 : (index === 1 ? 0.05 : (index === 2 ? 0.3 : 2)));
-                const newValue = current + change;
-                
-                // Format based on index
-                if (index === 0) {
-                    stat.textContent = Math.round(newValue).toLocaleString();
-                } else if (index === 1) {
-                    stat.textContent = '$' + newValue.toFixed(2) + 'M';
-                } else if (index === 2) {
-                    stat.textContent = newValue.toFixed(1) + '%';
-                } else {
-                    stat.textContent = Math.round(newValue);
-                }
-            });
-        }
-
-        function addRandomActivity() {
-            const activities = [
-                "Inventory count completed for Aisle 3 - 98.5% accuracy",
-                "New purchase order created for SKU #45872 (Wireless Headphones) - 200 units",
-                "Return processed for SKU #32901 (Smart Watches) - 1 unit",
-                "Stock transfer initiated to Satellite Warehouse - 15 SKUs"
-            ];
-            
-            const users = ["John Smith", "Maria Garcia", "Robert Johnson", "System Auto"];
-            const icons = ["fa-boxes", "fa-clipboard-list", "fa-undo", "fa-exchange-alt"];
-            
-            const activityList = document.querySelector('.activity-list');
-            const newActivity = document.createElement('div');
-            newActivity.className = 'activity-item';
-            
-            const randomIndex = Math.floor(Math.random() * activities.length);
-            
-            newActivity.innerHTML = `
-                <div class="activity-icon">
-                    <i class="fas ${icons[randomIndex]}"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-message">
-                        <strong>${activities[randomIndex].split(' - ')[0]}</strong> ${activities[randomIndex].split(' - ')[1] || ''}
-                    </div>
-                    <div class="activity-meta">
-                        <div class="activity-time">
-                            <i class="fas fa-clock"></i>
-                            <span>Just now</span>
-                        </div>
-                        <div class="activity-user">
-                            <i class="fas fa-user"></i>
-                            <span>${users[randomIndex]}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            activityList.prepend(newActivity);
-            
-            // Remove oldest activity if more than 5
-            if (activityList.children.length > 5) {
-                activityList.removeChild(activityList.lastChild);
-            }
-        }
-
-        function addDemoAlert() {
-            const alertsGrid = document.querySelector('.alerts-grid');
-            const demoAlert = document.createElement('div');
-            demoAlert.className = 'alert-card';
-            demoAlert.innerHTML = `
-                <div class="alert-card-header">
-                    <div class="alert-card-title">SKU #98765 - Demo Product</div>
-                    <div class="alert-card-priority">Demo</div>
-                </div>
-                <div class="alert-card-description">
-                    This is a simulated alert showing how the system predicts stock shortages 7 days in advance.
-                </div>
-                <div class="alert-card-meta">
-                    <div class="alert-card-stock">
-                        <i class="fas fa-exclamation-triangle"></i> 42 left
-                    </div>
-                    <div class="alert-card-actions">
-                        <button class="alert-btn alert-btn-primary reorder-btn">Reorder</button>
-                        <button class="alert-btn alert-btn-outline details-btn">Details</button>
-                    </div>
-                </div>
-            `;
-            alertsGrid.prepend(demoAlert);
-            
-            // Add event listeners to new buttons
-            demoAlert.querySelector('.reorder-btn').addEventListener('click', function() {
-                const card = this.closest('.alert-card');
-                const title = card.querySelector('.alert-card-title').textContent;
-                alert(`Reorder initiated for ${title}. A purchase order has been created.`);
-                const priorityBadge = card.querySelector('.alert-card-priority');
-                priorityBadge.textContent = 'Ordered';
-                priorityBadge.style.backgroundColor = '#06d6a0';
-                this.textContent = 'Order Placed';
-                this.style.backgroundColor = '#06d6a0';
-                this.disabled = true;
-            });
-            
-            demoAlert.querySelector('.details-btn').addEventListener('click', function() {
-                const card = this.closest('.alert-card');
-                const title = card.querySelector('.alert-card-title').textContent;
-                const description = card.querySelector('.alert-card-description').textContent;
-                alert(`Details for ${title}\n\n${description}\n\nThis is a demo alert showing the functionality.`);
-            });
-            
-            // Remove oldest alert if more than 3
-            if (alertsGrid.children.length > 3) {
-                alertsGrid.removeChild(alertsGrid.lastChild);
-            }
-        }
-
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.style.position = 'fixed';
-            notification.style.bottom = '20px';
-            notification.style.right = '20px';
-            notification.style.backgroundColor = type === 'success' ? '#06d6a0' : '#3a86ff';
-            notification.style.color = 'white';
-            notification.style.padding = '15px 25px';
-            notification.style.borderRadius = '8px';
-            notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
-            notification.style.zIndex = '1000';
-            notification.style.animation = 'fadeInUp 0.5s ease-out';
-            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i> ${message}`;
-            document.body.appendChild(notification);
-            
-            // Remove notification after 5 seconds
-            setTimeout(() => {
-                notification.style.animation = 'fadeOutDown 0.5s ease-out';
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 500);
-            }, 5000);
-        }
-    </script>
 </body>
 </html>
