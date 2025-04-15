@@ -3,990 +3,1255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Layout Optimizer | Warehouse Management</title>
+    <title>AI Layout Optimizer | Operational Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #3a86ff;
-            --primary-dark: #2667cc;
-            --secondary: #8338ec;
-            --success: #06d6a0;
-            --warning: #ffbe0b;
-            --danger: #ef476f;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --border: #dee2e6;
-            --bg: #ffffff;
-            --text: #212529;
-            --card-bg: #ffffff;
-        }
-
-        .dark-mode {
-            --primary: #4d9eff;
-            --primary-dark: #3a86ff;
-            --light: #343a40;
-            --dark: #f8f9fa;
-            --gray: #adb5bd;
-            --border: #495057;
-            --bg: #212529;
-            --text: #f8f9fa;
-            --card-bg: #2c3034;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 1.5rem;
-        }
-
-        .header-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 0.6rem 1rem;
-            border-radius: 0.375rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-outline:hover {
-            background-color: rgba(58, 134, 255, 0.1);
-        }
-
-        .btn-icon {
-            width: 36px;
-            height: 36px;
-            padding: 0;
-            justify-content: center;
-            border-radius: 50%;
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text);
-            cursor: pointer;
-            font-size: 1.2rem;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background-color 0.2s;
-        }
-
-        .theme-toggle:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        .dark-mode .theme-toggle:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .feature-tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 1.5rem;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        .feature-tabs::-webkit-scrollbar {
-            display: none;
-        }
-
-        .feature-tab {
-            padding: 0.75rem 1.25rem;
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--gray);
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .feature-tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .feature-tab:hover:not(.active) {
-            color: var(--text);
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        .section-description {
-            color: var(--gray);
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-        }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .metric-card {
-            background: var(--card-bg);
-            border-radius: 0.5rem;
-            padding: 1.25rem;
-            border: 1px solid var(--border);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .metric-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .dark-mode .metric-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .metric-title {
-            font-size: 0.85rem;
-            color: var(--gray);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .metric-value {
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
-
-        .metric-change {
-            font-size: 0.8rem;
-            margin-top: 0.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .metric-change.up {
-            color: var(--success);
-        }
-
-        .metric-change.down {
-            color: var(--danger);
-        }
-
-        .visualization-container {
-            margin-top: 1.5rem;
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            overflow: hidden;
-        }
-
-        .visualization-header {
-            padding: 0.75rem 1rem;
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .visualization-title {
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
-
-        .visualization-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .visualization-content {
-            padding: 1rem;
-            background: var(--card-bg);
-            position: relative;
-            overflow: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .warehouse-container {
-            min-width: 800px;
-            min-height: 500px;
-            position: relative;
-        }
-
-        .warehouse-layout {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            grid-template-rows: repeat(8, 1fr);
-            gap: 4px;
-            min-height: 500px;
-            background: var(--bg);
-            padding: 10px;
-        }
-
-        .rack {
-            background: rgba(58, 134, 255, 0.1);
-            border-radius: 0.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: var(--text);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        .rack::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.05);
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .rack:hover::after {
-            opacity: 1;
-        }
-
-        .rack.high-activity {
-            background: rgba(239, 71, 111, 0.15);
-            color: var(--danger);
-            border-color: rgba(239, 71, 111, 0.3);
-        }
-
-        .rack.medium-activity {
-            background: rgba(255, 190, 11, 0.15);
-            color: var(--warning);
-            border-color: rgba(255, 190, 11, 0.3);
-        }
-
-        .rack.low-activity {
-            background: rgba(6, 214, 160, 0.15);
-            color: var(--success);
-            border-color: rgba(6, 214, 160, 0.3);
-        }
-
-        .aisle {
-            background: var(--card-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            color: var(--gray);
-            border: 1px dashed var(--border);
-            border-radius: 0.25rem;
-        }
-
-        .heatmap-legend {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            color: var(--gray);
-        }
-
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 0.25rem;
-        }
-
-        .optimization-controls {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            justify-content: flex-end;
-            flex-wrap: wrap;
-        }
-
-        .recommendations-list {
-            margin-top: 2rem;
-        }
-
-        .recommendation-item {
-            padding: 1rem;
-            border: 1px solid var(--border);
-            border-radius: 0.375rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            background: var(--card-bg);
-            transition: transform 0.2s;
-        }
-
-        .recommendation-item:hover {
-            transform: translateY(-2px);
-        }
-
-        .recommendation-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(58, 134, 255, 0.1);
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .recommendation-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .recommendation-content h4 {
-            font-size: 1rem;
-            margin-bottom: 0.25rem;
-            color: var(--text);
-        }
-
-        .recommendation-content p {
-            font-size: 0.85rem;
-            color: var(--gray);
-        }
-
-        .recommendation-actions {
-            margin-left: auto;
-            display: flex;
-            gap: 0.5rem;
-            flex-shrink: 0;
-        }
-
-        .btn-sm {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.85rem;
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @media (max-width: 768px) {
-            .header-title {
-                font-size: 1.25rem;
-            }
-            
-            .metrics-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .optimization-controls {
-                justify-content: flex-start;
-            }
-            
-            .warehouse-container {
-                min-width: 600px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .metrics-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .btn-text {
-                display: none;
-            }
-            
-            .btn-icon {
-                width: 40px;
-                height: 40px;
-            }
-            
-            .feature-tab {
-                padding: 0.75rem;
-                font-size: 0.9rem;
-            }
-            
-            .recommendation-item {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-            
-            .recommendation-actions {
-                margin-left: 0;
-                width: 100%;
-                justify-content: flex-end;
-            }
-        }
+       :root {
+  /* Main Colors */
+  --primary: #4361ee;
+  --primary-light: #4895ef;
+  --primary-dark: #3a0ca3;
+  --secondary: #f72585;
+  --success: #4cc9f0;
+  --warning: #fca311;
+  --danger: #e63946;
+  --light: #f8f9fa;
+  --dark: #1a1c2e;
+  --gray-dark: #343a40;
+  --gray: #6c757d;
+  --gray-light: #e9ecef;
+  
+  /* Functional Colors */
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-light: #f8f9fa;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f7fa;
+  --border-color: #dee2e6;
+  
+  /* Dimensions */
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 70px;
+  --header-height: 60px;
+  --card-border-radius: 12px;
+  --element-border-radius: 8px;
+  --transition-speed: 0.3s;
+}
+
+/* Dark Mode Variables */
+.dark-mode {
+  --primary: #5170ff;
+  --primary-light: #56a0ff;
+  --primary-dark: #4c14d3;
+  --bg-primary: #1a1c2e;
+  --bg-secondary: #282b40;
+  --text-primary: #f8f9fa;
+  --text-secondary: #adb5bd;
+  --border-color: #3d4358;
+  --gray-light: #3d4358;
+  --gray: #adb5bd;
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-dark);
+}
+
+/* Layout */
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--dark);
+  color: var(--text-light);
+  height: 100vh;
+  position: fixed;
+  transition: width var(--transition-speed), transform var(--transition-speed);
+  z-index: 100;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-title {
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary-light);
+}
+
+.sidebar-title i {
+  font-size: 24px;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 20px 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.menu-item {
+  position: relative;
+  padding: 12px 20px;
+  margin: 5px 10px;
+  border-radius: var(--element-border-radius);
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+}
+
+.menu-item i {
+  font-size: 18px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.menu-item.active {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: 0 4px 20px rgba(67, 97, 238, 0.3);
+}
+
+.menu-item.active::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 4px;
+  background-color: var(--secondary);
+  border-radius: 0 4px 4px 0;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 20px;
+  transition: margin-left var(--transition-speed);
+}
+
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  transition: all var(--transition-speed);
+}
+
+.theme-toggle:hover {
+  background-color: var(--gray-light);
+  transform: rotate(360deg);
+}
+
+.dark-mode .theme-toggle i {
+  transform: rotate(180deg);
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+}
+
+/* Card Styles */
+.card {
+  background-color: var(--bg-primary);
+  border-radius: var(--card-border-radius);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  grid-column: span 4;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Button Styles */
+.btn {
+  padding: 8px 16px;
+  border-radius: var(--element-border-radius);
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+}
+
+.btn i {
+  font-size: 16px;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.btn-outline:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-2px);
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  padding: 20px;
+}
+
+.stat-card {
+  background-color: var(--bg-secondary);
+  padding: 15px;
+  border-radius: var(--element-border-radius);
+  text-align: center;
+  transition: transform var(--transition-speed);
+}
+
+.stat-card:hover {
+  transform: scale(1.05);
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.stat-change {
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.stat-change.positive {
+  color: var(--success);
+}
+
+.stat-change.negative {
+  color: var(--danger);
+}
+
+/* Updates Feed */
+.update-feed {
+  padding: 15px;
+}
+
+.update-item {
+  display: flex;
+  gap: 15px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color var(--transition-speed);
+}
+
+.update-item:last-child {
+  border-bottom: none;
+}
+
+.update-item:hover {
+  background-color: var(--bg-secondary);
+  padding-left: 10px;
+  border-radius: var(--element-border-radius);
+}
+
+.update-icon {
+  width: 36px;
+  height: 36px;
+  background-color: var(--primary-light);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.update-content {
+  flex: 1;
+}
+
+.update-time {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.update-text {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* Layout Container */
+.layout-container {
+  grid-column: span 8;
+  background-color: var(--bg-primary);
+  border-radius: var(--card-border-radius);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-toolbar {
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.layout-tool {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--element-border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.layout-tool:hover {
+  background-color: var(--primary);
+  color: white;
+  transform: translateY(-3px);
+}
+
+.layout-content {
+  flex: 1;
+  padding: 15px;
+  min-height: 400px;
+  position: relative;
+}
+
+.warehouse-map {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-secondary);
+  border-radius: var(--element-border-radius);
+  position: relative;
+  overflow: hidden;
+  background-image: 
+    linear-gradient(var(--gray-light) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gray-light) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.heatmap-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 30% 50%, rgba(252, 163, 17, 0.25) 0%, rgba(252, 163, 17, 0) 50%),
+              radial-gradient(circle at 70% 70%, rgba(247, 37, 133, 0.25) 0%, rgba(247, 37, 133, 0) 50%),
+              radial-gradient(circle at 50% 30%, rgba(76, 201, 240, 0.25) 0%, rgba(76, 201, 240, 0) 50%);
+  animation: heatmap-pulse 15s infinite alternate;
+}
+
+@keyframes heatmap-pulse {
+  0% {
+    opacity: 0.5;
+    background-position: 0% 0%, 0% 0%, 0% 0%;
+  }
+  50% {
+    opacity: 0.7;
+    background-position: 10% 20%, -10% -10%, 5% 15%;
+  }
+  100% {
+    opacity: 0.5;
+    background-position: -5% -15%, 15% 5%, -10% 10%;
+  }
+}
+
+/* Recommendations List */
+.recommendations-list {
+  padding: 10px;
+}
+
+.recommendation {
+  display: flex;
+  gap: 15px;
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+  transition: all var(--transition-speed);
+}
+
+.recommendation:last-child {
+  border-bottom: none;
+}
+
+.recommendation:hover {
+  background-color: var(--bg-secondary);
+  border-radius: var(--element-border-radius);
+  transform: translateX(5px);
+}
+
+.recommendation-icon {
+  width: 45px;
+  height: 45px;
+  background-color: var(--primary-light);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.recommendation-content {
+  flex: 1;
+}
+
+.recommendation-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--text-primary);
+}
+
+.recommendation-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.recommendation-meta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.recommendation-priority {
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.priority-high {
+  background-color: rgba(230, 57, 70, 0.15);
+  color: var(--danger);
+}
+
+.priority-medium {
+  background-color: rgba(252, 163, 17, 0.15);
+  color: var(--warning);
+}
+
+.priority-low {
+  background-color: rgba(76, 201, 240, 0.15);
+  color: var(--success);
+}
+
+.recommendation-actions {
+  display: flex;
+  align-items: center;
+}
+
+/* Optimization Controls */
+.optimization-controls {
+  padding: 15px;
+}
+
+.control-group {
+  margin-bottom: 15px;
+}
+
+.control-label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.control-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--element-border-radius);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all var(--transition-speed);
+}
+
+.control-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.25);
+}
+
+.control-input:hover {
+  border-color: var(--primary-light);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Apply animations to elements */
+.card, .recommendation, .update-item, .stat-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.recommendation-icon, .update-icon, .layout-tool:hover {
+  animation: pulse 2s infinite;
+}
+
+.menu-item {
+  animation: slideIn 0.3s ease-out;
+  animation-fill-mode: backwards;
+}
+
+/* Apply sequential delays to menu items */
+.menu-item:nth-child(1) { animation-delay: 0.1s; }
+.menu-item:nth-child(2) { animation-delay: 0.2s; }
+.menu-item:nth-child(3) { animation-delay: 0.3s; }
+.menu-item:nth-child(4) { animation-delay: 0.4s; }
+.menu-item:nth-child(5) { animation-delay: 0.5s; }
+.menu-item:nth-child(6) { animation-delay: 0.6s; }
+.menu-item:nth-child(7) { animation-delay: 0.7s; }
+
+/* Mobile Responsiveness */
+@media (max-width: 1200px) {
+  .card {
+    grid-column: span 6;
+  }
+  
+  .layout-container {
+    grid-column: span 12;
+  }
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    width: var(--sidebar-collapsed-width);
+    overflow: hidden;
+  }
+  
+  .sidebar-title span, .menu-item span {
+    display: none;
+  }
+  
+  .menu-item {
+    justify-content: center;
+    padding: 15px 0;
+  }
+  
+  .menu-item i {
+    font-size: 20px;
+    min-width: 0;
+  }
+  
+  .menu-item:hover {
+    transform: translateX(0);
+    background-color: var(--primary);
+  }
+  
+  .main-content {
+    margin-left: var(--sidebar-collapsed-width);
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    grid-column: span 12;
+  }
+  
+  .sidebar {
+    transform: translateX(-100%);
+    width: var(--sidebar-width);
+  }
+  
+  .sidebar.show {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .menu-item span {
+    display: inline;
+  }
+  
+  .sidebar-title span {
+    display: inline;
+  }
+  
+  .menu-item {
+    justify-content: flex-start;
+    padding: 12px 20px;
+  }
+  
+  .mobile-nav-toggle {
+    display: block;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 110;
+    background-color: var(--primary);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .content-header {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .recommendation {
+    flex-direction: column;
+  }
+  
+  .recommendation-icon {
+    margin-bottom: 10px;
+  }
+  
+  .recommendation-actions {
+    margin-top: 10px;
+    align-self: flex-start;
+  }
+  
+  .stats-grid {
+    padding: 10px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .card-actions {
+    align-self: flex-end;
+  }
+}
+
+/* Additional Mobile Menu Toggle */
+.mobile-nav-toggle {
+  display: none;
+}
+
+/* Add this to your HTML */
+@media (max-width: 768px) {
+  .mobile-nav-toggle {
+    display: block;
+  }
+}
+
+/* Dark mode toggle animation */
+.theme-toggle i {
+  transition: transform 0.5s ease-in-out;
+}
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1 class="header-title">AI Layout Optimizer</h1>
-            <div class="header-actions">
-                <button class="btn btn-outline" id="exportBtn">
-                    <i class="fas fa-download"></i>
-                    <span class="btn-text">Export Report</span>
-                </button>
-                <button class="btn btn-primary" id="runOptimizationBtn">
-                    <i class="fas fa-magic"></i>
-                    <span class="btn-text">Run Optimization</span>
-                </button>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="sidebar-title"><i class="fas fa-robot"></i> AI Optimizer</h1>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item active"><i class="fas fa-map-marked-alt"></i> Layout Overview</li>
+                <li class="menu-item"><i class="fas fa-boxes"></i> Dynamic Slotting</li>
+                <li class="menu-item"><i class="fas fa-project-diagram"></i> Flow Simulation</li>
+                <li class="menu-item"><i class="fas fa-chart-line"></i> Performance Metrics</li>
+                <li class="menu-item"><i class="fas fa-cogs"></i> System Settings</li>
+                <li class="menu-item"><i class="fas fa-history"></i> Optimization History</li>
+                <li class="menu-item"><i class="fas fa-file-alt"></i> Reports</li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="content-header">
+                <h2 class="page-title">Warehouse Layout Optimization</h2>
                 <button class="theme-toggle" id="themeToggle">
                     <i class="fas fa-moon"></i>
                 </button>
             </div>
-        </header>
 
-        <div class="feature-tabs">
-            <div class="feature-tab active" data-tab="current">Current Layout</div>
-            <div class="feature-tab" data-tab="optimized">Optimized Layout</div>
-            <div class="feature-tab" data-tab="comparison">Comparison</div>
-        </div>
-
-        <!-- Current Layout Tab -->
-        <div class="tab-content active" id="current-tab">
-            <h2 class="section-title">Current Warehouse Layout Analysis</h2>
-            <p class="section-description">AI-powered analysis of your current warehouse layout showing inefficiencies and optimization opportunities.</p>
-
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-title">
-                        <i class="fas fa-route"></i> Average Pick Path
-                    </div>
-                    <div class="metric-value">427m</div>
-                    <div class="metric-change down">
-                        <i class="fas fa-arrow-down"></i> 12% from optimal
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">
-                        <i class="fas fa-clock"></i> Travel Time
-                    </div>
-                    <div class="metric-value">8.2min</div>
-                    <div class="metric-change down">
-                        <i class="fas fa-arrow-down"></i> 18% from optimal
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">
-                        <i class="fas fa-boxes"></i> Space Utilization
-                    </div>
-                    <div class="metric-value">68%</div>
-                    <div class="metric-change up">
-                        <i class="fas fa-arrow-up"></i> 5% from last week
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">
-                        <i class="fas fa-exchange-alt"></i> Cross Aisles
-                    </div>
-                    <div class="metric-value">3</div>
-                    <div class="metric-change down">
-                        <i class="fas fa-arrow-down"></i> 2 needed
-                    </div>
-                </div>
-            </div>
-
-            <div class="visualization-container">
-                <div class="visualization-header">
-                    <div class="visualization-title">Warehouse Layout Heatmap</div>
-                    <div class="visualization-actions">
-                        <button class="btn btn-outline btn-sm btn-icon">
-                            <i class="fas fa-expand"></i>
-                        </button>
-                        <button class="btn btn-outline btn-sm btn-icon">
-                            <i class="fas fa-download"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="visualization-content">
-                    <div class="warehouse-container">
-                        <div class="warehouse-layout" id="warehouseLayout"></div>
-                    </div>
-                    <div class="heatmap-legend">
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: rgba(239, 71, 111, 0.15); border: 1px solid rgba(239, 71, 111, 0.3);"></div>
-                            <span>High Activity</span>
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Current Efficiency</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-outline"><i class="fas fa-sync-alt"></i> Refresh</button>
                         </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: rgba(255, 190, 11, 0.15); border: 1px solid rgba(255, 190, 11, 0.3);"></div>
-                            <span>Medium Activity</span>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">72%</div>
+                            <div class="stat-label">Space Utilization</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i> 5% from last week
+                            </div>
                         </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: rgba(6, 214, 160, 0.15); border: 1px solid rgba(6, 214, 160, 0.3);"></div>
-                            <span>Low Activity</span>
+                        <div class="stat-card">
+                            <div class="stat-value">1,420m</div>
+                            <div class="stat-label">Avg. Travel Distance</div>
+                            <div class="stat-change negative">
+                                <i class="fas fa-arrow-down"></i> 8% from target
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">87/hr</div>
+                            <div class="stat-label">Picks Per Hour</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i> 12% from last month
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="optimization-controls">
-                <button class="btn btn-outline" id="resetViewBtn">
-                    <i class="fas fa-redo"></i>
-                    <span class="btn-text">Reset View</span>
-                </button>
-                <button class="btn btn-primary" id="optimizeBtn">
-                    <i class="fas fa-magic"></i>
-                    <span class="btn-text">Optimize Layout</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Optimized Layout Tab -->
-        <div class="tab-content" id="optimized-tab">
-            <h2 class="section-title">Optimized Warehouse Layout</h2>
-            <p class="section-description">AI-generated optimized layout showing potential improvements to your current warehouse configuration.</p>
-
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-title">
-                        <i class="fas fa-route"></i> Average Pick Path
-                    </div>
-                    <div class="metric-value">376m</div>
-                    <div class="metric-change up">
-                        <i class="fas fa-arrow-up"></i> 12% improvement
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">
-                        <i class="fas fa-clock"></i> Travel Time
-                    </div>
-                    <div class="metric-value">6.7min</div>
-                    <div class="metric-change up">
-                        <i class="fas fa-arrow-up"></i> 18% improvement
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">
-                        <i class="fas fa-boxes"></i> Space Utilization
-                    </div>
-                    <div class="metric-value">82%</div>
-                    <div class="metric-change up">
-                        <i class="fas fa-arrow-up"></i> 14% improvement
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">
-                        <i class="fas fa-exchange-alt"></i> Cross Aisles
-                    </div>
-                    <div class="metric-value">5</div>
-                    <div class="metric-change up">
-                        <i class="fas fa-arrow-up"></i> 2 added
-                    </div>
-                </div>
-            </div>
-
-            <div class="visualization-container">
-                <div class="visualization-header">
-                    <div class="visualization-title">Optimized Layout Preview</div>
-                    <div class="visualization-actions">
-                        <button class="btn btn-outline btn-sm btn-icon">
-                            <i class="fas fa-expand"></i>
-                        </button>
-                        <button class="btn btn-outline btn-sm btn-icon" id="exportPlanBtn">
-                            <i class="fas fa-download"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="visualization-content">
-                    <div class="warehouse-container">
-                        <div class="warehouse-layout" id="optimizedLayout"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="optimization-controls">
-                <button class="btn btn-outline" id="exportPlanBtnFull">
-                    <i class="fas fa-file-export"></i>
-                    <span class="btn-text">Export Plan</span>
-                </button>
-                <button class="btn btn-primary" id="applyChangesBtn">
-                    <i class="fas fa-check-circle"></i>
-                    <span class="btn-text">Apply Changes</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Comparison Tab -->
-        <div class="tab-content" id="comparison-tab">
-            <h2 class="section-title">Layout Comparison</h2>
-            <p class="section-description">Side-by-side comparison of current vs. optimized warehouse layouts with key performance metrics.</p>
-
-            <div class="visualization-container" style="margin-bottom: 2rem;">
-                <div class="visualization-header">
-                    <div class="visualization-title">Current vs. Optimized Layout</div>
-                    <div class="visualization-actions">
-                        <button class="btn btn-outline btn-sm btn-icon">
-                            <i class="fas fa-expand"></i>
-                        </button>
-                        <button class="btn btn-outline btn-sm btn-icon">
-                            <i class="fas fa-download"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="visualization-content">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; min-width: 1200px;">
-                        <div>
-                            <h4 style="text-align: center; margin-bottom: 1rem; color: var(--text);">Current Layout</h4>
-                            <div class="warehouse-layout" id="currentComparisonLayout" style="height: 400px;"></div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Real-Time Updates</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-outline"><i class="fas fa-ellipsis-h"></i></button>
                         </div>
-                        <div>
-                            <h4 style="text-align: center; margin-bottom: 1rem; color: var(--text);">Optimized Layout</h4>
-                            <div class="warehouse-layout" id="optimizedComparisonLayout" style="height: 400px;"></div>
+                    </div>
+                    <div class="update-feed">
+                        <div class="update-item">
+                            <div class="update-icon"><i class="fas fa-box"></i></div>
+                            <div class="update-content">
+                                <div class="update-time">2 minutes ago</div>
+                                <div class="update-text">SKU-4821 relocated to Zone B based on demand increase</div>
+                            </div>
+                        </div>
+                        <div class="update-item">
+                            <div class="update-icon"><i class="fas fa-route"></i></div>
+                            <div class="update-content">
+                                <div class="update-time">15 minutes ago</div>
+                                <div class="update-text">Pick path optimized for Order #4821 - saved 42m of travel</div>
+                            </div>
+                        </div>
+                        <div class="update-item">
+                            <div class="update-icon"><i class="fas fa-robot"></i></div>
+                            <div class="update-content">
+                                <div class="update-time">32 minutes ago</div>
+                                <div class="update-text">AMR paths reconfigured for new layout in Section C</div>
+                            </div>
+                        </div>
+                        <div class="update-item">
+                            <div class="update-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="update-content">
+                                <div class="update-time">1 hour ago</div>
+                                <div class="update-text">Congestion detected in Aisle 3 - suggestion generated</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="recommendations-list">
-                <h3 class="section-title">Key Recommendations</h3>
-                
-                <div class="recommendation-item">
-                    <div class="recommendation-icon">
-                        <i class="fas fa-arrows-alt-h"></i>
+                <div class="layout-container">
+                    <div class="layout-toolbar">
+                        <div class="layout-tool" title="Heatmap"><i class="fas fa-fire"></i></div>
+                        <div class="layout-tool" title="3D View"><i class="fas fa-cube"></i></div>
+                        <div class="layout-tool" title="Flow Analysis"><i class="fas fa-project-diagram"></i></div>
+                        <div class="layout-tool" title="Metrics"><i class="fas fa-chart-bar"></i></div>
+                        <div class="layout-tool" title="Zoom In"><i class="fas fa-search-plus"></i></div>
+                        <div class="layout-tool" title="Zoom Out"><i class="fas fa-search-minus"></i></div>
                     </div>
-                    <div class="recommendation-content">
-                        <h4>Add Cross Aisles</h4>
-                        <p>Adding 2 cross aisles in zones B and D will reduce average travel distance by 15%.</p>
-                    </div>
-                    <div class="recommendation-actions">
-                        <button class="btn btn-outline btn-sm btn-icon">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                        <button class="btn btn-primary btn-sm">
-                            Apply
-                        </button>
+                    <div class="layout-content">
+                        <div class="warehouse-map">
+                            <div class="heatmap-overlay"></div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="recommendation-item">
-                    <div class="recommendation-icon">
-                        <i class="fas fa-random"></i>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Optimization Controls</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-primary"><i class="fas fa-play"></i> Run Now</button>
+                        </div>
                     </div>
-                    <div class="recommendation-content">
-                        <h4>Reorganize Fast-Moving Items</h4>
-                        <p>Relocate 23 high-velocity SKUs to the golden zone near packing stations.</p>
-                    </div>
-                    <div class="recommendation-actions">
-                        <button class="btn btn-outline btn-sm btn-icon">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                        <button class="btn btn-primary btn-sm">
-                            Apply
-                        </button>
+                    <div class="optimization-controls">
+                        <div class="control-group">
+                            <label class="control-label">Optimization Focus</label>
+                            <select class="control-input">
+                                <option>Maximize Efficiency</option>
+                                <option>Reduce Labor Costs</option>
+                                <option>Minimize Travel Time</option>
+                                <option>Increase Safety</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Time Horizon</label>
+                            <select class="control-input">
+                                <option>Next 24 Hours</option>
+                                <option>Next 7 Days</option>
+                                <option>Next 30 Days</option>
+                                <option>Seasonal (Q4 Focus)</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Constraint Level</label>
+                            <select class="control-input">
+                                <option>No Constraints</option>
+                                <option>Minimal Changes</option>
+                                <option>Budget Limited</option>
+                                <option>Safety First</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="recommendation-item">
-                    <div class="recommendation-icon">
-                        <i class="fas fa-people-carry"></i>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Active Recommendations</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-outline"><i class="fas fa-filter"></i> Filter</button>
+                        </div>
                     </div>
-                    <div class="recommendation-content">
-                        <h4>Optimize Work Zones</h4>
-                        <p>Redesign picking zones to minimize congestion during peak hours.</p>
+                    <div class="recommendations-list">
+                        <div class="recommendation">
+                            <div class="recommendation-icon"><i class="fas fa-arrows-alt-h"></i></div>
+                            <div class="recommendation-content">
+                                <h4 class="recommendation-title">Widen Aisle 3 by 18 inches</h4>
+                                <p class="recommendation-desc">Reduces forklift congestion during peak hours (10am-2pm)</p>
+                                <div class="recommendation-meta">
+                                    <span class="recommendation-priority priority-high">High Priority</span>
+                                    <span>Projected: 23% wait time reduction</span>
+                                </div>
+                            </div>
+                            <div class="recommendation-actions">
+                                <button class="btn btn-outline">Details</button>
+                            </div>
+                        </div>
+                        <div class="recommendation">
+                            <div class="recommendation-icon"><i class="fas fa-box-open"></i></div>
+                            <div class="recommendation-content">
+                                <h4 class="recommendation-title">Relocate Seasonal Items</h4>
+                                <p class="recommendation-desc">Move holiday SKUs closer to packing stations</p>
+                                <div class="recommendation-meta">
+                                    <span class="recommendation-priority priority-medium">Medium Priority</span>
+                                    <span>Projected: 18% faster picking</span>
+                                </div>
+                            </div>
+                            <div class="recommendation-actions">
+                                <button class="btn btn-outline">Details</button>
+                            </div>
+                        </div>
+                        <div class="recommendation">
+                            <div class="recommendation-icon"><i class="fas fa-battery-three-quarters"></i></div>
+                            <div class="recommendation-content">
+                                <h4 class="recommendation-title">Optimize AMR Charging Stations</h4>
+                                <p class="recommendation-desc">Add 2 charging stations in Zone B to reduce downtime</p>
+                                <div class="recommendation-meta">
+                                    <span class="recommendation-priority priority-low">Low Priority</span>
+                                    <span>Projected: 12% uptime increase</span>
+                                </div>
+                            </div>
+                            <div class="recommendation-actions">
+                                <button class="btn btn-outline">Details</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="recommendation-actions">
-                        <button class="btn btn-outline btn-sm btn-icon">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                        <button class="btn btn-primary btn-sm">
-                            Apply
-                        </button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Dynamic Slotting Adjustments</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-primary"><i class="fas fa-save"></i> Apply Changes</button>
+                        </div>
+                    </div>
+                    <div class="optimization-controls">
+                        <div class="control-group">
+                            <label class="control-label">Fast-Moving Items</label>
+                            <select class="control-input">
+                                <option>Auto-optimize (Recommended)</option>
+                                <option>Keep Current Locations</option>
+                                <option>Manual Selection</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Heavy/Bulky Items</label>
+                            <select class="control-input">
+                                <option>Auto-optimize (Recommended)</option>
+                                <option>Keep Current Locations</option>
+                                <option>Manual Selection</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Seasonal Items</label>
+                            <select class="control-input">
+                                <option>Auto-optimize (Recommended)</option>
+                                <option>Keep Current Locations</option>
+                                <option>Manual Selection</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Dark/Light Mode Toggle
-            const themeToggle = document.getElementById('themeToggle');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            let darkMode = localStorage.getItem('darkMode') === 'true' || prefersDark;
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        let isDark = false;
 
-            function applyTheme() {
-                if (darkMode) {
-                    document.body.classList.add('dark-mode');
-                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-                } else {
-                    document.body.classList.remove('dark-mode');
-                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-                }
+        // Check for saved theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            body.setAttribute('data-theme', 'dark');
+            isDark = true;
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            if (isDark) {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
             }
+        });
 
-            themeToggle.addEventListener('click', () => {
-                darkMode = !darkMode;
-                localStorage.setItem('darkMode', darkMode);
-                applyTheme();
-            });
-
-            applyTheme();
-
-            // Generate warehouse layout
-            function generateLayout(containerId, optimized = false) {
-                const container = document.getElementById(containerId);
-                container.innerHTML = '';
-                
-                // Create aisles
-                for (let i = 0; i < 8; i++) {
-                    if (i % 2 === 0) {
-                        const aisle = document.createElement('div');
-                        aisle.className = 'aisle';
-                        aisle.textContent = `Aisle ${i/2 + 1}`;
-                        aisle.style.gridRow = `${i + 1} / span 1`;
-                        if (optimized && (i === 2 || i === 4)) {
-                            // Add cross aisles in optimized layout
-                            aisle.style.gridColumn = '1 / span 12';
-                            aisle.textContent = `Cross Aisle ${i === 2 ? 'A' : 'B'}`;
-                        } else {
-                            aisle.style.gridColumn = '4 / span 6';
-                        }
-                        container.appendChild(aisle);
-                    }
-                }
-                
-                // Create racks
-                for (let row = 1; row <= 8; row++) {
-                    for (let col = 1; col <= 12; col++) {
-                        if ((col <= 3 || col >= 10) && row % 2 !== 0) {
-                            const rack = document.createElement('div');
-                            rack.className = 'rack';
-                            rack.textContent = `R${row}C${col}`;
-                            rack.style.gridRow = row;
-                            rack.style.gridColumn = col;
-                            
-                            // Assign traffic levels
-                            if (optimized) {
-                                // Optimized layout has better distribution
-                                if ((row === 1 || row === 3) && (col === 1 || col === 2 || col === 11 || col === 12)) {
-                                    rack.classList.add('low-activity');
-                                } else if ((row === 5 || row === 7) && (col === 1 || col === 12)) {
-                                    rack.classList.add('high-activity');
-                                } else {
-                                    rack.classList.add('medium-activity');
-                                }
-                            } else {
-                                // Current layout has congestion points
-                                const traffic = Math.random();
-                                if ((col === 1 || col === 12) && (row === 1 || row === 3 || row === 5)) {
-                                    rack.classList.add('high-activity');
-                                } else if (traffic > 0.7) {
-                                    rack.classList.add('high-activity');
-                                } else if (traffic > 0.4) {
-                                    rack.classList.add('medium-activity');
-                                } else {
-                                    rack.classList.add('low-activity');
-                                }
-                            }
-                            
-                            container.appendChild(rack);
-                        }
-                    }
-                }
-            }
-            
-            // Generate all layouts
-            generateLayout('warehouseLayout');
-            generateLayout('optimizedLayout', true);
-            generateLayout('currentComparisonLayout');
-            generateLayout('optimizedComparisonLayout', true);
-            
-            // Tab functionality
-            const tabs = document.querySelectorAll('.feature-tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    
-                    // Update active tab
-                    tabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Show corresponding content
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    document.getElementById(`${tabId}-tab`).classList.add('active');
-                });
-            });
-            
-            // Run Optimization button
-            document.getElementById('runOptimizationBtn').addEventListener('click', function() {
-                // Show loading state
-                const originalHTML = this.innerHTML;
-                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Optimizing...';
-                this.disabled = true;
-                
-                // Simulate optimization processing
-                setTimeout(() => {
-                    // Restore button state
-                    this.innerHTML = originalHTML;
-                    this.disabled = false;
-                    
-                    // Switch to optimized tab
-                    tabs.forEach(t => t.classList.remove('active'));
-                    document.querySelector('.feature-tab[data-tab="optimized"]').classList.add('active');
-                    
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    document.getElementById('optimized-tab').classList.add('active');
-                    
-                    // Show success message
-                    alert('Layout optimization completed successfully!');
-                }, 2000);
-            });
-            
-            // Optimize button in current tab
-            document.getElementById('optimizeBtn').addEventListener('click', function() {
-                document.getElementById('runOptimizationBtn').click();
-            });
-            
-            // Export Plan buttons
-            const exportPlanBtns = document.querySelectorAll('[id^="exportPlanBtn"]');
-            exportPlanBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    alert('Exporting optimized layout plan...');
-                    // In a real implementation, this would trigger a file download
-                });
-            });
-            
-            // Apply Changes button
-            document.getElementById('applyChangesBtn').addEventListener('click', function() {
-                if (confirm('Are you sure you want to apply these layout changes? This will update your warehouse configuration.')) {
-                    // Show loading state
-                    const originalHTML = this.innerHTML;
-                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Applying...';
-                    this.disabled = true;
-                    
-                    // Simulate apply changes processing
-                    setTimeout(() => {
-                        // Restore button state
-                        this.innerHTML = originalHTML;
-                        this.disabled = false;
-                        
-                        // Show success message
-                        alert('Layout changes applied successfully! The new configuration is now active.');
-                    }, 1500);
-                }
-            });
-            
-            // Reset View button
-            document.getElementById('resetViewBtn').addEventListener('click', function() {
-                generateLayout('warehouseLayout');
-                alert('View reset to default state');
-            });
-            
-            // Export Report button
-            document.getElementById('exportBtn').addEventListener('click', function() {
-                alert('Exporting current layout report...');
-                // In a real implementation, this would trigger a file download
-            });
-            
-            // Make warehouse containers horizontally scrollable on mobile
-            const warehouseContainers = document.querySelectorAll('.warehouse-container');
-            warehouseContainers.forEach(container => {
-                container.addEventListener('touchstart', function(e) {
-                    this.style.overflowX = 'auto';
-                    this.style.overflowY = 'hidden';
-                });
-                
-                container.addEventListener('touchend', function(e) {
-                    this.style.overflowX = 'auto';
-                    this.style.overflowY = 'hidden';
-                });
+        // Menu Navigation
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                menuItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
             });
         });
+
+        // Layout Tools
+        const layoutTools = document.querySelectorAll('.layout-tool');
+        layoutTools.forEach(tool => {
+            tool.addEventListener('click', () => {
+                // Simulate tool activation
+                layoutTools.forEach(t => t.style.background = 'white');
+                layoutTools.forEach(t => t.style.color = 'var(--primary)');
+                tool.style.background = 'var(--primary)';
+                tool.style.color = 'white';
+                
+                // Show notification
+                showNotification(`Switched to ${tool.getAttribute('title')} view`);
+            });
+        });
+
+        // Recommendation Actions
+        const recommendationBtns = document.querySelectorAll('.recommendation-actions .btn');
+        recommendationBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const recommendation = btn.closest('.recommendation');
+                recommendation.style.animation = 'pulse 0.5s';
+                setTimeout(() => {
+                    recommendation.style.animation = '';
+                }, 500);
+                showNotification('Opening recommendation details');
+            });
+        });
+
+        // Run Optimization Button
+        const runBtn = document.querySelector('.card-actions .btn-primary');
+        if (runBtn) {
+            runBtn.addEventListener('click', () => {
+                runBtn.innerHTML = '<i class="fas fa-cog fa-spin"></i> Optimizing...';
+                runBtn.disabled = true;
+                
+                // Simulate optimization
+                setTimeout(() => {
+                    showNotification('Optimization complete! Projected efficiency gain: 22%');
+                    runBtn.innerHTML = '<i class="fas fa-check"></i> Completed';
+                    
+                    setTimeout(() => {
+                        runBtn.innerHTML = '<i class="fas fa-play"></i> Run Now';
+                        runBtn.disabled = false;
+                    }, 3000);
+                }, 2000);
+            });
+        }
+
+        // Apply Slotting Changes Button
+        const applyBtn = document.querySelector('.card:last-child .btn-primary');
+        if (applyBtn) {
+            applyBtn.addEventListener('click', () => {
+                applyBtn.innerHTML = '<i class="fas fa-cog fa-spin"></i> Applying...';
+                applyBtn.disabled = true;
+                
+                // Simulate application
+                setTimeout(() => {
+                    showNotification('Slotting changes applied successfully!');
+                    applyBtn.innerHTML = '<i class="fas fa-check"></i> Applied';
+                    
+                    setTimeout(() => {
+                        applyBtn.innerHTML = '<i class="fas fa-save"></i> Apply Changes';
+                        applyBtn.disabled = false;
+                    }, 3000);
+                }, 1500);
+            });
+        }
+
+        // Show notification function
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <div style="position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; padding: 1rem 1.5rem; border-radius: 5px; box-shadow: var(--shadow-lg); z-index: 1000; animation: slideIn 0.3s ease;">
+                    ${message}
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Remove after delay
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Simulate real-time updates
+        function addUpdate() {
+            const updates = [
+                {
+                    icon: 'fas fa-box',
+                    time: 'Just now',
+                    text: 'SKU-5732 demand increased - relocation suggested'
+                },
+                {
+                    icon: 'fas fa-route',
+                    time: '5 minutes ago',
+                    text: 'New pick path calculated for Order #5732'
+                },
+                {
+                    icon: 'fas fa-robot',
+                    time: '22 minutes ago',
+                    text: 'AMR #3 battery optimization complete'
+                },
+                {
+                    icon: 'fas fa-exclamation-triangle',
+                    time: '45 minutes ago',
+                    text: 'Low stock alert for SKU-2847 in Zone D'
+                }
+            ];
+            
+            const randomUpdate = updates[Math.floor(Math.random() * updates.length)];
+            const updateFeed = document.querySelector('.update-feed');
+            
+            if (updateFeed) {
+                const updateItem = document.createElement('div');
+                updateItem.className = 'update-item';
+                updateItem.innerHTML = `
+                    <div class="update-icon"><i class="${randomUpdate.icon}"></i></div>
+                    <div class="update-content">
+                        <div class="update-time">${randomUpdate.time}</div>
+                        <div class="update-text">${randomUpdate.text}</div>
+                    </div>
+                `;
+                updateItem.style.animation = 'fadeIn 0.5s ease';
+                updateFeed.insertBefore(updateItem, updateFeed.firstChild);
+                
+                // Remove oldest if more than 6
+                if (updateFeed.children.length > 6) {
+                    updateFeed.removeChild(updateFeed.lastChild);
+                }
+            }
+        }
+
+
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+  // Mobile menu toggle
+  const mobileToggle = document.createElement('button');
+  mobileToggle.className = 'mobile-nav-toggle';
+  mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
+  document.body.appendChild(mobileToggle);
+  
+  mobileToggle.addEventListener('click', function() {
+    document.querySelector('.sidebar').classList.toggle('show');
+  });
+  
+  // Dark mode toggle
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    const icon = themeToggle.querySelector('i');
+    if (document.body.classList.contains('dark-mode')) {
+      icon.className = 'fas fa-sun';
+    } else {
+      icon.className = 'fas fa-moon';
+    }
+  });
+});
+
+        // Add updates periodically
+        setInterval(addUpdate, 15000);
     </script>
 </body>
 </html>
